@@ -16,6 +16,7 @@ This repository is organized on the following multiple parallel (i.e. orphan in 
 
 The Ventilator is inspired by the MVM (Mechanical Ventilator Milano) design from [Galbiati et al. 2020](https://arxiv.org/abs/2003.10405)  
 
+![MVM Schematic](https://github.com/icub-tech-iit/ventilator/blob/master/doc/misc/MVM_schema.png) 
 
 
 ### Project objective - WIP
