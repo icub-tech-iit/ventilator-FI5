@@ -2,7 +2,7 @@ Ventilator
 ==========
 
 This repository is organized on the following multiple parallel (i.e. orphan in Git jargon) branches:
-- [`master`][1] this main branch.
+- [`master`][1] contains the core design.
 - [`code`][2] contains code.
 - [`cad`][3] contains drawings.
 - [`doc`][4] contains documentation.
