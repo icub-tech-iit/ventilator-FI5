@@ -12,6 +12,16 @@ This repository is organized on the following multiple parallel (i.e. orphan in 
 [3]: ../../tree/cad
 [4]: ../../tree/doc
 
+### Ventilator type - WIP
+
+The Ventilator is inspired by the MVM (Mechanical Ventilator Milano) design from [Galbiati et al. 2020](https://arxiv.org/abs/2003.10405)  
+
+
+
+### Project objective - WIP
+
+To build a [Rapidly manufactured ventilator system](https://www.gov.uk/government/publications/coronavirus-covid-19-ventilator-supply-specification/rapidly-manufactured-ventilator-system-specification) to be used only in extreme emergency situation under strict control of a doctor    
+
 ### 🔽 How to clone locally specific branches
 ```sh
 $ git clone https://github.com/icub-tech-iit/ventilator.git --branch <branch-name>
