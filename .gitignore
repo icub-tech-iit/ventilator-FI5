@@ -1,0 +1,44 @@
+*
+
+# Accepted files extension
+!.gitattributes
+!.gitignore
+!*.1
+!*.cfg
+!*.dmt
+!*.dtl
+!*.fmt
+!*.map
+!*.md
+!*.mtl
+!*.pdf
+!*.pnt
+!*.pro
+!*.ps1
+!*.qry
+!*.scene
+!*.scl
+!*.ui
+!*.md
+!*.json
+!*.yml
+!*.pptx
+!*/
+# Accepted modelcheck files extension
+!*.mcc
+!*.mc
+!*.gmc
+!*.mch
+!*.mcn
+!*.mcs
+!*.mcr
+!*.txt
+
+# Accepted files
+!config/matlab/creolink.dat
+
+# Specific files or folders to be ignored
+/debug_feat_recognition.txt.1
+config/trail/trail*
+config/search_path_custom.pro
+*.bom.1
