@@ -9,6 +9,9 @@ Documentation repository.
 ## 📚 Papers
 - [Mechanical Ventilator Milano (MVM)](./papers/mvm.pdf).
 
+## 🖥 Presentations
+- [Ventilatori e Ventilazione](./presentations/ventilatori_e_ventilazione.pdf).
+
 ## 🌐 Online Resources
 - [Introduzione Generale al Ventilatore](http://manualidimedicina.blogspot.com/2017/02/introduzione-generale-al-ventilatore.html).
 - [Open Source Ventilator](https://gitlab.com/open-source-ventilator/OpenLung).
