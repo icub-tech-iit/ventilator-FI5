@@ -51,3 +51,4 @@ $ git clone https://github.com/icub-tech-iit/ventilator.git --branch <branch-nam
 | [<img src="https://github.com/claudiolorini.png" width="40">](https://github.com/claudiolorini)         | Claudio Lorini    | [@claudiolorini](https://github.com/claudiolorini) |
 | [<img src="https://github.com/MarcoCrepaldi-iit.png" width="40">](https://github.com/MarcoCrepaldi-iit) | Marco Crepaldi    | [@MarcoCrepaldi-iit](https://github.com/MarcoCrepaldi-iit) |
 | [<img src="https://github.com/mircodisalvo.png" width="40">](https://github.com/mircodisalvo)           | Mirco Di Salvo    | [@mircodisalvo](https://github.com/mircodisalvo) |
+| [<img src="https://github.com/Nicogene.png" width="40">](https://github.com/Nicogene)                   | Nicolò Genesio    | [@Nicogene](https://github.com/Nicogene) |
