@@ -20,3 +20,6 @@ Documentation repository.
 - [Low-Cost Open Source Ventilator or PAPR](https://github.com/jcl5m1/ventilator).
 - [List of emergency ventilators](https://github.com/PubInv/covid19-vent-list).
 - [Medical Ventilator with Lung Model](https://it.mathworks.com/help/physmod/simscape/examples/medical-ventilator-with-lung-model.html).
+
+## :card_file_box: Datasheets
+- [WIKA S-20-3-BG410-HD13K-A-AGGZZZ-ZWZ](https://github.com/icub-tech-iit/ventilator/blob/doc/datasheets/DS_PE8161_it_it_49144.pdf).
