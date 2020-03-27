@@ -1,11 +1,11 @@
 Ventilator
 ==========
 
-This repository is organized on the following multiple parallel (i.e. orphan in Git jargon) branches:
-- [`master`][1] contains the core design.
-- [`code`][2] contains code.
-- [`cad`][3] contains drawings.
-- [`doc`][4] contains documentation.
+This repository is organized based upon the following multiple parallel (i.e. orphan in Git jargon) branches:
+- 🔘 [`master`][1] contains the core design.
+- 🔘 [`code`][2] contains code.
+- 🔘 [`cad`][3] contains drawings.
+- 🔘 [`doc`][4] contains documentation.
 
 [1]: ../../tree/master
 [2]: ../../tree/code
@@ -52,3 +52,4 @@ $ git clone https://github.com/icub-tech-iit/ventilator.git --branch <branch-nam
 | [<img src="https://github.com/MarcoCrepaldi-iit.png" width="40">](https://github.com/MarcoCrepaldi-iit) | Marco Crepaldi    | [@MarcoCrepaldi-iit](https://github.com/MarcoCrepaldi-iit) |
 | [<img src="https://github.com/mircodisalvo.png" width="40">](https://github.com/mircodisalvo)           | Mirco Di Salvo    | [@mircodisalvo](https://github.com/mircodisalvo) |
 | [<img src="https://github.com/Nicogene.png" width="40">](https://github.com/Nicogene)                   | Nicolò Genesio    | [@Nicogene](https://github.com/Nicogene) |
+| [<img src="https://github.com/mirkoprato.png" width="40">](https://github.com/mirkoprato)               | Mirko Prato       | [@mirkoprato](https://github.com/mirkoprato) |
