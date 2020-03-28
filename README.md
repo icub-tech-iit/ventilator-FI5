@@ -3,8 +3,8 @@ Ventilator
 
 Documentation repository.
 
-## 📝 Guidance
-- [Rapidly manufactured ventilator system specification](https://www.gov.uk/government/publications/coronavirus-covid-19-ventilator-supply-specification/rapidly-manufactured-ventilator-system-specification).
+## 📝 Requirements
+- [Rapidly Manufactured Ventilator System (RMVS)](./requirements/RMVS001_v3.1.pdf).
 
 ## 📚 Papers
 - [Mechanical Ventilator Milano (MVM)](./papers/mvm.pdf).
