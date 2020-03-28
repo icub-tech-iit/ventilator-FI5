@@ -11,7 +11,7 @@ The parameters describing the lung can be tuned through the mask shown below (do
 
 Internally, the diagram copies what done in the article barring the implementation of the derivative, which in turn resorts to an **adaptive windows least-squares fitting estimation** ([Janabi-Sharifi _et al._ (2000)](https://doi.org/10.1109/87.880606)).
 
-This design approach enables a more robust computation of the derivative of the lung volume with respect to the simulation parameters, in particular regarding the input waveform and the sample time imposed by the solver.
+This design approach enables a more robust computation of the time derivative of the lung volume that tend be affected by simulation parameters, in particular the input waveform and the sample time imposed by the solver.
 
 A validation has been performed providing good results.
 
