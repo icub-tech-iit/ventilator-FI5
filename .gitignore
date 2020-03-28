@@ -1,0 +1,18 @@
+# -------------------------------------------------
+# electronics repository .gitignore
+# -------------------------------------------------
+
+# -------------------------------------------------
+# Ignoring files
+
+
+# -------------------------------------------------
+# Ignoring directories and their contents
+RTE
+DebugConfig
+
+# -------------------------------------------------
+# Ignoring files by extension
+*.log
+*.bak
+*.scvd
