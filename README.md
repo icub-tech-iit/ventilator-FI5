@@ -2,15 +2,11 @@ Ventilator
 ==========
 
 This repository is organized based upon the following multiple parallel (i.e. orphan in Git jargon) branches:
-- 🔘 [`master`][1] contains the core design.
-- 🔘 [`code`][2] contains code.
-- 🔘 [`cad`][3] contains drawings.
-- 🔘 [`doc`][4] contains documentation.
-
-[1]: ../../tree/master
-[2]: ../../tree/code
-[3]: ../../tree/cad
-[4]: ../../tree/doc
+- 🔘 [`master`](../../tree/master) contains the core design.
+- 🔘 [`doc`](../../tree/doc) contains documentation.
+- 🔘 [`mech`](../../tree/mech) contains mechanical drawings.
+- 🔘 [`ele`](../../tree/ele) contains electronics schematics.
+- 🔘 [`code`](../../tree/code) contains code.
 
 ### Ventilator type - WIP
 
