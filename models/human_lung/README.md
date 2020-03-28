@@ -13,7 +13,7 @@ Internally, the diagram copies what done in the article barring the implementati
 
 This design approach enables a more robust computation of the time derivative of the lung volume that tend be affected by simulation parameters, in particular the input waveform and the sample time imposed by the solver.
 
-A validation has been performed providing good results.
+A qualitative validation has been performed providing good results.
 
 ![diagram](./assets/diagram.png)
 
