@@ -11,7 +11,7 @@ Documentation repository.
 - [Computer-Controlled Mechanical Simulation of the Artificially Ventilated Human Respiratory System](./papers/mesic-2003.pdf).
 - [Comparison of Mathematical and Controlled Mehcanical Lung Simulation in Active Breathing and Ventilated State](./papers/pasteka-2018.pdf).
 
-## 🖥 Presentations
+## 👨‍🏫 Presentations
 - [Rapidly manufactured Ventilator System](./presentations/20200328_Ventilator.pdf).
 - [Ventilatori e Ventilazione](./presentations/ventilatori_e_ventilazione.pdf).
 
