@@ -5,6 +5,7 @@ Documentation repository.
 
 ## 📝 Requirements
 - [Rapidly Manufactured Ventilator System (RMVS)](./requirements/RMVS001_v3.1.pdf).
+- [Food and Drug Administration Ventilator Guidance](./requirements/FDA_Ventilators-Enforcement-Guidance.pdf).
 
 ## 📚 Papers
 - [Mechanical Ventilator Milano (MVM)](./papers/mvm.pdf).
