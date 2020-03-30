@@ -13,12 +13,17 @@
 #include "stdint.h"
 #include "stdio.h"
 
+#define USEMATLABCODE
 
 // required by stm
 #include "main.h"
 #include "stm32746g_discovery.h"
 #include "stm32746g_discovery_lcd.h"
 
+
+#if defined(USEMATLABCODE)
+#include "stm32f746g_discovery_if2cpp.h"
+#endif
 
 // --------------------------------------------------------------------------------------------------------------------
 // - declaration of extern public interface
@@ -67,6 +72,9 @@ static void s_init_pushbutton(void);
 static void s_init_lcd(void);
 
 static void s_tick00(void);
+#if defined(USEMATLABCODE)
+static void s_tick01(void);
+#endif
 
 // --------------------------------------------------------------------------------------------------------------------
 // - definition (and initialisation) of static variables
@@ -661,12 +669,19 @@ void stm32f7_demo_init(void)
     s_init_led();
     s_init_pushbutton();
     s_init_lcd();
+#if defined(USEMATLABCODE)
+    stm32f7_if2cpp_init();
+#endif    
 }
 
 
 void stm32f7_demo_tick(void)
 {
+#if defined(USEMATLABCODE)
+    s_tick01();
+#else
     s_tick00();
+#endif
 }
 
 // --------------------------------------------------------------------------------------------------------------------
@@ -769,8 +784,12 @@ static void s_tick00(void)
 {
     static uint32_t delay = 500; // the HAL of stm measures time in 1ms. 
 
+    volatile uint64_t tt = stm32f7_timenow();
 
     HAL_Delay(delay);
+    
+    volatile uint64_t delta = stm32f7_timenow() - tt;
+    delta =  delta;
 
     // after the dealy we do action
 
@@ -793,6 +812,96 @@ static void s_tick00(void)
         BSP_LCD_ClearStringLine(7);       
     } 
 }
+
+#if defined(USEMATLABCODE)
+static void s_tick01(void)
+{
+    static const uint32_t delay = 10; // the HAL of stm measures time in 1ms. 
+    
+    volatile uint64_t tt = stm32f7_timenow();
+    
+    HAL_Delay(delay);
+    
+    volatile uint64_t tt1 = stm32f7_timenow();
+    
+    stm32f7_if2cpp_tick();
+    
+    volatile uint64_t delta = stm32f7_timenow() - tt1;
+    delta =  delta;
+
+    char txt[32] = {0};
+    snprintf(txt, sizeof(txt), "duration = %d ms", (uint32_t)(delta/1000));
+    s_hal_trace_puts(txt);
+
+}
+#endif
+
+stm32f7_Time stm32f7_timenow(void)
+{
+    stm32f7_Time t = HAL_GetTickFreq() * HAL_GetTick() * 1000;
+    return t;
+}
+
+
+
+
+#if 0
+// TODO: 
+// add a usec resolution to stm32f7_timenow() by reading inside systick_current_value_reg 
+// and using a svc call 
+
+extern uint64_t oosiit_microtime_get(void)
+{       
+    uint32_t low = 0;
+    uint32_t high = 0;
+    uint64_t res = 0;
+    
+    if(0 != __get_IPSR()) 
+    {   // inside isr
+        s_oosiit_microtime_get(&low, &high);
+    } 
+    else
+    {   // call svc
+        __svc_oosiit_microtime_get(&low, &high);
+    }  
+    
+    res = high;
+    res <<= 32;
+    res += low;
+    return(res);    
+}
+
+TODO:
+populate required values
+- oosiit_cfg_in_use->cpufreq: is cpu frequency that we can rtrieve w/ a stm32 function
+- oosiit_cfg_in_use->ticktime: is the systick period (1 ms or retrievable by stm32 function
+etc.
+
+    os_trv        = ((uint32_t)(((double)oosiit_cfg_in_use->cpufreq*(double)oosiit_cfg_in_use->ticktime)/1E6)-1);
+    oosiit_num_units_of_systick = (os_trv+1);
+    double tmp = ((double)oosiit_cfg_in_use->ticktime*1000000.0)/(double)(oosiit_num_units_of_systick);
+    oosiit_picosec_per_unit_of_systick = (uint32_t)tmp;    
+
+static void s_oosiit_microtime_get(uint32_t* low, uint32_t* high)
+{
+    uint64_t microsecs;
+    uint64_t tmp;
+    volatile uint32_t reg0xE000E018 = *((volatile uint32_t *)0xE000E018);
+    
+    // add to microsecs the content of register systick_current_value_reg properly scaled.
+
+    // tmp is in pico
+    tmp = oosiit_picosec_per_unit_of_systick * (oosiit_num_units_of_systick - reg0xE000E018);
+    tmp /= 1000000LL;   // now in micro
+    microsecs = (oosiit_time * oosiit_cfg_in_use->ticktime) + tmp;
+    
+    *low = microsecs & 0xffffffff;
+    *high = (microsecs >> 32) & 0xffffffff;
+
+    return(oosiit_res_OK);    
+}
+
+#endif
 
 
 // --------------------------------------------------------------------------------------------------------------------
