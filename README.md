@@ -49,3 +49,8 @@ $ git clone https://github.com/icub-tech-iit/ventilator.git --branch <branch-nam
 | [<img src="https://github.com/mircodisalvo.png" width="40">](https://github.com/mircodisalvo)           | Mirco Di Salvo    | [@mircodisalvo](https://github.com/mircodisalvo) |
 | [<img src="https://github.com/Nicogene.png" width="40">](https://github.com/Nicogene)                   | Nicolò Genesio    | [@Nicogene](https://github.com/Nicogene) |
 | [<img src="https://github.com/mirkoprato.png" width="40">](https://github.com/mirkoprato)               | Mirko Prato       | [@mirkoprato](https://github.com/mirkoprato) |
+| [<img src="https://github.com/RossiFederico.png" width="40">](https://github.com/RossiFederico)         | Federico Rossi    | [@RossiFederico](https://github.com/RossiFederico) |
+| [<img src="https://github.com/LucaBottazzi.png" width="40">](https://github.com/LucaBottazzi)           | Luca Bottazzi     | [@LucaBottazzi](https://github.com/LucaBottazzi) |
+| [<img src="https://github.com/mcivinelli.png" width="40">](https://github.com/mcivinelli)               | Marco Civinelli   | [@mcivinelli](https://github.com/mcivinelli) |
+| [<img src="https://github.com/mgentili81.png" width="40">](https://github.com/mgentili81)               | Marco Gentili     | [@mgentili81](https://github.com/mgentili81) |
+
