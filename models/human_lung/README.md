@@ -9,7 +9,6 @@ This Simulink model is based on the article [Mesic _et al._ (2003)](https://gith
 | Model | Dependencies | Notes | 
 |:---|:---|:---|
 | human_lung_R2020a | R2020a: DSP System Toolbox; MATLAB; Simulink | Derivatives implemented w/ least-squares fitting | 
-| human_lung_R2019b | R2019b: DSP System Toolbox; MATLAB; Simulink | Derivatives implemented w/ least-squares fitting |
 | human_lung_R2017b | R2017b: MATLAB; Simulink | Derivatives implemented w/ transfer function |
 
 👉 To get the list of dependencies, do: **Modeling** > **Compare** > **Manifest** > **Generate Manifest** (disable "Find files required for code generation").
