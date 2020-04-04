@@ -18,7 +18,8 @@ Documentation repository.
 - [Ventilatori e Ventilazione](./presentations/ventilatori_e_ventilazione.pdf).
 
 ## 🌐 Online Resources
-- [Understanding Ventilator Basics and Waveforms](https://www.rtmagazine.com/department-management/clinical/understanding-ventilator-basics-ventilator-waveforms).
+- [Understanding Ventilator Basics and Waveforms](https://www.rtmagazine.com/department-management/clinical/understanding-ventilator-basics-ventilator-waveforms)
+- [Alarms and Safety Mechanisms](https://oxfordmedicine.com/view/10.1093/med/9780198784975.001.0001/med-9780198784975-chapter-12).
 - [Introduzione Generale al Ventilatore](http://manualidimedicina.blogspot.com/2017/02/introduzione-generale-al-ventilatore.html).
 - [Open Source Ventilator](https://gitlab.com/open-source-ventilator/OpenLung).
 - [MIT E-Vent Project](https://e-vent.mit.edu).
@@ -27,5 +28,12 @@ Documentation repository.
 - [Medical Ventilator with Lung Model](https://it.mathworks.com/help/physmod/simscape/examples/medical-ventilator-with-lung-model.html).
 
 ## :card_file_box: Datasheets
+### Pneumatic Valves, Pressure Regulators and Flow Controllers
+- [Series AP Directly Operated Proportional Valves](./datasheets/Series-AP-directly-operated-proportional-valves.pdf).
+- [AP Valve Hysteresis](./datasheets/AP-Ø2.4.xlsx).
+- [QB1x & QB2x](./datasheets/QBX-Installation-LowFlow.pdf).
+- [QB4](.datahseets/QB4-Installation-QB4TANEEZP6BRGV2.pdf).
+
 ### Pressure sensors
 - [WIKA S-20-3-BG410-HD13K-A-AGGZZZ-ZWZ](./datasheets/DS_PE8161_it_it_49144.pdf).
+- [IFM PN30xx](./datasheets/IFMPressureMeter.pdf).
