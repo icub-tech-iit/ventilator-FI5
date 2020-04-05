@@ -18,7 +18,7 @@ Documentation repository.
 - [Ventilatori e Ventilazione](./presentations/ventilatori_e_ventilazione.pdf).
 
 ## 🌐 Online Resources
-- [Understanding Ventilator Basics and Waveforms](https://www.rtmagazine.com/department-management/clinical/understanding-ventilator-basics-ventilator-waveforms)
+- [Understanding Ventilator Basics and Waveforms](https://www.rtmagazine.com/department-management/clinical/understanding-ventilator-basics-ventilator-waveforms).
 - [Alarms and Safety Mechanisms](https://oxfordmedicine.com/view/10.1093/med/9780198784975.001.0001/med-9780198784975-chapter-12).
 - [Introduzione Generale al Ventilatore](http://manualidimedicina.blogspot.com/2017/02/introduzione-generale-al-ventilatore.html).
 - [Open Source Ventilator](https://gitlab.com/open-source-ventilator/OpenLung).
