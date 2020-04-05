@@ -30,6 +30,7 @@ Documentation repository.
 ## :card_file_box: Datasheets
 ### Pneumatic Valves, Pressure Regulators and Flow Controllers
 - [Series AP Directly Operated Proportional Valves](./datasheets/Series-AP-directly-operated-proportional-valves.pdf).
+- [Series CFB Solenoid Valves](./datasheets/Series-CFB-solenoid-valves.pdf).
 - [AP Valve Hysteresis](./datasheets/AP-Ø2.4.xlsx).
 - [QB1x & QB2x](./datasheets/QBX-Installation-LowFlow.pdf).
 - [QB4](.datahseets/QB4-Installation-QB4TANEEZP6BRGV2.pdf).
