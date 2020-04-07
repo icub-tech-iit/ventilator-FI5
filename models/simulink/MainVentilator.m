@@ -1,5 +1,3 @@
-ccc
-
 %% Input data
 
 load('BreathData.mat');
