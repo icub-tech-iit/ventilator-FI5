@@ -1,0 +1,13 @@
+
+/*
+ * Copyright (C) 2020 iCub Tech - Istituto Italiano di Tecnologia
+ * Author:  Marco Accame
+ * email:   marco.accame@iit.it
+ * NOTE:    this code is a custumization for the ventilator project 
+ *          of code originally published in https://github.com/robotology/icub-firmware
+ *
+*/
+
+
+in here we put the .h files genarted by cube-mx, or the .h files of the original stm project
+which are specific of the board we want to use.
