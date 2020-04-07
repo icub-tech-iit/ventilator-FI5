@@ -53,5 +53,6 @@ $ git clone https://github.com/icub-tech-iit/ventilator.git --branch <branch-nam
 | [<img src="https://github.com/LucaBottazzi.png" width="40">](https://github.com/LucaBottazzi)           | Luca Bottazzi        | [@LucaBottazzi](https://github.com/LucaBottazzi) |
 | [<img src="https://github.com/mcivinelli.png" width="40">](https://github.com/mcivinelli)               | Marco Civinelli      | [@mcivinelli](https://github.com/mcivinelli) |
 | [<img src="https://github.com/gpghiroldi.png" width="40">](https://github.com/gpghiroldi)               | Gian Pietro Ghiroldi | [@gpghiroldi](https://github.com/gpghiroldi) |
+| [<img src="https://github.com/marcoreds81.png" width="40">](https://github.com/marcoreds81)             | Marco Rossi          | [@marcoreds81](https://github.com/marcoreds81) |
 | [<img src="https://github.com/simoneangioniIIT.png" width="40">](https://github.com/simoneangioniIIT)   | Simone Angioni       | [@simoneangioniIIT](https://github.com/simoneangioniIIT) |
 | [<img src="https://github.com/randaz81.png" width="40">](https://github.com/randaz81)                   | Marco Randazzo       | [@randaz81](https://github.com/randaz81) |
