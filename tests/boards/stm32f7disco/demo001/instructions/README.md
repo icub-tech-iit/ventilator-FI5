@@ -43,3 +43,7 @@ Here is how to run the demo.
 
 
 
+### How this demo project is generated
+
+The project `demo001.uvprojx` derived from `STM32Cube_FW_F7_V1.16.0\Projects\STM32746G-Discovery\Templates\MDK-ARM\Project.uvprojx` which was extracted from the archive `stm32cube_fw_f7_v1160.zip` for easier modification.
+
