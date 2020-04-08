@@ -39,3 +39,7 @@ Documentation repository.
 ### Pressure sensors
 - [WIKA S-20-3-BG410-HD13K-A-AGGZZZ-ZWZ](./datasheets/DS_PE8161_it_it_49144.pdf).
 - [IFM PN30xx](./datasheets/IFMPressureMeter.pdf).
+- [Honeywell](./datasheets/honeywell-sensing-pressure.pdf).
+
+### Airflow sensors
+- [Honeywell](./datasheets/honeywell-sensing-airflow.pdf).
