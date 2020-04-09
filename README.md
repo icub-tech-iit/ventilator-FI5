@@ -11,6 +11,7 @@ Documentation repository.
 - [Mechanical Ventilator Milano (MVM)](./papers/mvm.pdf).
 - [Computer-Controlled Mechanical Simulation of the Artificially Ventilated Human Respiratory System](./papers/mesic-2003.pdf).
 - [Comparison of Mathematical and Controlled Mehcanical Lung Simulation in Active Breathing and Ventilated State](./papers/pasteka-2018.pdf).
+- [Respiratory Mechanics Derived From Signals in the Ventilator Circuit](./papers/lucangelo-2005.pdf).
 - [Design and Prototyping of a Low-cost Portable Mechanical Ventilator](./papers/al-husseini-2010.pdf).
 
 ## 👨‍🏫 Presentations
