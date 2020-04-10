@@ -1,40 +1,10 @@
-#include <stdarg.h>
 #include <stdint.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 #include "hsc.h"
+#include "test_utils.h"
 
-
-void fail(const char *fmt, ...)
-{
-    va_list args;
-    va_start(args, fmt);
-    printf(" ----- FAILED ------\n");
-    vprintf(fmt, args);
-    va_end(args);
-    printf("\n -------------------\n");
-    exit(-1);
-}
-
-
-void test(bool cond, const char *fmt, ...)
-{
-    va_list args;
-    va_start(args, fmt);
-    if (cond) {
-	    printf("PASS: ");
-	    vprintf(fmt, args);
-	    va_end(args);
-	    printf("\n");
-    } else {
-	    printf(" ----- FAILED ------\n");
-	    vprintf(fmt, args);
-	    va_end(args);
-	    printf("\n -------------------\n");
-	    exit(-1);
-    }
-}
 
 hsc_sensor_t datasheet_example = {
 	.has_diagnostic = false,

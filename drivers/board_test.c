@@ -1,0 +1,2 @@
+/* stub */
+int main(){}
