@@ -1,0 +1,14 @@
+
+
+
+to configure hl-core/cmsis it is mandatory to specifiy the used MPU (e.g., STM32F10X_MD)
+as a preprocessor macro of the compiler (e.g., with -DSTM32F10X_MD).
+
+it is also mandatory to copy inside the project one of the startup_xxxxx.s files and change
+it according the needs (e.g., in heap and stack size).
+
+moreover, it is possible to override two functions of the cmsis, SystemInit() and 
+SystemCoreClockUpdate() to specify proper behaviours (e.g., different clocks or relocation
+of vector table or execution from RAM etc.).
+
+it is advised to defined those functions in a file named hl_cfg_cmsis_stm32fx_overridden.c 
