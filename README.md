@@ -15,7 +15,6 @@ The Ventilator is inspired by the MVM (Mechanical Ventilator Milano) design from
   <img src="./assets/mvm-diagram.png"/>
 </p>
 
-
 ### Project objective - WIP
 To build a [Rapidly manufactured ventilator system](https://www.gov.uk/government/publications/coronavirus-covid-19-ventilator-supply-specification/rapidly-manufactured-ventilator-system-specification) to be used only in extreme emergency situation under strict control of a doctor    
 
@@ -23,6 +22,14 @@ To build a [Rapidly manufactured ventilator system](https://www.gov.uk/governmen
 ```sh
 $ git clone https://github.com/icub-tech-iit/ventilator.git --branch <branch-name>
 ```
+
+## Maintainers
+This repository is maintained by:
+
+| | |
+|:---:|:---:|
+| [<img src="https://github.com/pattacini.png" width="40">](https://github.com/pattacini) | [@pattacini](https://github.com/pattacini) |
+
 
 ### 👥 Contributors
 
