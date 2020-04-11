@@ -26,9 +26,9 @@ $ git clone https://github.com/icub-tech-iit/ventilator.git --branch <branch-nam
 ## Maintainers
 This repository is maintained by:
 
-| | |
-|:---:|:---:|
-| [<img src="https://github.com/pattacini.png" width="40">](https://github.com/pattacini) | [@pattacini](https://github.com/pattacini) |
+| | | |
+|:---:|:---|:---|
+| [<img src="https://github.com/pattacini.png" width="40">](https://github.com/pattacini) | Ugo Pattacini | [@pattacini](https://github.com/pattacini) |
 
 
 ### 👥 Contributors
