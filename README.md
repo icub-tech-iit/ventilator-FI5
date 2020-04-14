@@ -33,6 +33,7 @@ Documentation repository.
 - [Series AP Directly Operated Proportional Valves](./datasheets/Series-AP-directly-operated-proportional-valves.pdf).
 - [Series CP Pressure Compensated Proportional Valves](./datasheets/Series-CP-pressure-compensated-proportional-valves.pdf).
 - [Series CFB Solenoid Valves](./datasheets/Series-CFB-solenoid-valves.pdf).
+- [Series TC Pressure Microregulators](./datasheets/Series-TC-pressure-microregulators.pdf).
 - [Test AP Ø2.4mm](./datasheets/Test-AP-Ø2.4mm.xlsx).
 - [Test CP presso](./datasheets/Test-CP-presso.xlsx).
 - [QB1x & QB2x](./datasheets/QBX-Installation-LowFlow.pdf).
