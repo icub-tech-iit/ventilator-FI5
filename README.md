@@ -36,7 +36,7 @@ Documentation repository.
 - [Test AP Ø2.4mm](./datasheets/Test-AP-Ø2.4mm.xlsx).
 - [Test CP presso](./datasheets/Test-CP-presso.xlsx).
 - [QB1x & QB2x](./datasheets/QBX-Installation-LowFlow.pdf).
-- [QB4](.datahseets/QB4-Installation-QB4TANEEZP6BRGV2.pdf).
+- [QB4](./datahseets/QB4-Installation-QB4TANEEZP6BRGV2.pdf).
 
 ### Pressure sensors
 - [WIKA S-20-3-BG410-HD13K-A-AGGZZZ-ZWZ](./datasheets/DS_PE8161_it_it_49144.pdf).
