@@ -34,8 +34,6 @@ Documentation repository.
 - [Series CP Pressure Compensated Proportional Valves](./datasheets/Series-CP-pressure-compensated-proportional-valves.pdf).
 - [Series CFB Solenoid Valves](./datasheets/Series-CFB-solenoid-valves.pdf).
 - [Series TC Pressure Microregulators](./datasheets/Series-TC-pressure-microregulators.pdf).
-- [Test AP Ø2.4mm](./datasheets/Test-AP-Ø2.4mm.xlsx).
-- [Test CP presso](./datasheets/Test-CP-presso.xlsx).
 - [QB1x & QB2x](./datasheets/QBX-Installation-LowFlow.pdf).
 - [QB4](./datasheets/QB4-Installation-QB4TANEEZP6BRGV2.pdf).
 
