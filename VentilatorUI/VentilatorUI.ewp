@@ -1,0 +1,152 @@
+$version 9.30
+
+// This unit is a part of the Embedded Wizard class library 'Mosaic20'
+$rect <40,70,240,110>
+unit Core
+{
+  attr Directory = $Mosaic;
+}
+
+// This unit is a part of the Embedded Wizard class library 'Mosaic20'
+$rect <40,110,240,150>
+unit Resources
+{
+  attr Directory = $Mosaic;
+}
+
+// This unit is a part of the Embedded Wizard class library 'Mosaic20'
+$rect <40,150,240,190>
+unit Graphics
+{
+  attr Directory = $Mosaic;
+}
+
+// This unit is a part of the Embedded Wizard class library 'Mosaic20'
+$rect <40,190,240,230>
+unit Effects
+{
+  attr Directory = $Mosaic;
+}
+
+// This unit is a part of the Embedded Wizard class library 'Mosaic20'
+$rect <40,230,240,270>
+unit Views
+{
+  attr Directory = $Mosaic;
+}
+
+// The 'default' Language. Each project has to contain at least one language brick \
+// called 'Default'
+$rect <540,70,740,110>
+language Default;
+
+// This unit is intended to contain the application class and other GUI components.
+$rect <290,190,490,230>
+unit Application
+{
+  attr Directory = .\;
+}
+
+// Mosaic Framework
+note group Note1
+{
+  attr Bounds = <20,20,260,290>;
+}
+
+// Profile Configuration
+note group Note2
+{
+  attr Bounds = <270,20,510,130>;
+}
+
+// Languages
+note group Note3
+{
+  attr Bounds = <520,20,760,130>;
+}
+
+// To do:
+// 
+// - Select the profile brick and choose the desired color format of your GUI application \
+// within the attribute 'PlatformPackage' (e.g. STM.STM32.RGBA8888, STM.STM32.RGB565, \
+// ...)
+// 
+// - Select the profile brick and set the attribute 'OutputDirectory' to the desired \
+// destination folder for the generated code (e.g. within your Build Environment \
+// '\Application\GeneratedCode').
+// 
+// - Open the unit 'Application'. You will find there the application component (the \
+// root component of your GUI). Implement there your desired GUI look and feel.
+// 
+// - To better structure your project you can add more units here. Use for this purpose \
+// the template 'Unit' from the Gallery folder 'Chora'. Afterwards you can open the \
+// unit and put there your own GUI components.
+// 
+// - If you plan to develop a multilingual GUI application, you can add more language \
+// members to the project. Use for this purpose the template 'Language' found in \
+// the Gallery folder 'Chora'.
+note legend Note4
+{
+  attr Bounds = <20,510,760,810>;
+}
+
+// Project Units
+note group Note5
+{
+  attr Bounds = <270,140,760,290>;
+}
+
+// Welcome to Embedded Wizard!
+// 
+// This empty project is prepared to create a GUI application suitable for a STM32F746 \
+// Discovery board with a display size of 480x272 pixel (landscape mode).
+// 
+// In order to get your first Embedded Wizard generated UI application up and running \
+// on your STM32 target, we highly recommend to study the following document:
+// 
+// https://doc.embedded-wizard.de/getting-started-stm32f746-discovery
+note legend Note
+{
+  attr Bounds = <20,300,760,500>;
+}
+
+// This is a profile member for the project. This profile controls the code generation \
+// for the target system.
+$rect <290,50,490,90>
+profile STM32F746 : STM.STM32.RGB565
+{
+  attr ScreenOrientation = Normal;
+  attr ScreenSize = <480,272>;
+  attr Optimization = High;
+  attr ApplicationClass = Application::Application;
+  attr ModeOfBitmapResources = Compressed;
+  attr ModeOfStringConstants = Compressed;
+  attr CleanOutputDirectories = false;
+  attr OutputFileNameExtension = c;
+  attr Verbose = false;
+
+  $rect <10,10,154,50>
+  macro Author = "Dipl. Ing. Paul Banach and Dipl. Ing. Manfred Schweyer, Copyright (C) TARA Systems GmbH";
+}
+
+$rect <290,90,490,130>
+profile WIN32 : Tara.Win32.RGBA8888
+{
+  attr Verbose = false;
+  attr ScreenSize = <800,640>;
+  attr Optimization = High;
+  attr CleanOutputDirectories = false;
+  attr OutputFileNameExtension = c;
+}
+
+$rect <40,270,240,310>
+unit WidgetSet
+{
+  attr Directory = $Mosaic\;
+}
+
+$rect <40,310,240,350>
+unit Charts
+{
+  attr Directory = $Mosaic\Charts;
+}
