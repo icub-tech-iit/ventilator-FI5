@@ -92,7 +92,7 @@ resource Resources::Font FontXS
 }
 
 $rect <20,70,220,110>
-$variant WIN32, true
+$variant WIN32,true
 vclass ApplicationVariantWin32 : Application::Application
 {
   $rect <870,30,1150,70>
@@ -101,7 +101,7 @@ vclass ApplicationVariantWin32 : Application::Application
   $rect <20,20,160,60>
   inherited object Rectangle
   {
-    preset Bounds = <-10,0,790,640>;
+    preset Bounds = <0,0,480,272>;
   }
 
   $rect <20,20,160,60>
