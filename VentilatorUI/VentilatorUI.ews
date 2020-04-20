@@ -4,7 +4,6 @@ attr active = Application::ApplicationVariantWin32;
 attr callStackMonitor_Show = false;
 attr codeColSelect = false;
 attr codeFirstPos = <0,1>;
-attr codeInspector = Application::Dataviewer.OnSetColorProp;
 attr codeSelEnd = <17,7>;
 attr codeSelStart = <17,7>;
 attr connectInspectors = false;
@@ -44,39 +43,10 @@ view unit Application
   attr zoom = 2.0;
 }
 
-view class Application::Dataviewer
-{
-  attr codeColSelect = false;
-  attr codeFirstPos = <0,1>;
-  attr codeInspector = OnSetColorProp;
-  attr codeSelEnd = <17,7>;
-  attr codeSelStart = <17,7>;
-  attr enableGrid = true;
-  attr grid = 10;
-  attr scrollTo = <-7,-7>;
-  attr zoom = 2.5;
-}
-
 view vclass Application::ApplicationVariantWin32
 {
   attr enableGrid = true;
   attr grid = 10;
   attr scrollTo = <-7,-7>;
   attr zoom = 1.5;
-}
-
-view class Application::Dataplotter
-{
-  attr enableGrid = true;
-  attr grid = 10;
-  attr scrollTo = <-7,-7>;
-  attr zoom = 2.0;
-}
-
-view class Application::Menubar
-{
-  attr enableGrid = true;
-  attr grid = 10;
-  attr scrollTo = <-7,-7>;
-  attr zoom = 2.5;
 }

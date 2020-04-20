@@ -105,317 +105,42 @@ vclass ApplicationVariantWin32 : Application::Application
   }
 
   $rect <20,20,160,60>
-  object Application::Dataviewer DataviewerInspPress
-  {
-    preset Bounds = <640,0,800,160>;
-    preset ColorProp = #F3FF14FF;
-    preset NameProp = "Insp Press.(mBar)";
-  }
-
-  $rect <20,20,160,60>
-  object Application::Dataviewer DataviewerVTidal
-  {
-    preset Bounds = <640,160,800,320>;
-    preset ColorProp = #76FF05FF;
-    preset NameProp = "V_tidal(mL)";
-  }
-
-  $rect <20,20,160,60>
-  object Application::Dataviewer DataviewerMVe
-  {
-    preset Bounds = <640,320,800,480>;
-    preset ColorProp = #14FFFAFF;
-    preset NameProp = "MVe (slpm)";
-  }
-
-  $rect <20,20,160,60>
-  object Application::Dataplotter Dataplotter
-  {
-    preset Bounds = <0,0,640,160>;
-  }
-
-  $rect <20,20,160,60>
-  object Application::Dataplotter Dataplotter1
-  {
-    preset Bounds = <0,160,640,320>;
-  }
-
-  $rect <20,20,160,60>
-  object Application::Dataplotter Dataplotter2
-  {
-    preset Bounds = <0,330,640,490>;
-  }
-
-  $rect <20,20,160,60>
-  object Views::Border Border
-  {
-    preset Bounds = <0,0,650,160>;
-  }
-
-  $rect <20,20,160,60>
-  object Views::Border Border1
-  {
-    preset Bounds = <0,160,650,320>;
-  }
-
-  $rect <20,20,160,60>
-  object Views::Border Border2
-  {
-    preset Bounds = <0,320,650,480>;
-  }
-
-  $rect <20,20,160,60>
   object Application::Menubar Menubar
   {
     preset Bounds = <0,480,800,640>;
   }
 
   $rect <20,20,160,60>
-  object Core::SimpleTouchHandler SimpleTouchHandler
+  object Application::Dataplotter DataplotterInspPress
   {
-    preset Point4 = <0,480>;
-    preset Point3 = <800,480>;
-    preset Point2 = <800,640>;
-    preset Point1 = <0,640>;
+    preset Bounds = <0,0,800,160>;
+    preset ColorProp = #F9FF0AFF;
+    preset NameProp = "Insp. press.(mBar)";
+  }
+
+  $rect <20,20,160,60>
+  object Application::Dataplotter DataplotterVTidal
+  {
+    preset Bounds = <0,160,800,320>;
+    preset ColorProp = #40FF0AFF;
+  }
+
+  $rect <20,20,160,60>
+  object Application::Dataplotter DataplotterMve
+  {
+    preset Bounds = <0,320,800,480>;
+    preset ColorProp = #0AFFF5FF;
   }
 }
 
 $rect <20,120,220,160>
 $output false
-class Dataviewer : Core::Group
-{
-  $rect <0,290,200,330>
-  inherited property Bounds = <0,0,160,160>;
-
-  $rect <-10,200,190,240>
-  inherited method UpdateLayout()
-  {
-    // Always invoke the inherited method.
-    super( aSize );
-
-    /*
-
-      HINT:
-
-      This method exists for sophisticated layout calculation. Please note, that in 
-      most cases it is completely sufficient to use the views property 'Layout' to
-      determine how the view should behave when the component is resized.
-
-    */
-
-    /*
-
-      TO DO:
-
-      Put here the code to calculate new position and size of enclosed views. The
-      current (new) size of the component itself is passed in the parameter aSize.
-      For example:
-
-        SomeView.Bounds = rect( 10, 10, aSize.x - 20, aSize.y - 20 );
-
-    */
-  }
-
-  $rect <-10,160,190,200>
-  inherited method UpdateViewState()
-  {
-    // Always invoke the inherited method.
-    super( aState );
-
-    /*
-
-      HINT 1:
-
-      This method is invoked automatically when the state set of the component has
-      been changed. The new state set can be found in the parameter aState.
-      Following are the important states:
-
-        Enabled   --> The component can react to user inputs.
-
-        Selected  --> The component is selected in context of its owner.
-
-        Focused   --> The component is selected in context of its owner and 
-                      the owner can react to keyboard events. In this manner the
-                      component is also able to react to keyboard events.
-
-        Modal     --> The component is modal. All events are redirected to this
-                      component.
-
-      To determine whether a state is currently active or not you have to test
-      the aState parameter. For example to test the 'Selected' state:
-
-        if ( aState.contains( Core::ViewState[ Selected ]))
-        {
-          ... yes, this component is currently selected.
-        }
-
-    */
-
-    /*
-
-      HINT 2:
-
-      Alternatively you can request this method invocation by executing explicitly
-      following code:
-
-
-        InvalidateViewState();
-
-    */
-      
-    /*
-
-      TO DO 1:
-
-      Put here the code to ensure that the visual aspect of the component does
-      reflect its current state. For example, depending on its 'Enabled' state
-      a component may appear with full colors or pale if it is disabled:
-
-        if ( aState.contains( Core::ViewState[ Enabled ]))
-        {
-          SomeBackgroundView.Opacity = 255;
-          SomeTextView.Color         = #000000FF;
-        }
-        else
-        {
-          SomeBackgroundView.Opacity = 128;
-          SomeTextView.Color         = #00000080;
-        }
-
-
-      TO DO 2:
-
-      You can evaluate here also the state of any other member in your component.
-      For example in a push-button component, the button should appear highlighted
-      as long as the user holds the finger within a touch area of the button:
-
-        if ( SomeTouchHandler.Down && SomeTouchHandler.Inside )
-          HighlightedBackground.Visible = true;
-        else
-          HighlightedBackground.Visible = false;
-
-      The touch handler itself only requests the update method to be called. Use
-      for this purpose 'InvalidateViewState()' method.
-
-
-      TO DO 3:
-
-      You can calculate here also the position/size of views accordingly to the
-      state of any other member in your component. For example in a slider you
-      can calculate the position of the slider knob from some properties like
-      'SliderValue' and 'SliderRange':
-
-        SliderKnob.Bounds.origin.x = ( SliderValue * Bounds.w ) / SliderRange;
-
-      Changing the 'SliderValue' or 'SliderRange' property should only request
-      the update method to be called. Use for this purpose 'InvalidateViewState()'
-      method.
-
-    */
-  }
-
-  $rect <20,20,160,60>
-  object Views::Rectangle Rectangle
-  {
-    preset Bounds = <0,0,160,160>;
-    preset Color = #040404FF;
-  }
-
-  $rect <20,20,160,60>
-  object Views::Text Name
-  {
-    preset Bounds = <0,0,160,30>;
-    preset String = "Name";
-    preset Font = Resources::FontSmall;
-  }
-
-  $rect <20,20,160,60>
-  object Views::Text CurrValue
-  {
-    preset Bounds = <0,40,160,80>;
-    preset String = "00";
-    preset Font = Resources::FontExtraLarge;
-  }
-
-  $rect <20,20,160,60>
-  object Views::Text MeanText
-  {
-    preset Bounds = <0,90,80,120>;
-    preset String = "Mean";
-    preset Font = Resources::FontSmall;
-  }
-
-  $rect <20,20,160,60>
-  object Views::Text MaxText
-  {
-    preset Bounds = <0,120,80,150>;
-    preset Alignment = Views::TextAlignment[AlignHorzCenter, AlignHorzLeft, AlignVertCenter];
-    preset String = "Max";
-    preset Font = Resources::FontSmall;
-  }
-
-  $rect <20,20,160,60>
-  object Views::Text MeanValue
-  {
-    preset Bounds = <80,90,160,120>;
-    preset String = "00.0";
-    preset Font = Resources::FontSmall;
-  }
-
-  $rect <20,20,160,60>
-  object Views::Text MaxValue
-  {
-    preset Bounds = <80,120,160,150>;
-    preset String = "00.0";
-    preset Font = Resources::FontSmall;
-  }
-
-  $rect <190,80,390,120>
-  property color ColorProp = #FFFFFFFF;
-
-  $rect <190,120,390,160>
-  onset ColorProp
-  {
-    // The value doesn't change - nothing to do.
-    if ( pure ColorProp == value )
-      return;
-
-    // Remember the property's new value.
-    pure ColorProp = value;
-
-    MaxValue.Color   = value;
-    MeanValue.Color  = value;
-    MaxText.Color    = value;
-    MeanText.Color   = value;
-    CurrValue.Color  = value;
-    Name.Color       = value;
-  }
-
-  $rect <200,0,400,40>
-  property string NameProp = "Name";
-
-  $rect <200,40,400,80>
-  onset NameProp
-  {
-    // The value doesn't change - nothing to do.
-    if ( pure NameProp == value )
-      return;
-
-    // Remember the property's new value.
-    pure NameProp = value;
-
-    Name.String = value;
-  }
-}
-
-$rect <20,170,220,210>
-$output false
 class Dataplotter : Core::Group
 {
-  $rect <10,230,210,270>
-  inherited property Bounds = <0,0,640,160>;
+  $rect <0,180,200,220>
+  inherited property Bounds = <0,0,800,160>;
 
-  $rect <10,390,210,430>
+  $rect <0,280,200,320>
   inherited method UpdateLayout()
   {
     // Always invoke the inherited method.
@@ -444,7 +169,7 @@ class Dataplotter : Core::Group
     */
   }
 
-  $rect <10,350,210,390>
+  $rect <-10,230,190,270>
   inherited method UpdateViewState()
   {
     // Always invoke the inherited method.
@@ -547,9 +272,108 @@ class Dataplotter : Core::Group
   {
     preset Bounds = <0,0,640,160>;
   }
+
+  $rect <20,20,160,60>
+  object Views::Rectangle Rectangle
+  {
+    preset Bounds = <640,0,800,160>;
+    preset Color = #040404FF;
+  }
+
+  $rect <20,20,160,60>
+  object Views::Text Name
+  {
+    preset Bounds = <640,0,800,30>;
+    preset String = "Name";
+    preset Font = Resources::FontSmall;
+  }
+
+  $rect <20,20,160,60>
+  object Views::Text CurrValue
+  {
+    preset Bounds = <640,40,800,80>;
+    preset String = "00";
+    preset Font = Resources::FontExtraLarge;
+  }
+
+  $rect <20,20,160,60>
+  object Views::Text MeanText
+  {
+    preset Bounds = <640,90,720,120>;
+    preset String = "Mean";
+    preset Font = Resources::FontSmall;
+  }
+
+  $rect <20,20,160,60>
+  object Views::Text MaxText
+  {
+    preset Bounds = <640,120,720,150>;
+    preset Alignment = Views::TextAlignment[AlignHorzCenter, AlignHorzLeft, AlignVertCenter];
+    preset String = "Max";
+    preset Font = Resources::FontSmall;
+  }
+
+  $rect <20,20,160,60>
+  object Views::Text MeanValue
+  {
+    preset Bounds = <720,90,800,120>;
+    preset String = "00.0";
+    preset Font = Resources::FontSmall;
+  }
+
+  $rect <20,20,160,60>
+  object Views::Text MaxValue
+  {
+    preset Bounds = <720,120,800,150>;
+    preset String = "00.0";
+    preset Font = Resources::FontSmall;
+  }
+
+  $rect <830,80,1030,120>
+  property color ColorProp = #FFFFFFFF;
+
+  $rect <830,120,1030,160>
+  onset ColorProp
+  {
+    // The value doesn't change - nothing to do.
+    if ( pure ColorProp == value )
+      return;
+
+    // Remember the property's new value.
+    pure ColorProp = value;
+
+    MaxValue.Color   = value;
+    MeanValue.Color  = value;
+    MaxText.Color    = value;
+    MeanText.Color   = value;
+    CurrValue.Color  = value;
+    Name.Color       = value;
+  }
+
+  $rect <840,0,1040,40>
+  property string NameProp = "Name";
+
+  $rect <840,40,1040,80>
+  onset NameProp
+  {
+    // The value doesn't change - nothing to do.
+    if ( pure NameProp == value )
+      return;
+
+    // Remember the property's new value.
+    pure NameProp = value;
+
+    Name.String = value;
+  }
+
+  $rect <20,20,160,60>
+  object Views::Border Border
+  {
+    preset Bounds = <0,0,800,160>;
+  }
 }
 
-$rect <20,220,220,260>
+$rect <20,170,220,210>
 $output false
 class Menubar : Core::Group
 {
@@ -695,7 +519,7 @@ class Menubar : Core::Group
   object WidgetSet::PushButton PushButton1
   {
     preset Bounds = <100,0,200,160>;
-    preset Label = "Caption";
+    preset Label = "Settings";
     preset Appearance = WidgetSet::PushButton_Medium;
   }
 
@@ -703,7 +527,7 @@ class Menubar : Core::Group
   object WidgetSet::PushButton PushButton2
   {
     preset Bounds = <200,0,300,160>;
-    preset Label = "Caption";
+    preset Label = "Expr. Pause";
     preset Appearance = WidgetSet::PushButton_Medium;
   }
 
@@ -711,7 +535,7 @@ class Menubar : Core::Group
   object WidgetSet::PushButton PushButton3
   {
     preset Bounds = <300,0,400,160>;
-    preset Label = "Caption";
+    preset Label = "Insp. Pause";
     preset Appearance = WidgetSet::PushButton_Medium;
   }
 
@@ -719,7 +543,7 @@ class Menubar : Core::Group
   object WidgetSet::PushButton PushButton4
   {
     preset Bounds = <400,0,500,160>;
-    preset Label = "Caption";
+    preset Label = "Set Assisted";
     preset Appearance = WidgetSet::PushButton_Medium;
   }
 
@@ -734,16 +558,8 @@ class Menubar : Core::Group
   $rect <20,20,160,60>
   object WidgetSet::PushButton PushButton6
   {
-    preset Bounds = <600,0,700,160>;
-    preset Label = "Caption";
-    preset Appearance = WidgetSet::PushButton_Medium;
-  }
-
-  $rect <20,20,160,60>
-  object WidgetSet::PushButton PushButton7
-  {
-    preset Bounds = <700,0,800,160>;
-    preset Label = "Caption";
+    preset Bounds = <600,0,800,160>;
+    preset Label = "StartAutomatic";
     preset Appearance = WidgetSet::PushButton_Medium;
   }
 }
