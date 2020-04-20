@@ -1,6 +1,6 @@
 $version 1.0
 
-attr active = Application::ApplicationVariantWin32;
+attr active = Application::Dataplotter;
 attr callStackMonitor_Show = false;
 attr codeColSelect = false;
 attr codeFirstPos = <0,1>;
@@ -43,10 +43,10 @@ view unit Application
   attr zoom = 2.0;
 }
 
-view vclass Application::ApplicationVariantWin32
+view class Application::Dataplotter
 {
   attr enableGrid = true;
   attr grid = 10;
   attr scrollTo = <-7,-7>;
-  attr zoom = 1.5;
+  attr zoom = 1.75;
 }

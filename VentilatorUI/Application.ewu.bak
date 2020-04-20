@@ -86,7 +86,7 @@ resource Resources::Font Font
 }
 
 $rect <20,70,220,110>
-$variant WIN32
+$variant WIN32, true
 vclass ApplicationVariantWin32 : Application::Application
 {
   $rect <870,30,1150,70>
@@ -123,6 +123,7 @@ vclass ApplicationVariantWin32 : Application::Application
   {
     preset Bounds = <0,160,800,320>;
     preset ColorProp = #40FF0AFF;
+    preset NameProp = "V_tidal(mL)";
   }
 
   $rect <20,20,160,60>
@@ -130,6 +131,7 @@ vclass ApplicationVariantWin32 : Application::Application
   {
     preset Bounds = <0,320,800,480>;
     preset ColorProp = #0AFFF5FF;
+    preset NameProp = "MVe (slpm)";
   }
 }
 
@@ -270,12 +272,14 @@ class Dataplotter : Core::Group
   $rect <20,20,160,60>
   object Charts::Graph Graph
   {
+    preset Layout = Core::Layout[AlignToLeft, AlignToTop, ResizeHorz, ResizeVert];
     preset Bounds = <0,0,640,160>;
   }
 
   $rect <20,20,160,60>
   object Views::Rectangle Rectangle
   {
+    preset Layout = Core::Layout[AlignToLeft, AlignToTop, ResizeHorz, ResizeVert];
     preset Bounds = <640,0,800,160>;
     preset Color = #040404FF;
   }
@@ -283,6 +287,7 @@ class Dataplotter : Core::Group
   $rect <20,20,160,60>
   object Views::Text Name
   {
+    preset Layout = Core::Layout[AlignToLeft, AlignToTop, ResizeHorz, ResizeVert];
     preset Bounds = <640,0,800,30>;
     preset String = "Name";
     preset Font = Resources::FontSmall;
@@ -291,6 +296,7 @@ class Dataplotter : Core::Group
   $rect <20,20,160,60>
   object Views::Text CurrValue
   {
+    preset Layout = Core::Layout[AlignToLeft, AlignToTop, ResizeHorz, ResizeVert];
     preset Bounds = <640,40,800,80>;
     preset String = "00";
     preset Font = Resources::FontExtraLarge;
@@ -299,6 +305,7 @@ class Dataplotter : Core::Group
   $rect <20,20,160,60>
   object Views::Text MeanText
   {
+    preset Layout = Core::Layout[AlignToLeft, AlignToTop, ResizeHorz, ResizeVert];
     preset Bounds = <640,90,720,120>;
     preset String = "Mean";
     preset Font = Resources::FontSmall;
@@ -307,6 +314,7 @@ class Dataplotter : Core::Group
   $rect <20,20,160,60>
   object Views::Text MaxText
   {
+    preset Layout = Core::Layout[AlignToLeft, AlignToTop, ResizeHorz, ResizeVert];
     preset Bounds = <640,120,720,150>;
     preset Alignment = Views::TextAlignment[AlignHorzCenter, AlignHorzLeft, AlignVertCenter];
     preset String = "Max";
@@ -316,6 +324,7 @@ class Dataplotter : Core::Group
   $rect <20,20,160,60>
   object Views::Text MeanValue
   {
+    preset Layout = Core::Layout[AlignToLeft, AlignToTop, ResizeHorz, ResizeVert];
     preset Bounds = <720,90,800,120>;
     preset String = "00.0";
     preset Font = Resources::FontSmall;
@@ -324,6 +333,7 @@ class Dataplotter : Core::Group
   $rect <20,20,160,60>
   object Views::Text MaxValue
   {
+    preset Layout = Core::Layout[AlignToLeft, AlignToTop, ResizeHorz, ResizeVert];
     preset Bounds = <720,120,800,150>;
     preset String = "00.0";
     preset Font = Resources::FontSmall;
@@ -369,6 +379,7 @@ class Dataplotter : Core::Group
   $rect <20,20,160,60>
   object Views::Border Border
   {
+    preset Layout = Core::Layout[AlignToLeft, AlignToTop, ResizeHorz, ResizeVert];
     preset Bounds = <0,0,800,160>;
   }
 }
