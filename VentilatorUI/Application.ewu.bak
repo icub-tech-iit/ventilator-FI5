@@ -1305,7 +1305,7 @@ class DataplotterSTM32 : Core::Group
     CoordList.AddCoord( index,  vOffset/2.0 - vScalingFactor * float(DataProvider.GetSampleData( index )));
     Graph.Coordinates = CoordList;
     // to do loop graph
-    if(float(index)>=hOffset) {
+    if(index>=hOffset) {
     index= 0;
     CoordList.ClearList();
     }
