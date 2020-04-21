@@ -1,7 +1,7 @@
 $version 9.30
 
 // This is the root component of the entire GUI application.
-$rect <0,20,200,60>
+$rect <30,40,230,80>
 $output false
 class Application : Core::Root
 {
@@ -107,6 +107,7 @@ vclass ApplicationVariantWin32 : Application::Application
     preset Bounds = <0,0,800,160>;
     preset ColorProp = #F9FF0AFF;
     preset NameProp = "Insp. press.(mBar)";
+    preset DataProvider = DataSource0;
   }
 
   $rect <20,20,160,60>
@@ -115,6 +116,7 @@ vclass ApplicationVariantWin32 : Application::Application
     preset Bounds = <0,160,800,320>;
     preset ColorProp = #40FF0AFF;
     preset NameProp = "V_tidal(mL)";
+    preset DataProvider = DataSource1;
   }
 
   $rect <20,20,160,60>
@@ -123,6 +125,7 @@ vclass ApplicationVariantWin32 : Application::Application
     preset Bounds = <0,320,800,480>;
     preset ColorProp = #0AFFF5FF;
     preset NameProp = "MVe (slpm)";
+    preset DataProvider = DataSource2;
   }
 }
 
@@ -132,133 +135,6 @@ class DataplotterWin32 : Core::Group
 {
   $rect <0,180,200,220>
   inherited property Bounds = <0,0,800,160>;
-
-  $rect <0,280,200,320>
-  inherited method UpdateLayout()
-  {
-    // Always invoke the inherited method.
-    super( aSize );
-
-    /*
-
-      HINT:
-
-      This method exists for sophisticated layout calculation. Please note, that in 
-      most cases it is completely sufficient to use the views property 'Layout' to
-      determine how the view should behave when the component is resized.
-
-    */
-
-    /*
-
-      TO DO:
-
-      Put here the code to calculate new position and size of enclosed views. The
-      current (new) size of the component itself is passed in the parameter aSize.
-      For example:
-
-        SomeView.Bounds = rect( 10, 10, aSize.x - 20, aSize.y - 20 );
-
-    */
-  }
-
-  $rect <-10,230,190,270>
-  inherited method UpdateViewState()
-  {
-    // Always invoke the inherited method.
-    super( aState );
-
-    /*
-
-      HINT 1:
-
-      This method is invoked automatically when the state set of the component has
-      been changed. The new state set can be found in the parameter aState.
-      Following are the important states:
-
-        Enabled   --> The component can react to user inputs.
-
-        Selected  --> The component is selected in context of its owner.
-
-        Focused   --> The component is selected in context of its owner and 
-                      the owner can react to keyboard events. In this manner the
-                      component is also able to react to keyboard events.
-
-        Modal     --> The component is modal. All events are redirected to this
-                      component.
-
-      To determine whether a state is currently active or not you have to test
-      the aState parameter. For example to test the 'Selected' state:
-
-        if ( aState.contains( Core::ViewState[ Selected ]))
-        {
-          ... yes, this component is currently selected.
-        }
-
-    */
-
-    /*
-
-      HINT 2:
-
-      Alternatively you can request this method invocation by executing explicitly
-      following code:
-
-
-        InvalidateViewState();
-
-    */
-      
-    /*
-
-      TO DO 1:
-
-      Put here the code to ensure that the visual aspect of the component does
-      reflect its current state. For example, depending on its 'Enabled' state
-      a component may appear with full colors or pale if it is disabled:
-
-        if ( aState.contains( Core::ViewState[ Enabled ]))
-        {
-          SomeBackgroundView.Opacity = 255;
-          SomeTextView.Color         = #000000FF;
-        }
-        else
-        {
-          SomeBackgroundView.Opacity = 128;
-          SomeTextView.Color         = #00000080;
-        }
-
-
-      TO DO 2:
-
-      You can evaluate here also the state of any other member in your component.
-      For example in a push-button component, the button should appear highlighted
-      as long as the user holds the finger within a touch area of the button:
-
-        if ( SomeTouchHandler.Down && SomeTouchHandler.Inside )
-          HighlightedBackground.Visible = true;
-        else
-          HighlightedBackground.Visible = false;
-
-      The touch handler itself only requests the update method to be called. Use
-      for this purpose 'InvalidateViewState()' method.
-
-
-      TO DO 3:
-
-      You can calculate here also the position/size of views accordingly to the
-      state of any other member in your component. For example in a slider you
-      can calculate the position of the slider knob from some properties like
-      'SliderValue' and 'SliderRange':
-
-        SliderKnob.Bounds.origin.x = ( SliderValue * Bounds.w ) / SliderRange;
-
-      Changing the 'SliderValue' or 'SliderRange' property should only request
-      the update method to be called. Use for this purpose 'InvalidateViewState()'
-      method.
-
-    */
-  }
 
   $rect <20,20,160,60>
   object Charts::Graph Graph
@@ -330,10 +206,94 @@ class DataplotterWin32 : Core::Group
     preset Font = Resources::FontSmall;
   }
 
-  $rect <830,80,1030,120>
+  $rect <20,20,160,60>
+  object Views::Border Border
+  {
+    preset Layout = Core::Layout[AlignToLeft, AlignToTop, ResizeHorz, ResizeVert];
+    preset Bounds = <0,0,800,160>;
+  }
+
+  $rect <20,20,160,60>
+  object Charts::Graph Graph1
+  {
+    preset Layout = Core::Layout[AlignToLeft, AlignToTop, ResizeHorz, ResizeVert];
+    preset Bounds = <210,260,622,328>;
+    preset Buffered = true;
+    preset Coordinates = CoordList;
+    preset LineWidth = 3.0;
+    preset DotColor = #FFFFFFFF;
+    preset DotWidth = 3.0;
+    preset PixelPerUnit = <5,5>;
+    preset GridDistance = <10,10>;
+  }
+
+  $rect <20,20,160,60>
+  object Views::Rectangle Rectangle1
+  {
+    preset Layout = Core::Layout[AlignToLeft, AlignToTop, ResizeHorz, ResizeVert];
+    preset Bounds = <620,260,688,328>;
+    preset Color = #040404FF;
+  }
+
+  $rect <20,20,160,60>
+  object Views::Text Name1
+  {
+    preset Layout = Core::Layout[AlignToLeft, AlignToTop, ResizeHorz, ResizeVert];
+    preset Bounds = <620,260,690,280>;
+    preset String = "Name";
+    preset Font = Resources::DefaultFont;
+  }
+
+  $rect <20,20,160,60>
+  object Views::Text CurrValue1
+  {
+    preset Layout = Core::Layout[AlignToLeft, AlignToTop, ResizeHorz, ResizeVert];
+    preset Bounds = <620,280,688,300>;
+    preset String = "00";
+    preset Font = Resources::FontMedium;
+  }
+
+  $rect <20,20,160,60>
+  object Views::Text MeanText1
+  {
+    preset Layout = Core::Layout[AlignToLeft, AlignToTop, ResizeHorz, ResizeVert];
+    preset Bounds = <620,302,654,312>;
+    preset String = "Mean";
+    preset Font = Application::FontXS;
+  }
+
+  $rect <20,20,160,60>
+  object Views::Text MaxText1
+  {
+    preset Layout = Core::Layout[AlignToLeft, AlignToTop, ResizeHorz, ResizeVert];
+    preset Bounds = <620,314,654,324>;
+    preset Alignment = Views::TextAlignment[AlignHorzCenter, AlignHorzLeft, AlignVertCenter];
+    preset String = "Max";
+    preset Font = Application::FontXS;
+  }
+
+  $rect <20,20,160,60>
+  object Views::Text MeanValue1
+  {
+    preset Layout = Core::Layout[AlignToLeft, AlignToTop, ResizeHorz, ResizeVert];
+    preset Bounds = <654,302,688,312>;
+    preset String = "00.0";
+    preset Font = Application::FontXS;
+  }
+
+  $rect <20,20,160,60>
+  object Views::Text MaxValue1
+  {
+    preset Layout = Core::Layout[AlignToLeft, AlignToTop, ResizeHorz, ResizeVert];
+    preset Bounds = <654,314,688,324>;
+    preset String = "00.0";
+    preset Font = Application::FontXS;
+  }
+
+  $rect <800,210,1000,250>
   property color ColorProp = #FFFFFFFF;
 
-  $rect <830,120,1030,160>
+  $rect <800,260,1000,300>
   onset ColorProp
   {
     // The value doesn't change - nothing to do.
@@ -342,6 +302,7 @@ class DataplotterWin32 : Core::Group
 
     // Remember the property's new value.
     pure ColorProp = value;
+    pure BeamColor = value;
 
     MaxValue.Color   = value;
     MeanValue.Color  = value;
@@ -349,12 +310,15 @@ class DataplotterWin32 : Core::Group
     MeanText.Color   = value;
     CurrValue.Color  = value;
     Name.Color       = value;
+    Graph.DotColor   = value;
+    Graph.LineColor  = value;
+
   }
 
-  $rect <840,0,1040,40>
+  $rect <810,120,1010,160>
   property string NameProp = "Name";
 
-  $rect <840,40,1040,80>
+  $rect <810,160,1010,200>
   onset NameProp
   {
     // The value doesn't change - nothing to do.
@@ -368,27 +332,437 @@ class DataplotterWin32 : Core::Group
   }
 
   $rect <20,20,160,60>
-  object Views::Border Border
+  object Views::Border Border1
   {
     preset Layout = Core::Layout[AlignToLeft, AlignToTop, ResizeHorz, ResizeVert];
-    preset Bounds = <0,0,800,160>;
+    preset Bounds = <210,260,690,328>;
   }
 
-  // The property 'DataProvider' stores the source for getting the data to display.
-  $rect <820,190,1020,230>
+  // The property 'Speed' stores the speed of the beam in milliseconds per division. \
+  // Depending on the speed, the necessary number of samples are displayed.
+  $rect <60,500,260,540>
+  property int32 Speed = 100;
+
+  // The onset method for the property 'Speed' changes the speed of the beam in the \
+  // range from 1 to 1000.
+  $rect <270,390,470,430>
+  onset Speed
+  {
+    /* limit the milliseconds per division to a range from 1 to 1000 */
+    if ( value < 1 )
+      value = 1;
+
+    if ( value > 1000 )
+      value = 1000;
+
+    /* assign the value */
+    pure Speed = value;
+
+    /* and inform the data provider */
+    if ( DataProvider != null )
+      DataProvider.Speed = value;
+  }
+
+  // The property 'RefreshRate' stores the number of milliseconds between the single \
+  // display updates. Depending on the RefreshRate, the necessary number of samples \
+  // are displayed.
+  $rect <490,350,690,390>
+  property int32 RefreshRate = 50;
+
+  // The onset method for the property 'RefreshRate' changes the update interval \
+  // in the range from 10 to 1000 ms.
+  $rect <260,240,460,280>
+  onset RefreshRate
+  {
+    /* limit the refresh rate to a range from 10 to 1000 */
+    if ( value < 10 )
+      value = 10;
+
+    if ( value > 1000 )
+      value = 1000;
+
+    /* assign the value and set the update timer to the new period */
+    pure RefreshRate = value;
+    UpdateTimer.Period = value;
+  }
+
+  // The property 'ScreenWiper' stores the width of the screen wiper in the range \
+  // from 0 to 100 (percent). The screen wiper clears the area right of the current \
+  // beam position with a soft fade our effect.
+  $rect <480,180,680,220>
+  property int32 ScreenWiper = 20;
+
+  // The onset method for the property 'ScreenWiper' changes the width of the screen \
+  // wiper in the range from 0 (off) to 100 percent.
+  $rect <490,230,690,270>
+  onset ScreenWiper
+  {
+    /* limit size of screen wiper to a range from 0 to 100 */
+    if ( value < 0 )
+      value = 0;
+
+    if ( value > 100 )
+      value = 100;
+
+    /* assign the value */
+    pure ScreenWiper = value;
+  }
+
+  // The property 'BeamColor' stores the color value of the simulated beam.
+  $rect <1020,60,1220,100>
+  property color BeamColor = #00FF06FF;
+
+  // The property 'BeamGlow' stores the width of the simulated beam point in the \
+  // range from 0 to 3.
+  $rect <760,360,960,400>
+  property int32 BeamGlow = 1;
+
+  // The onset method for the property 'BeamGlow' changes the size of the simulated \
+  // beam point.
+  $rect <760,400,960,440>
+  onset BeamGlow
+  {
+    /* limit size of beam glow to a range from 0 to 3 */
+    if ( value < 0 )
+      value = 0;
+
+    if ( value > 3 )
+      value = 3;
+
+    pure BeamGlow = value;
+  }
+
+  // The property 'Gain' stores the scaling factor in vertical direction in the range \
+  // from 0 to 1000 (percent).
+  $rect <280,300,480,340>
+  property int32 Gain = 100;
+
+  // The onset method for the property 'Gain' changes the vertical scaling factor \
+  // in the range from 0 to 1000 percent.
+  $rect <270,340,470,380>
+  onset Gain
+  {
+    /* limit size of gain to a range from 10 to 1000 */
+    if ( value < 0 )
+      value = 0;
+
+    if ( value > 1000 )
+      value = 1000;
+
+    /* assign the value */
+    pure Gain = value;
+  }
+
+  // The 'Image' view contains the prepared data bitmap of the oscilloscope.
+  $rect <20,20,160,60>
+  object Views::Image Image
+  {
+    preset Bounds = <310,390,358,438>;
+  }
+
+  // The variable 'Canvas' stores the internal bitmap used to prepare all drawing \
+  // operations.
+  $rect <490,290,690,330>
+  var Graphics::Canvas Canvas = null;
+
+  // The variable 'Clipping' contains the clipping area used for all drawing operations \
+  // within the Canvas.
+  $rect <50,390,250,430>
+  var rect Clipping = <0,0,0,0>;
+
+  // The variable 'BeamPosition' stores the current position of the simulated beam \
+  // in horizontal and vertical direction.
+  $rect <70,550,270,590>
+  var point BeamPosition = <0,0>;
+
+  // The 'UpdateTimer' object is responsible to trigger the update of the scope.
+  $rect <790,310,990,350>
+  object Core::Timer UpdateTimer
+  {
+    preset OnTrigger = DrawGraph;
+    preset Period = 300;
+    preset Enabled = true;
+  }
+
+  // The method 'DrawBeamLine' is called to draw the beam at the given horizontal \
+  // position 'aX' from the vertical start position 'aY1' to the end position 'aY2'.
+  $rect <40,440,240,480>
+  method void DrawBeamLine( arg int32 aX, arg int32 aY1, arg int32 aY2 )
+  {
+    var int32 y1;
+    var int32 y2;
+    var rect  r;
+    var color c;
+
+    /* just to be sure... */
+    if ( Canvas == null )
+      return;
+
+    /* sort the give y values */
+    if ( aY1 < aY2 )
+    {
+      y1 = aY1;
+      y2 = aY2;
+    }  
+    else
+    {
+      y1 = aY2;
+      y2 = aY1;
+    }  
+
+    /* draw the outer glow */
+    if ( BeamGlow > 2 )
+    {
+      c = color( BeamColor.red, BeamColor.green, BeamColor.blue, 0x10 );
+      r = rect( aX - 3, y1 - 2, aX + 4, y2 + 3 );
+      Canvas.FillRectangle( Clipping, r, c, c, c, c, true );
+
+      r = rect( aX - 2, y1 - 3, aX + 3, y2 + 4 );
+      Canvas.FillRectangle( Clipping, r, c, c, c, c, true );
+    }
+
+    /* draw the middle glow */
+    if ( BeamGlow > 1 )
+    {
+      c = color( BeamColor.red, BeamColor.green, BeamColor.blue, 0x20 );
+      r = rect( aX - 2, y1 - 1, aX + 3, y2 + 2 );
+      Canvas.FillRectangle( Clipping, r, c, c, c, c, true );
+
+      r = rect( aX - 1, y1 - 2, aX + 2, y2 + 3 );
+      Canvas.FillRectangle( Clipping, r, c, c, c, c, true );
+    }  
+
+    /* draw the inner glow */
+    if ( BeamGlow > 0 )
+    {
+      c = color( BeamColor.red, BeamColor.green, BeamColor.blue, 0x40 );
+      r = rect( aX - 1, y1    , aX + 2, y2 + 1 );
+      Canvas.FillRectangle( Clipping, r, c, c, c, c, true );
+
+      r = rect( aX    , y1 - 1, aX + 1, y2 + 2 );
+      Canvas.FillRectangle( Clipping, r, c, c, c, c, true );
+    }  
+
+    /* draw the center point of the beam */
+    c = color( BeamColor.red, BeamColor.green, BeamColor.blue, 0x80 );
+    r = rect( aX    , y1    , aX + 1, y2 + 1 );
+    Canvas.FillRectangle( Clipping, r, c, c, c, c, true );
+
+  }
+
+  // The 'UpdateSlot' is responsible to draw the next sequence of data samples. The \
+  // number of samples depends on the current settings of 'RefreshRate' and the 'MillisecPerDiv'.
+  $rect <280,440,480,480>
+  slot UpdateSlot
+  {
+    /* Remark: In order to simplifiy this demo application, we assume, that for 
+       each horizontal position one samples is read from the underlying measurement 
+       equipment and that each sample is in the range from -100 ... + 100 */
+
+    var int32 noOfSamples;
+    var int32 x;
+    var int32 y1;
+    var int32 y2;
+    var rect r;
+    var rect invalidateRect;
+    var int32 wiper;
+
+    /* just to be sure... */
+    if ( Canvas == null )
+      return;
+
+    /* calculate size of screen wiper */
+    wiper = ScreenWiper * Bounds.w / 100;
+
+    /* first we have to decide, whether a full screen update is necessary or just
+       part of the screen are redrawn */
+
+    if ( RefreshRate / Speed >= 10 )
+    {
+      /* we have to make a full screen update */
+      noOfSamples = Bounds.w;
+
+      /* clear complete area */
+      r = rect( 0, 0, Bounds.w, Bounds.h );
+      Canvas.FillRectangle( r, r, #000000FF, #000000FF, #000000FF, #000000FF, false );
+
+      /* complete area needs to be updated at the end */
+      invalidateRect = rect( 0, 0, Bounds.w, Bounds.h );
+    }
+    else
+    {
+      /* only part of the screen will be drawn */
+      noOfSamples = ( Bounds.w * RefreshRate ) / ( Speed * 10 );
+
+      /* here we make a small simplification: at least one sample is drawn */
+      if ( noOfSamples == 0 )
+        noOfSamples = 1;
+
+      /* get current beam position */
+      x = BeamPosition.x + 1;
+
+      /* clear area right of the beam position */
+      r = rect( x + 2, 0, x + 5 + noOfSamples, Bounds.h );
+      Canvas.FillRectangle( r, r, #000000FF, #000000FF, #000000FF, #000000FF, false );
+
+      /* calculate the necessary update area */
+      invalidateRect = rect( x - 4, 0, x + 4 + noOfSamples, Bounds.h );
+
+      /* check for wrap around */
+      if ( x + noOfSamples > Bounds.w )
+      {
+        /* clear area at the left side */
+        r = rect( 0, 0, x + 5 + noOfSamples - Bounds.w, Bounds.h );
+        Canvas.FillRectangle( r, r, #000000FF, #000000FF, #000000FF, #000000FF, false );
+        
+        /* due to wrap around complete area needs to be updated at the end */
+        invalidateRect = rect( 0, 0, Bounds.w, Bounds.h );
+      }
+
+      /* blend area right of the beam position if screen wiper is active */
+      if ( wiper > 0 )
+      {
+        /* blend area right of the beam position */
+        r = rect( x + 2 + noOfSamples, 0, x + wiper + noOfSamples, Bounds.h );
+        Canvas.FillRectangle( r, r, #0000001F, #0000001F, #0000001F, #0000001F, true );
+      
+        /* calculate the necessary update area */
+        invalidateRect = rect( x - 4, 0, x + 4 + wiper + noOfSamples, Bounds.h );
+
+        /* check for wrap around of wiper */
+        if ( x + wiper + noOfSamples > Bounds.w )
+        {
+          /* blend area at the left side */
+          r = rect( 0, 0, x + wiper + noOfSamples - Bounds.w, Bounds.h );
+          Canvas.FillRectangle( r, r, #0000001F, #0000001F, #0000001F, #0000001F, true );
+      
+          /* due to wrap around complete area needs to be updated at the end */
+          invalidateRect = rect( 0, 0, Bounds.w, Bounds.h );
+        }
+      }
+    }
+
+    /* now, all samples are drawn... */
+    while ( noOfSamples > 0 )
+    {
+      /* get next beam position */
+      x = BeamPosition.x + 1;
+      if ( x >= Bounds.w )
+        x = 0;
+      
+      /* calculate start and end value in vertical direction */
+      y1 = BeamPosition.y;
+      y2 = Bounds.h / 2 - GetSampleData( x ) * Bounds.h / 200;
+
+      /* adjust start position for one pixel to avoid double drawing */
+      if ( y2 > y1 )
+        y1 = y1 + 1;
+      if ( y2 < y1 )
+        y1 = y1 - 1;
+
+      /* draw the beam from the last sample value to the new sample value */
+      DrawBeamLine( x, y1, y2 );
+
+      /* store the current beam position */
+      BeamPosition.x = x;
+      BeamPosition.y = y2;
+
+      /* next one... */
+      noOfSamples = noOfSamples - 1;
+    }
+
+    /* finally, we set the calculated area as invalid area of the image object
+       to force the redrawing */
+    InvalidateArea( invalidateRect );
+
+  }
+
+  // This function returns the data of the given index from an simulated measurement \
+  // equipment. 
+  $rect <500,410,700,450>
+  method int32 GetSampleData( arg int32 aIndex )
+  {
+    var int32 value;
+
+    if ( DataProvider == null )
+      value = aIndex % 100 - 50;
+
+    else
+      value = DataProvider.GetSampleData( aIndex );
+      
+    /* modify the value with the gain */
+    value = value * Gain / 100;
+
+    if ( value < -100 )
+      value = -100;
+    if ( value > 100 )
+      value = 100;
+
+    return value;
+
+  }
+
+  $rect <1030,10,1230,50>
+  slot DrawGraph
+  {
+    //var int32 randomNumber = math_rand( 0, 10 );
+
+    if (DataProvider == null)
+        return;
+    var float currVal = float(DataProvider.GetSampleData( index ));
+    // compute max
+    if (currVal > max) {
+        max = currVal;
+        MaxValue.String = string(max, 0, 1);
+    }
+    // get mean
+    if (index!=0) {
+        sum = sum + currVal;
+        MeanValue.String = string(sum / float(index),0,1);
+    }
+    CurrValue.String = string(currVal, 0, 1); // 2 decimal values
+    var float vOffset = Graph.Bounds.h / Graph.PixelPerUnit.y;
+    var float hOffset = Graph.Bounds.w / Graph.PixelPerUnit.x;
+    var float vScalingFactor = float(Graph.PixelPerUnit.y) / float(Graph.Bounds.h);
+    CoordList.AddCoord( index,  vOffset/2.0 - vScalingFactor * float(currVal));
+    Graph.Coordinates = CoordList;
+    // to do loop graph and reset statistics
+    if(float(index)>=hOffset) {
+        index= 0;
+        CoordList.ClearList();
+        sum = 0;
+    }
+    index = index + 1;
+    // Invoke UpdateViewState
+    this.InvalidateViewState();
+  }
+
+  $rect <810,80,1010,120>
+  var int32 index = 0;
+
+  $rect <260,190,440,230>
+  object Charts::CoordList CoordList
+  {
+    preset MaxNoOfItems = 1000;
+  }
+
+  $rect <1040,110,1240,150>
+  var float mean;
+
+  $rect <1040,160,1240,200>
+  var float max = -10000.0;
+
+  $rect <1250,520,1450,560>
+  var float sum = -10000.0;
+
+  $rect <60,300,260,340>
   property Application::DataSource DataProvider = null;
 
-  // The onset method for the property 'DataProvider' updates the data provider with \
-  // the current settings.
-  $rect <820,230,1020,270>
+  $rect <60,340,260,380>
   onset DataProvider
   {
     pure DataProvider = value;
 
-    if ( DataProvider != null )
-    {
-      DataProvider.Speed = Speed;
-    }
   }
 }
 
@@ -796,10 +1170,12 @@ class DataplotterSTM32 : Core::Group
   {
     preset Layout = Core::Layout[AlignToLeft, AlignToTop, ResizeHorz, ResizeVert];
     preset Bounds = <0,0,412,68>;
-    preset Buffered = false;
+    preset Buffered = true;
     preset Coordinates = CoordList;
+    preset LineWidth = 3.0;
     preset DotColor = #FFFFFFFF;
     preset DotWidth = 3.0;
+    preset PixelPerUnit = <5,5>;
     preset GridDistance = <10,10>;
   }
 
@@ -929,12 +1305,12 @@ class DataplotterSTM32 : Core::Group
 
   // The property 'Speed' stores the speed of the beam in milliseconds per division. \
   // Depending on the speed, the necessary number of samples are displayed.
-  $rect <720,310,920,350>
+  $rect <270,390,470,430>
   property int32 Speed = 100;
 
   // The onset method for the property 'Speed' changes the speed of the beam in the \
   // range from 1 to 1000.
-  $rect <720,350,920,390>
+  $rect <0,340,200,380>
   onset Speed
   {
     /* limit the milliseconds per division to a range from 1 to 1000 */
@@ -1061,7 +1437,7 @@ class DataplotterSTM32 : Core::Group
 
   // The variable 'BeamPosition' stores the current position of the simulated beam \
   // in horizontal and vertical direction.
-  $rect <300,480,500,520>
+  $rect <250,440,450,480>
   var point BeamPosition = <0,0>;
 
   // The 'UpdateTimer' object is responsible to trigger the update of the scope.
@@ -1069,13 +1445,13 @@ class DataplotterSTM32 : Core::Group
   object Core::Timer UpdateTimer
   {
     preset OnTrigger = DrawGraph;
-    preset Period = 300;
+    preset Period = 100;
     preset Enabled = true;
   }
 
   // The method 'DrawBeamLine' is called to draw the beam at the given horizontal \
   // position 'aX' from the vertical start position 'aY1' to the end position 'aY2'.
-  $rect <720,440,920,480>
+  $rect <-10,400,190,440>
   method void DrawBeamLine( arg int32 aX, arg int32 aY1, arg int32 aY2 )
   {
     var int32 y1;
@@ -1294,21 +1670,35 @@ class DataplotterSTM32 : Core::Group
   $rect <830,210,1030,250>
   slot DrawGraph
   {
-    index = index + 1;
-
     //var int32 randomNumber = math_rand( 0, 10 );
-    // TODO fix.
-    CurrValue.String = DataProvider.GetSampleData( index );
+
+    if (DataProvider == null)
+        return;
+    var float currVal = float(DataProvider.GetSampleData( index ));
+    // compute max
+    if (currVal > max) {
+        max = currVal;
+        MaxValue.String = string(max, 0, 1);
+    }
+    // get mean
+    if (index!=0) {
+        sum = sum + currVal;
+        MeanValue.String = string(sum / float(index),0,1);
+    }
+    CurrValue.String = string(currVal, 0, 1); // 2 decimal values
     var float vOffset = Graph.Bounds.h / Graph.PixelPerUnit.y;
     var float hOffset = Graph.Bounds.w / Graph.PixelPerUnit.x;
     var float vScalingFactor = float(Graph.PixelPerUnit.y) / float(Graph.Bounds.h);
-    CoordList.AddCoord( index,  vOffset/2.0 - vScalingFactor * float(DataProvider.GetSampleData( index )));
+    CoordList.AddCoord( index,  vOffset/2.0 - vScalingFactor * float(currVal));
     Graph.Coordinates = CoordList;
-    // to do loop graph
+    // to do loop graph and reset statistics
     if(float(index)>=hOffset) {
-    index= 0;
-    CoordList.ClearList();
+        index= 0;
+        CoordList.ClearList();
+        sum = 0;
     }
+    index = index + 1;
+    // Invoke UpdateViewState
     this.InvalidateViewState();
   }
 
@@ -1316,7 +1706,19 @@ class DataplotterSTM32 : Core::Group
   var int32 index = 0;
 
   $rect <20,90,200,130>
-  object Charts::CoordList CoordList;
+  object Charts::CoordList CoordList
+  {
+    preset MaxNoOfItems = 1000;
+  }
+
+  $rect <1030,170,1230,210>
+  var float mean;
+
+  $rect <1030,210,1230,250>
+  var float max = -10000.0;
+
+  $rect <1040,260,1240,300>
+  var float sum = -10000.0;
 }
 
 $rect <580,210,780,250>
