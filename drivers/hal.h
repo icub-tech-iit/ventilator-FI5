@@ -51,6 +51,8 @@
     // Replace with CubeMx like initialization or whatever
     HAL_StatusTypeDef HAL_Init(void);
 
+    void HAL_Delay(uint32_t delay);
+
     static inline HAL_StatusTypeDef HAL_TIM_PWM_Stop(TIM_HandleTypeDef *htim, uint32_t Channel) { return 0; }
     static inline HAL_StatusTypeDef HAL_TIM_PWM_Start_IT(TIM_HandleTypeDef *htim, uint32_t Channel) { return 0; }
 

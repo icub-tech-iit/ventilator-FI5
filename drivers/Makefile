@@ -25,11 +25,13 @@ board_sim: directories
 	gcc -O0 -g -DDEBUG_HAL -c hsc.c -o build/hsc.o
 	gcc -O0 -g -DDEBUG_HAL -c i2c_mux.c -o build/i2c_mux.o
 	gcc -O0 -g -DDEBUG_HAL -c pwm.c -o build/pwm.o
+	gcc -O0 -g -DDEBUG_HAL -c zephyr.c -o build/zephyr.o
 	gcc -O0 -g -DDEBUG_HAL -c board_driver.c -o build/board_driver.o
 	gcc -O0 -g -DDEBUG_HAL -c hal.c -o build/hal.o
+	gcc -O0 -g -DDEBUG_HAL -c delay_mock.c -o build/delay_mock.o
 	gcc -O0 -g -DDEBUG_HAL -c board_sim.c -o build/board_sim.o
 	gcc -O0 -g -DDEBUG_HAL -c board_test.c -o build/board_test.o
-	gcc build/hsc.o build/i2c_mux.o build/pwm.o build/board_driver.o build/hal.o build/board_sim.o build/board_test.o -o board_sim
+	gcc build/hsc.o build/i2c_mux.o build/pwm.o build/zephyr.o build/board_driver.o build/hal.o build/delay_mock.o build/board_sim.o build/board_test.o -o board_sim
 
 clean:
 	rm -f board_test hsc_test zephyr_test mcp23017_test

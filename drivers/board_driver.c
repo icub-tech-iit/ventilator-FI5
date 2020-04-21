@@ -4,6 +4,7 @@
 #include "i2c_mux.h"
 #include "hsc.h"
 #include "pwm.h"
+#include "zephyr.h"
 
 #ifdef DEBUG_HAL
     #include "board_sim.h"
@@ -21,6 +22,9 @@
 #define PRESSURE_SENSOR_1_CHANNEL       (0x00)
 #define PRESSURE_SENSOR_2_CHANNEL       (0x01)
 #define PRESSURE_SENSOR_3_CHANNEL       (0x02)
+
+#define FLOW_SENSOR_1_ADDRESS           (0x49)
+#define FLOW_SENSOR_2_ADDRESS           (0x49)
 
 /****************************************************************/
 /* Local type definitions.                                      */
@@ -44,6 +48,8 @@ typedef struct
     pressure_sensor_t pressure_sensor1;
     pressure_sensor_t pressure_sensor2;
     pressure_sensor_t pressure_sensor3;
+    zephyr_handle_t flow_sensor1;
+    zephyr_handle_t flow_sensor2;
     i2c_mux_handle_t i2c_mux;
 
     // Actuator devices
@@ -69,8 +75,10 @@ enum
     BOARD_STATE_IDLE = 0,
     BOARD_STATE_CHANNEL1,
     BOARD_STATE_PRESSURE1,
+    BOARD_STATE_FLOW1,
     BOARD_STATE_CHANNEL2,
     BOARD_STATE_PRESSURE2,
+    BOARD_STATE_FLOW2,
     BOARD_STATE_CHANNEL3,
     BOARD_STATE_PRESSURE3,
     BOARD_STATE_COMPLETED
@@ -81,10 +89,17 @@ enum
 /****************************************************************/
 static int i2c_xfer(i2c_xfer_list_t *xfers, int addr);
 static int i2c_xfer_async(i2c_xfer_list_t *xfers, int addr, i2c_xfer_cb_t cb, void* args);
-static int i2c_mux_select(i2c_mux_handle_t* mux, int channel);
+static int i2c_mux_select(i2c_mux_handle_t* mux, int channel, i2c_mux_callback_t callback);
+static void i2c_mux_select_completed(int status);
+static int i2c_mux_select_wait(void);
+
 static int board_read_pressure(pressure_sensor_t* sensor, 
                                int16_t* pressure,
                                int16_t* temperature);
+
+static int board_read_flow(zephyr_handle_t* sensor, uint16_t* flow);
+
+static int board_pressure_data_received(void);
 
 static void board_fsm_start(void);
 static void board_fsm_clear(int ret_code);
@@ -92,7 +107,7 @@ static void board_fsm_update(int status);
 
 static void board_read_completed_callback(int status);
 
-int i2c_xfer_completed(int retcode);
+void i2c_xfer_completed(int retcode);
 
 /****************************************************************/
 /* Local data.                                                  */
@@ -110,6 +125,7 @@ static pwm_config_t pwm1_cfg = {
     .channel = 1,
     .input_voltage = 24000
 };
+
 static pwm_config_t pwm2_cfg = {
     .timer_frequency = 54000000,
     .pwm_frequency = 10000,
@@ -122,6 +138,8 @@ static i2c_xfer_cb_data_t i2c_xfer_cb_data =
     .cb = 0,
     .args = 0
 };
+
+static int i2c_mux_semaphore = 0;
 
 /****************************************************************/
 /* Exported APIs.                                               */
@@ -149,6 +167,15 @@ int board_init(void)
 	hsc_config_device(&board_dev.pressure_sensor1.sensor, &HSCDANN150PG2A5);
 	hsc_config_device(&board_dev.pressure_sensor2.sensor, &HSCMAND160MD2A5);
 	hsc_config_device(&board_dev.pressure_sensor3.sensor, &HSCMAND160MD2A5);
+
+    // Initialize the flow sensor
+    i2c_mux_select(&board_dev.i2c_mux, 0, i2c_mux_select_completed);
+    i2c_mux_select_wait();
+    zephyr_init(&board_dev.flow_sensor1, i2c_xfer_async, FLOW_SENSOR_1_ADDRESS);
+
+    i2c_mux_select(&board_dev.i2c_mux, 1, i2c_mux_select_completed);
+    i2c_mux_select_wait();
+    zephyr_init(&board_dev.flow_sensor2, i2c_xfer_async, FLOW_SENSOR_2_ADDRESS);
 
     // Initialize the PWM devices
     pwm_init(&board_dev.pwm_valve1, (void*)&htim1, &pwm1_cfg);
@@ -179,11 +206,8 @@ int board_read_sensors(board_sensor_data_t* in_data)
     // Wait for the operation to be completed
     while(board_fsm.state != BOARD_STATE_IDLE) 
     {
-#ifdef DEBUG_HAL
-        board_sim_bus_irq(1);
-#else
+        HAL_Delay(1);
         // asm("wfi");
-#endif // DEBUG_HAL
     }
 
     return board_fsm.result;
@@ -251,6 +275,13 @@ static int i2c_xfer_async(i2c_xfer_list_t *xfers, int addr, i2c_xfer_cb_t cb, vo
     int retcode;
     int i;
 
+    // When no callback is passed the transfer falls back 
+    // into the synchronous way.
+    if(!cb)
+        return i2c_xfer(xfers, addr);
+
+    // Save the informations that will be used when the 
+    // bus operation is completed
     i2c_xfer_cb_data.cb = cb;
     i2c_xfer_cb_data.args = args;
 
@@ -274,19 +305,19 @@ static int i2c_xfer_async(i2c_xfer_list_t *xfers, int addr, i2c_xfer_cb_t cb, vo
     return (retcode == 0) ? RC_OK : RC_BUS_ERROR;
 }
 
-int i2c_xfer_completed(int retcode)
+void i2c_xfer_completed(int retcode)
 {
     if(i2c_xfer_cb_data.cb)
         i2c_xfer_cb_data.cb(retcode, i2c_xfer_cb_data.args);
 }
 
-static int i2c_mux_select(i2c_mux_handle_t* mux, int channel)
+static int i2c_mux_select(i2c_mux_handle_t* mux, int channel, i2c_mux_callback_t callback)
 {
     int result;
     int ret_code;
 
     // Call the I2C mux driver here
-    result = i2c_mux_channel_select(mux, channel, board_fsm_update);
+    result = i2c_mux_channel_select(mux, channel, callback);
     if(result == 0)
     {
         ret_code = RC_OK;
@@ -299,12 +330,27 @@ static int i2c_mux_select(i2c_mux_handle_t* mux, int channel)
     return ret_code;
 }
 
+static void i2c_mux_select_completed(int status)
+{
+    i2c_mux_semaphore = 1;
+}
+
+static int i2c_mux_select_wait(void)
+{
+    while(!i2c_mux_semaphore)
+    {
+        HAL_Delay(1);
+    }
+
+    i2c_mux_semaphore = 0;
+
+    return RC_OK;
+}
+
 static int board_read_pressure(pressure_sensor_t* sensor, 
                                int16_t* pressure,
                                int16_t* temperature)
 {
-    float sensor_pressure;
-    float sensor_temperature;
     int result;
 
     // Store the output data pointers
@@ -316,6 +362,15 @@ static int board_read_pressure(pressure_sensor_t* sensor,
                       &board_fsm.sensor_pressure, 
                       &board_fsm.sensor_temperature, 
                       board_fsm_update);
+
+    return (result == 0) ? RC_OK : RC_SENSOR_ERROR;
+}
+
+static int board_read_flow(zephyr_handle_t* sensor, uint16_t* flow)
+{
+    int result;
+
+    result = zephyr_read(sensor, flow, board_fsm_update);
 
     return (result == 0) ? RC_OK : RC_SENSOR_ERROR;
 }
@@ -360,7 +415,7 @@ static void board_fsm_update(int status)
     switch(board_fsm.state)
     {
         case BOARD_STATE_CHANNEL1:
-            ret_code = i2c_mux_select(&board_dev.i2c_mux, 0);
+            ret_code = i2c_mux_select(&board_dev.i2c_mux, 0, board_fsm_update);
             break;
 
         case BOARD_STATE_PRESSURE1:
@@ -370,10 +425,17 @@ static void board_fsm_update(int status)
                                            &board_fsm.in_data->temperature1);
             break;
 
-        case BOARD_STATE_CHANNEL2:
+        case BOARD_STATE_FLOW1:
             // Process the pressure sensor 1 data  
             board_pressure_data_received();
-            ret_code = i2c_mux_select(&board_dev.i2c_mux, 1);
+
+            ret_code = board_read_flow(&board_dev.flow_sensor1,
+                                       &board_fsm.in_data->flow1);
+            break;
+
+
+        case BOARD_STATE_CHANNEL2:
+            ret_code = i2c_mux_select(&board_dev.i2c_mux, 1, board_fsm_update);
             break;
 
         case BOARD_STATE_PRESSURE2:
@@ -383,10 +445,16 @@ static void board_fsm_update(int status)
                                            &board_fsm.in_data->temperature2);
             break;
 
-        case BOARD_STATE_CHANNEL3:
+        case BOARD_STATE_FLOW2:
             // Process the pressure sensor 2 data  
             board_pressure_data_received();
-            ret_code = i2c_mux_select(&board_dev.i2c_mux, 2);
+
+            ret_code = board_read_flow(&board_dev.flow_sensor2,
+                                       &board_fsm.in_data->flow2);
+            break;
+
+        case BOARD_STATE_CHANNEL3:
+            ret_code = i2c_mux_select(&board_dev.i2c_mux, 2, board_fsm_update);
             break;
 
         case BOARD_STATE_PRESSURE3:
@@ -398,7 +466,7 @@ static void board_fsm_update(int status)
 
         case BOARD_STATE_COMPLETED:
             // Process the pressure sensor 2 data  
-            board_pressure_data_received();
+            ret_code = board_pressure_data_received();
             break;
     }
 
@@ -417,7 +485,7 @@ static void board_fsm_update(int status)
     }
     else
     {
-        board_fsm_clear(status);
+        board_fsm_clear(ret_code);
     }
 }
 

@@ -17,8 +17,8 @@ typedef struct
     int16_t pressure1;
     int16_t pressure2;
     int16_t pressure3;
-    int16_t flow1;
-    int16_t flow2;
+    uint16_t flow1;
+    uint16_t flow2;
     uint16_t o2;
     int16_t temperature1;
     int16_t temperature2;

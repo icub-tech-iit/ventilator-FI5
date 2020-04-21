@@ -17,6 +17,16 @@ struct bus_mux_data_t
     uint8_t status;
 };
 
+struct flow_sensor_data_t
+{
+    uint8_t boot[2];
+    uint8_t serial[4];
+    uint8_t checksum_ack[2];
+    uint8_t raw[2];
+    uint8_t* data_ptr;
+    int state;
+};
+
 static void connect_remote_device(struct bus_t* bus, struct remote_device_t* dev);
 static int get_remote_device(struct bus_t* bus, int address, struct remote_device_t** slave);
 
@@ -28,6 +38,8 @@ static void mux_route(struct remote_device_t* dev);
 
 static int pressure_write(struct remote_device_t* dev, void* data, int size);
 static int pressure_read(struct remote_device_t* dev, void* data, int size);
+static int flow_write(struct remote_device_t* dev, void* data, int size);
+static int flow_read(struct remote_device_t* dev, void* data, int size);
 static int mux_write(struct remote_device_t* dev, void* data, int size);
 static int mux_read(struct remote_device_t* dev, void* data, int size);
 
@@ -56,6 +68,26 @@ static struct bus_mux_data_t mux_data[] =
     {
         .out_port_list = {{0}},
         .status = 0x0
+    }
+};
+
+static struct flow_sensor_data_t flow_sensor_data[] =
+{
+    {
+        .boot = { 0x00, 0x00 },
+        .serial = { 0x11, 0x22, 0x33, 0x44 },
+        .checksum_ack = { 0xCC, 0xA5 },
+        .raw = { 0x12, 0x34 },
+        .data_ptr = flow_sensor_data[0].boot,
+        .state = 0
+    },
+    {
+        .boot = { 0x00, 0x00 },
+        .serial = { 0xAA, 0x22, 0x33, 0x44 },
+        .checksum_ack = { 0xCC, 0xA5 },
+        .raw = { 0x16, 0x78 },
+        .data_ptr = flow_sensor_data[1].boot,
+        .state = 0
     }
 };
 
@@ -98,12 +130,27 @@ int board_sim_init(void)
     device.pressure3.ops.read = pressure_read;
     device.pressure3.data = (void*)(&pressure_sensor_data[2]);
 
+    // Flow sensor 1
+    device.flow1.address = 0x49;
+    device.flow1.ops.write = flow_write;
+    device.flow1.ops.read = flow_read;
+    device.flow1.data = (void*)(&flow_sensor_data[0]);
+
+    // Flow sensor 2
+    device.flow2.address = 0x49;
+    device.flow2.ops.write = flow_write;
+    device.flow2.ops.read = flow_read;
+    device.flow2.data = (void*)(&flow_sensor_data[1]);
+
     // Bus connections
     connect_remote_device(&device.i2c_1, &device.mux);
 
     connect_remote_device(get_mux_line(&device.mux, 0), &device.pressure1);
     connect_remote_device(get_mux_line(&device.mux, 1), &device.pressure2);
     connect_remote_device(get_mux_line(&device.mux, 2), &device.pressure3);
+
+    connect_remote_device(get_mux_line(&device.mux, 0), &device.flow1);
+    connect_remote_device(get_mux_line(&device.mux, 1), &device.flow2);
 
     return 0;
 }
@@ -222,6 +269,8 @@ int board_sim_bus_irq_handler(int busId, void (*handler)(int status))
     struct bus_t* bus = &device.i2c_1;
 
     bus->irq_handler = handler;
+
+    return 0;
 }
 
 // Bus interconnection utility function
@@ -391,6 +440,82 @@ static int pressure_read(struct remote_device_t* dev, void* data, int size)
     if(pressure_data)
     {
         memcpy(data, pressure_data->raw_data, size);
+    }
+    
+    return 0;
+}
+
+static int flow_write(struct remote_device_t* dev, void* data, int size)
+{
+    if(!dev)
+        return -EBADF;
+
+    if(size != 1)
+        return -EFAULT;
+
+    struct flow_sensor_data_t* sensor_data = (struct flow_sensor_data_t*)(dev->data);
+    uint8_t cmd = *((uint8_t*)data);
+
+    if(sensor_data)
+    {
+        switch(cmd)
+        {
+            // Read serial number command
+            case 0x1:
+                sensor_data->state = 1;
+                sensor_data->data_ptr = sensor_data->serial;
+                break;
+
+            // Reset command
+            case 0x2:
+                sensor_data->state = 0;
+                sensor_data->data_ptr = sensor_data->boot;
+                break;
+
+            // Verify checksum command
+            case 0x3:
+                sensor_data->state = 3;
+                sensor_data->data_ptr = sensor_data->checksum_ack;
+                break;
+        }
+    }
+
+    return 0;
+}
+
+static int flow_read(struct remote_device_t* dev, void* data, int size)
+{
+    if(size != 2)
+        return -EFAULT;
+    
+    struct flow_sensor_data_t* sensor_data = (struct flow_sensor_data_t*)(dev->data);
+
+    memcpy(data, sensor_data->data_ptr, size);
+
+    switch(sensor_data->state)
+    {
+        case 0:
+            sensor_data->data_ptr = sensor_data->serial;
+            sensor_data->state = 1;
+            break;
+
+        case 1:
+            sensor_data->data_ptr = &sensor_data->serial[2];
+            sensor_data->state = 2;
+            break;
+
+        case 2:
+            sensor_data->data_ptr = sensor_data->raw;
+            sensor_data->state = 4;
+            break;
+
+        case 3:
+            sensor_data->data_ptr = sensor_data->raw;
+            sensor_data->state = 4;
+            break;
+
+        default:
+            break;
     }
     
     return 0;

@@ -14,6 +14,7 @@ static int test_board_driver(void);
 static int test_board_sim_read(int busId, int address, void* data, int size, int expectd_result);
 static int test_board_sim_write(int busId, int address, void* data, int size, int expectd_result);
 static int test_board_buffer(void* buffer, void* expected, int size);
+static int test_board_dump_sensor_data(board_sensor_data_t* data);
 
 static void test_board_read_callback(int status);
 
@@ -180,10 +181,7 @@ static int test_board_driver(void)
     if(board_sensor_read_status == 0)
     {
         printf("PASSED\n");
-        printf(" data --> %hu %hu %hu\n", 
-                sensor_data.pressure1, 
-                sensor_data.pressure2, 
-                sensor_data.pressure3);
+        test_board_dump_sensor_data(&sensor_data);
     }
     else
     {
@@ -223,10 +221,7 @@ static int test_board_driver(void)
     if(board_sensor_read_status == 0)
     {
         printf("PASSED\n");
-        printf(" data --> %hu %hu %hu\n", 
-                sensor_data.pressure1, 
-                sensor_data.pressure2, 
-                sensor_data.pressure3);
+        test_board_dump_sensor_data(&sensor_data);
     }
     else
     {
@@ -314,6 +309,21 @@ static int test_board_buffer(void* buffer, void* expected, int size)
         printf("PASSED\n");
 
     return result;
+}
+
+static int test_board_dump_sensor_data(board_sensor_data_t* sensor_data)
+{
+    printf("  pressure1    --> %hd\n", sensor_data->pressure1);
+    printf("  pressure2    --> %hd\n", sensor_data->pressure2);
+    printf("  pressure3    --> %hd\n", sensor_data->pressure3);
+    printf("  flow1        --> %hu\n", sensor_data->flow1);
+    printf("  flow2        --> %hu\n", sensor_data->flow2);
+    printf("  oxigen       --> %hu\n", sensor_data->o2);
+    printf("  temperature1 --> %hd\n", sensor_data->temperature1);
+    printf("  temperature2 --> %hd\n", sensor_data->temperature2);
+    printf("  temperature3 --> %hd\n", sensor_data->temperature3);
+
+    return 0;
 }
 
 static void test_board_read_callback(int status)

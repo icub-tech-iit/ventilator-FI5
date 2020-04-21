@@ -7,7 +7,7 @@
 static void HAL_I2C_IRQHandler(int status);
 static int get_i2c_bus_id(I2C_HandleTypeDef *hi2c);
 
-extern int i2c_xfer_completed(int retcode);
+extern void i2c_xfer_completed(int retcode);
 
 TIM_HandleTypeDef htim1;
 TIM_HandleTypeDef htim2;
@@ -22,6 +22,11 @@ HAL_StatusTypeDef HAL_Init(void)
     board_sim_bus_irq_handler(1, HAL_I2C_IRQHandler);
 
     return 0;
+}
+
+void HAL_Delay(uint32_t delay)
+{
+    board_sim_bus_irq(1);
 }
 
 HAL_StatusTypeDef HAL_I2C_Master_Transmit(I2C_HandleTypeDef *hi2c, 
@@ -42,7 +47,7 @@ HAL_StatusTypeDef HAL_I2C_Master_Transmit(I2C_HandleTypeDef *hi2c,
         return result;
 
     // Wait for the IRQ to magically appear
-    board_sim_bus_poll(busId);
+    result = board_sim_bus_poll(busId);
 
     // Todo: return code conversion to HAL ret code values
     // ...
@@ -68,7 +73,7 @@ HAL_StatusTypeDef HAL_I2C_Master_Receive(I2C_HandleTypeDef *hi2c,
         return result;
 
     // Wait for the IRQ to magically appear
-    board_sim_bus_poll(busId);
+    result = board_sim_bus_poll(busId);
 
     // Todo: return code conversion to HAL ret code values
     // ...

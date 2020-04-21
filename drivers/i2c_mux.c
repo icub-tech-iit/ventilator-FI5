@@ -84,7 +84,7 @@ static int i2c_mux_config_write(i2c_mux_handle_t* dev, uint8_t config)
     // Setup the I2C transfer
     xfer.direction = WRITE;
     xfer.len       = 1;
-    xfer.buf       = (char*)(&config);
+    xfer.buf       = &config;
 
     // I2C MUX switch command needs a single transfer
     xfer_list.xfer_num = 1;
@@ -102,7 +102,7 @@ static void i2c_mux_callback(int status, void* args)
     if(status == 0)
     {
         // Mux config register write completed
-        if(dev->state = I2C_MUX_WRITE)
+        if(dev->state == I2C_MUX_WRITE)
         {
 #ifndef CONFIG_READBACK
             dev->config = dev->required_config;
@@ -115,7 +115,7 @@ static void i2c_mux_callback(int status, void* args)
 
 #ifdef CONFIG_READBACK
         // Mux config register readback completed
-        else if(dev->state = I2C_MUX_CHECK)
+        else if(dev->state == I2C_MUX_CHECK)
         {
             if(dev->config != dev->required_config)
                 status = -EIO;
