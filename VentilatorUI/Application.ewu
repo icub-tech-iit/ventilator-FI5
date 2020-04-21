@@ -47,38 +47,14 @@ class Application : Core::Root
   }
 
   $rect <20,20,160,60>
-  object Application::Dataplotter Dataplotter
+  object Application::DataplotterWin32 Dataplotter
   {
     preset Bounds = <0,0,480,80>;
   }
 }
 
-// To do:
-// 
-// - Open the 'Application' component for editing. It represents your entire GUI. \
-// Use widgets, views, event handlers and effects from the Gallery to assemble there \
-// your desired GUI look and feel.
-// 
-// - Create your own GUI components, widgets, panels, etc. The Gallery folder 'Component \
-// Templates' contains for this purpose various templates you can simply add to the \
-// unit and thus start your own component development.
-// 
-// - You can add your own bitmap and font resources to the unit. Use the templates \
-// 'Bitmap Resource' and 'Font Resource' from the Gallery folder 'Resources' for \
-// this purpose.
-// 
-// - You can add here also constants to store e.g. multilingual text fragments. Use \
-// for this purpose the template 'Constant' from the Gallery folder 'Chora'.
-// 
-// - To add an interface for communication with the target device use the template \
-// 'Device Interface' from the Gallery folder 'Device'.
-note legend Note1
-{
-  attr Bounds = <50,260,740,570>;
-}
-
 // This is a font resource.
-$rect <230,20,430,60>
+$rect <230,130,430,170>
 $output false
 resource Resources::Font Font
 {
@@ -91,8 +67,8 @@ resource Resources::Font Font
   attr fontitalic Italic = false;
 }
 
-$rect <20,70,220,110>
-$variant WIN32, true
+$rect <20,130,220,170>
+$variant WIN32,true
 vclass ApplicationVariantWin32 : Application::Application
 {
   $rect <870,30,1150,70>
@@ -111,13 +87,13 @@ vclass ApplicationVariantWin32 : Application::Application
   }
 
   $rect <20,20,160,60>
-  object Application::Menubar Menubar
+  object Application::MenubarWin32 Menubar
   {
     preset Bounds = <0,480,800,640>;
   }
 
   $rect <20,20,160,60>
-  object Application::Dataplotter DataplotterInspPress
+  object Application::DataplotterWin32 DataplotterInspPress
   {
     preset Bounds = <0,0,800,160>;
     preset ColorProp = #F9FF0AFF;
@@ -125,7 +101,7 @@ vclass ApplicationVariantWin32 : Application::Application
   }
 
   $rect <20,20,160,60>
-  object Application::Dataplotter DataplotterVTidal
+  object Application::DataplotterWin32 DataplotterVTidal
   {
     preset Bounds = <0,160,800,320>;
     preset ColorProp = #40FF0AFF;
@@ -133,7 +109,7 @@ vclass ApplicationVariantWin32 : Application::Application
   }
 
   $rect <20,20,160,60>
-  object Application::Dataplotter DataplotterMve
+  object Application::DataplotterWin32 DataplotterMve
   {
     preset Bounds = <0,320,800,480>;
     preset ColorProp = #0AFFF5FF;
@@ -141,9 +117,9 @@ vclass ApplicationVariantWin32 : Application::Application
   }
 }
 
-$rect <20,120,220,160>
+$rect <20,170,220,210>
 $output false
-class Dataplotter : Core::Group
+class DataplotterWin32 : Core::Group
 {
   $rect <0,180,200,220>
   inherited property Bounds = <0,0,800,160>;
@@ -390,9 +366,9 @@ class Dataplotter : Core::Group
   }
 }
 
-$rect <20,170,220,210>
+$rect <20,210,220,250>
 $output false
-class Menubar : Core::Group
+class MenubarWin32 : Core::Group
 {
   $rect <10,230,210,270>
   inherited property Bounds = <0,0,800,160>;
@@ -579,4 +555,549 @@ class Menubar : Core::Group
     preset Label = "StartAutomatic";
     preset Appearance = WidgetSet::PushButton_Medium;
   }
+}
+
+// This is a font resource.
+$rect <790,130,990,170>
+$output false
+resource Resources::Font FontXS
+{
+  attr fontname FontName = Arial;
+  attr fontheight Height = 10;
+  attr fontquality Quality = High;
+  attr fontranges Ranges = 0x20-0xFF;
+  attr fontaspectratio AspectRatio = 1.0;
+  attr fontbold Bold = false;
+  attr fontitalic Italic = false;
+}
+
+$rect <580,130,780,170>
+$variant STM32F746, true
+vclass ApplicationVariantSTM32 : Application::Application
+{
+  $rect <870,30,1150,70>
+  inherited property Bounds = <0,0,480,272>;
+
+  $rect <20,20,160,60>
+  inherited object Rectangle
+  {
+    preset Bounds = <0,0,480,272>;
+  }
+
+  $rect <20,20,160,60>
+  inherited object Text
+  {
+    preset Bounds = <1130,180,1240,210>;
+  }
+
+  $rect <20,20,160,60>
+  inherited object Dataplotter
+  {
+    preset Bounds = <20,310,500,390>;
+  }
+
+  $rect <20,20,160,60>
+  object Application::MenubarSTM32 Menubar
+  {
+    preset Bounds = <0,204,480,272>;
+  }
+
+  $rect <20,20,160,60>
+  object Application::DataplotterSTM32 DataplotterInspPress
+  {
+    preset Bounds = <0,0,480,68>;
+    preset ColorProp = #F9FF0AFF;
+    preset NameProp = "P_ins(mBar)";
+  }
+
+  $rect <20,20,160,60>
+  object Application::DataplotterSTM32 DataplotterVTidal
+  {
+    preset Bounds = <0,68,480,136>;
+    preset ColorProp = #40FF0AFF;
+    preset NameProp = "V_tidal(mL)";
+  }
+
+  $rect <20,20,160,60>
+  object Application::DataplotterSTM32 DataplotterMve
+  {
+    preset Bounds = <0,136,480,204>;
+    preset ColorProp = #0AFFF5FF;
+    preset NameProp = "MVe (slpm)";
+  }
+}
+
+$rect <580,170,780,210>
+$output false
+class DataplotterSTM32 : Core::Group
+{
+  $rect <0,180,200,220>
+  inherited property Bounds = <0,0,480,68>;
+
+  $rect <0,280,200,320>
+  inherited method UpdateLayout()
+  {
+    // Always invoke the inherited method.
+    super( aSize );
+
+    /*
+
+      HINT:
+
+      This method exists for sophisticated layout calculation. Please note, that in 
+      most cases it is completely sufficient to use the views property 'Layout' to
+      determine how the view should behave when the component is resized.
+
+    */
+
+    /*
+
+      TO DO:
+
+      Put here the code to calculate new position and size of enclosed views. The
+      current (new) size of the component itself is passed in the parameter aSize.
+      For example:
+
+        SomeView.Bounds = rect( 10, 10, aSize.x - 20, aSize.y - 20 );
+
+    */
+  }
+
+  $rect <-10,230,190,270>
+  inherited method UpdateViewState()
+  {
+    // Always invoke the inherited method.
+    super( aState );
+
+    /*
+
+      HINT 1:
+
+      This method is invoked automatically when the state set of the component has
+      been changed. The new state set can be found in the parameter aState.
+      Following are the important states:
+
+        Enabled   --> The component can react to user inputs.
+
+        Selected  --> The component is selected in context of its owner.
+
+        Focused   --> The component is selected in context of its owner and 
+                      the owner can react to keyboard events. In this manner the
+                      component is also able to react to keyboard events.
+
+        Modal     --> The component is modal. All events are redirected to this
+                      component.
+
+      To determine whether a state is currently active or not you have to test
+      the aState parameter. For example to test the 'Selected' state:
+
+        if ( aState.contains( Core::ViewState[ Selected ]))
+        {
+          ... yes, this component is currently selected.
+        }
+
+    */
+
+    /*
+
+      HINT 2:
+
+      Alternatively you can request this method invocation by executing explicitly
+      following code:
+
+
+        InvalidateViewState();
+
+    */
+      
+    /*
+
+      TO DO 1:
+
+      Put here the code to ensure that the visual aspect of the component does
+      reflect its current state. For example, depending on its 'Enabled' state
+      a component may appear with full colors or pale if it is disabled:
+
+        if ( aState.contains( Core::ViewState[ Enabled ]))
+        {
+          SomeBackgroundView.Opacity = 255;
+          SomeTextView.Color         = #000000FF;
+        }
+        else
+        {
+          SomeBackgroundView.Opacity = 128;
+          SomeTextView.Color         = #00000080;
+        }
+
+
+      TO DO 2:
+
+      You can evaluate here also the state of any other member in your component.
+      For example in a push-button component, the button should appear highlighted
+      as long as the user holds the finger within a touch area of the button:
+
+        if ( SomeTouchHandler.Down && SomeTouchHandler.Inside )
+          HighlightedBackground.Visible = true;
+        else
+          HighlightedBackground.Visible = false;
+
+      The touch handler itself only requests the update method to be called. Use
+      for this purpose 'InvalidateViewState()' method.
+
+
+      TO DO 3:
+
+      You can calculate here also the position/size of views accordingly to the
+      state of any other member in your component. For example in a slider you
+      can calculate the position of the slider knob from some properties like
+      'SliderValue' and 'SliderRange':
+
+        SliderKnob.Bounds.origin.x = ( SliderValue * Bounds.w ) / SliderRange;
+
+      Changing the 'SliderValue' or 'SliderRange' property should only request
+      the update method to be called. Use for this purpose 'InvalidateViewState()'
+      method.
+
+    */
+  }
+
+  $rect <20,20,160,60>
+  object Charts::Graph Graph
+  {
+    preset Layout = Core::Layout[AlignToLeft, AlignToTop, ResizeHorz, ResizeVert];
+    preset Bounds = <0,0,412,68>;
+    preset GridDistance = <10,10>;
+  }
+
+  $rect <20,20,160,60>
+  object Views::Rectangle Rectangle
+  {
+    preset Layout = Core::Layout[AlignToLeft, AlignToTop, ResizeHorz, ResizeVert];
+    preset Bounds = <410,0,478,68>;
+    preset Color = #040404FF;
+  }
+
+  $rect <20,20,160,60>
+  object Views::Text Name
+  {
+    preset Layout = Core::Layout[AlignToLeft, AlignToTop, ResizeHorz, ResizeVert];
+    preset Bounds = <410,0,480,20>;
+    preset String = "Name";
+    preset Font = Resources::DefaultFont;
+  }
+
+  $rect <20,20,160,60>
+  object Views::Text CurrValue
+  {
+    preset Layout = Core::Layout[AlignToLeft, AlignToTop, ResizeHorz, ResizeVert];
+    preset Bounds = <410,20,478,40>;
+    preset String = "00";
+    preset Font = Resources::FontMedium;
+  }
+
+  $rect <20,20,160,60>
+  object Views::Text MeanText
+  {
+    preset Layout = Core::Layout[AlignToLeft, AlignToTop, ResizeHorz, ResizeVert];
+    preset Bounds = <410,42,444,52>;
+    preset String = "Mean";
+    preset Font = Application::FontXS;
+  }
+
+  $rect <20,20,160,60>
+  object Views::Text MaxText
+  {
+    preset Layout = Core::Layout[AlignToLeft, AlignToTop, ResizeHorz, ResizeVert];
+    preset Bounds = <410,54,444,64>;
+    preset Alignment = Views::TextAlignment[AlignHorzCenter, AlignHorzLeft, AlignVertCenter];
+    preset String = "Max";
+    preset Font = Application::FontXS;
+  }
+
+  $rect <20,20,160,60>
+  object Views::Text MeanValue
+  {
+    preset Layout = Core::Layout[AlignToLeft, AlignToTop, ResizeHorz, ResizeVert];
+    preset Bounds = <444,42,478,52>;
+    preset String = "00.0";
+    preset Font = Application::FontXS;
+  }
+
+  $rect <20,20,160,60>
+  object Views::Text MaxValue
+  {
+    preset Layout = Core::Layout[AlignToLeft, AlignToTop, ResizeHorz, ResizeVert];
+    preset Bounds = <444,54,478,64>;
+    preset String = "00.0";
+    preset Font = Application::FontXS;
+  }
+
+  $rect <830,80,1030,120>
+  property color ColorProp = #FFFFFFFF;
+
+  $rect <830,120,1030,160>
+  onset ColorProp
+  {
+    // The value doesn't change - nothing to do.
+    if ( pure ColorProp == value )
+      return;
+
+    // Remember the property's new value.
+    pure ColorProp = value;
+
+    MaxValue.Color   = value;
+    MeanValue.Color  = value;
+    MaxText.Color    = value;
+    MeanText.Color   = value;
+    CurrValue.Color  = value;
+    Name.Color       = value;
+  }
+
+  $rect <840,0,1040,40>
+  property string NameProp = "Name";
+
+  $rect <840,40,1040,80>
+  onset NameProp
+  {
+    // The value doesn't change - nothing to do.
+    if ( pure NameProp == value )
+      return;
+
+    // Remember the property's new value.
+    pure NameProp = value;
+
+    Name.String = value;
+  }
+
+  $rect <20,20,160,60>
+  object Views::Border Border
+  {
+    preset Layout = Core::Layout[AlignToLeft, AlignToTop, ResizeHorz, ResizeVert];
+    preset Bounds = <0,0,480,68>;
+  }
+}
+
+$rect <580,210,780,250>
+$output false
+class MenubarSTM32 : Core::Group
+{
+  $rect <10,230,210,270>
+  inherited property Bounds = <0,0,480,68>;
+
+  $rect <10,390,210,430>
+  inherited method UpdateLayout()
+  {
+    // Always invoke the inherited method.
+    super( aSize );
+
+    /*
+
+      HINT:
+
+      This method exists for sophisticated layout calculation. Please note, that in 
+      most cases it is completely sufficient to use the views property 'Layout' to
+      determine how the view should behave when the component is resized.
+
+    */
+
+    /*
+
+      TO DO:
+
+      Put here the code to calculate new position and size of enclosed views. The
+      current (new) size of the component itself is passed in the parameter aSize.
+      For example:
+
+        SomeView.Bounds = rect( 10, 10, aSize.x - 20, aSize.y - 20 );
+
+    */
+  }
+
+  $rect <10,350,210,390>
+  inherited method UpdateViewState()
+  {
+    // Always invoke the inherited method.
+    super( aState );
+
+    /*
+
+      HINT 1:
+
+      This method is invoked automatically when the state set of the component has
+      been changed. The new state set can be found in the parameter aState.
+      Following are the important states:
+
+        Enabled   --> The component can react to user inputs.
+
+        Selected  --> The component is selected in context of its owner.
+
+        Focused   --> The component is selected in context of its owner and 
+                      the owner can react to keyboard events. In this manner the
+                      component is also able to react to keyboard events.
+
+        Modal     --> The component is modal. All events are redirected to this
+                      component.
+
+      To determine whether a state is currently active or not you have to test
+      the aState parameter. For example to test the 'Selected' state:
+
+        if ( aState.contains( Core::ViewState[ Selected ]))
+        {
+          ... yes, this component is currently selected.
+        }
+
+    */
+
+    /*
+
+      HINT 2:
+
+      Alternatively you can request this method invocation by executing explicitly
+      following code:
+
+
+        InvalidateViewState();
+
+    */
+      
+    /*
+
+      TO DO 1:
+
+      Put here the code to ensure that the visual aspect of the component does
+      reflect its current state. For example, depending on its 'Enabled' state
+      a component may appear with full colors or pale if it is disabled:
+
+        if ( aState.contains( Core::ViewState[ Enabled ]))
+        {
+          SomeBackgroundView.Opacity = 255;
+          SomeTextView.Color         = #000000FF;
+        }
+        else
+        {
+          SomeBackgroundView.Opacity = 128;
+          SomeTextView.Color         = #00000080;
+        }
+
+
+      TO DO 2:
+
+      You can evaluate here also the state of any other member in your component.
+      For example in a push-button component, the button should appear highlighted
+      as long as the user holds the finger within a touch area of the button:
+
+        if ( SomeTouchHandler.Down && SomeTouchHandler.Inside )
+          HighlightedBackground.Visible = true;
+        else
+          HighlightedBackground.Visible = false;
+
+      The touch handler itself only requests the update method to be called. Use
+      for this purpose 'InvalidateViewState()' method.
+
+
+      TO DO 3:
+
+      You can calculate here also the position/size of views accordingly to the
+      state of any other member in your component. For example in a slider you
+      can calculate the position of the slider knob from some properties like
+      'SliderValue' and 'SliderRange':
+
+        SliderKnob.Bounds.origin.x = ( SliderValue * Bounds.w ) / SliderRange;
+
+      Changing the 'SliderValue' or 'SliderRange' property should only request
+      the update method to be called. Use for this purpose 'InvalidateViewState()'
+      method.
+
+    */
+  }
+
+  $rect <20,20,160,60>
+  object WidgetSet::PushButton PushButton
+  {
+    preset Bounds = <0,0,70,70>;
+    preset Label = "Menu";
+    preset Appearance = WidgetSet::PushButton_Small;
+  }
+
+  $rect <20,20,160,60>
+  object WidgetSet::PushButton PushButton1
+  {
+    preset Bounds = <65,0,135,70>;
+    preset Label = "Settings";
+    preset Appearance = WidgetSet::PushButton_Small;
+  }
+
+  $rect <20,20,160,60>
+  object WidgetSet::PushButton PushButton2
+  {
+    preset Bounds = <135,0,205,70>;
+    preset Label = "Exp. pause";
+    preset Appearance = WidgetSet::PushButton_Small;
+  }
+
+  $rect <20,20,160,60>
+  object WidgetSet::PushButton PushButton3
+  {
+    preset Bounds = <205,0,270,70>;
+    preset Label = "Insp. Pause";
+    preset Appearance = WidgetSet::PushButton_Small;
+  }
+
+  $rect <20,20,160,60>
+  object WidgetSet::PushButton PushButton4
+  {
+    preset Bounds = <270,0,340,70>;
+    preset Label = "Freeze";
+    preset Appearance = WidgetSet::PushButton_Small;
+  }
+
+  $rect <20,20,160,60>
+  object WidgetSet::PushButton PushButton5
+  {
+    preset Bounds = <340,0,410,70>;
+    preset Label = "Set Assisted";
+    preset Appearance = WidgetSet::PushButton_Small;
+  }
+
+  $rect <20,20,160,60>
+  object WidgetSet::PushButton PushButton6
+  {
+    preset Bounds = <415,0,485,70>;
+    preset Label = "Caption";
+    preset Appearance = WidgetSet::PushButton_Small;
+  }
+
+  $rect <20,20,160,60>
+  object WidgetSet::PushButton PushButton7
+  {
+    preset Bounds = <410,0,480,70>;
+    preset Label = "Set auto";
+    preset Appearance = WidgetSet::PushButton_Small;
+  }
+}
+
+// This is a font resource.
+$rect <790,170,990,210>
+$output false
+resource Resources::Font FontXXS
+{
+  attr fontname FontName = Arial;
+  attr fontheight Height = 6;
+  attr fontquality Quality = High;
+  attr fontranges Ranges = 0x20-0xFF;
+  attr fontaspectratio AspectRatio = 1.0;
+  attr fontbold Bold = false;
+  attr fontitalic Italic = false;
+}
+
+// Win32 Res(800x640)
+note group Note4
+{
+  attr Bounds = <0,90,520,260>;
+}
+
+// STM32 Res(480x272)
+note group Note5
+{
+  attr Bounds = <520,90,1040,260>;
 }
