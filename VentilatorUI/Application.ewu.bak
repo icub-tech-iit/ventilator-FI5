@@ -480,7 +480,7 @@ class DataplotterWin32 : Core::Group
   object Core::Timer UpdateTimer
   {
     preset OnTrigger = DrawGraph;
-    preset Period = 100;
+    preset Period = 300;
     preset Enabled = true;
   }
 
@@ -747,7 +747,7 @@ class DataplotterWin32 : Core::Group
   }
 
   $rect <1040,110,1240,150>
-  var float mean;
+  var float mean = 0;
 
   $rect <1040,160,1240,200>
   var float max = -10000.0;
@@ -1712,13 +1712,13 @@ class DataplotterSTM32 : Core::Group
   }
 
   $rect <1030,170,1230,210>
-  var float mean;
+  var float mean = 0;
 
   $rect <1030,210,1230,250>
   var float max = -10000.0;
 
   $rect <1040,260,1240,300>
-  var float sum = -10000.0;
+  var float sum = 0.0;
 }
 
 $rect <580,210,780,250>
