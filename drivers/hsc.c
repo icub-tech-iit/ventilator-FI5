@@ -55,34 +55,23 @@ static void hsc_unpack(uint8_t hsc_word[4],
 		       int *hsc_status, int *hsc_pressure, int *hsc_temperature)
 {
 	int tmp;
+
 	*hsc_status = hsc_word[0] >> 6;
 	*hsc_pressure = ((hsc_word[0] & 0x3f) << 8) | hsc_word[1];
 	*hsc_temperature = (hsc_word[2] << 3) | (hsc_word[3] >> 5);
 }
 
-
-int hsc_read(hsc_handle_t *h, float *pressure_bar, float *temperature_c)
+/* internal cb called by the I2C layer upon async xfer completion */
+static void hsc_read_cb(int ret, void *arg)
 {
-	int ret;
+	hsc_handle_t *h = arg;
 	float pres;
-	uint8_t hsc_word[4];
 	int hsc_pressure, hsc_temperature, hsc_status;
-	i2c_xfer_t xfer = {
-		.direction = READ,
-		.len = 4,
-		.buf = hsc_word,
-	};
 
-	i2c_xfer_list_t xfers = {
-		.xfer_num = 1,
-		.xfers = &xfer
-	};
-
-	ret = h->i2c_xfer(&xfers, h->addr);
 	if (ret)
-		return ret;
+		goto exit;
 
-	hsc_unpack(hsc_word, &hsc_status, &hsc_pressure, &hsc_temperature);
+	hsc_unpack(h->hsc_word, &hsc_status, &hsc_pressure, &hsc_temperature);
 
 	/* if sensor sends diagnostic status then check it */
 	if (h->cfg.has_diagnostic) {
@@ -104,11 +93,13 @@ int hsc_read(hsc_handle_t *h, float *pressure_bar, float *temperature_c)
 				 * start over..
 				 */
 				h->first_data = true;
-				return -EIO;
+				ret = -EIO;
+				goto exit;
 			}
 			break;
 		default:
-			return -EIO;
+			ret = -EIO;
+			goto exit;
 		}
 
 		h->last_temperature = hsc_temperature;
@@ -118,26 +109,59 @@ int hsc_read(hsc_handle_t *h, float *pressure_bar, float *temperature_c)
 
 	/* sanity check for max/min expected code from sensor */
 	if ((hsc_pressure > h->cfg.output_max) ||
-	    (hsc_pressure < h->cfg.output_min))
-		return -EIO;
+	    (hsc_pressure < h->cfg.output_min)) {
+		ret = -EIO;
+		goto exit;
+	}
 
-	*pressure_bar = hsc_calc_pressure(h, hsc_pressure);
-	*temperature_c = hsc_calc_temperature(h, hsc_temperature);
+	/* success */
+	*h->async_pressure_ptr = hsc_calc_pressure(h, hsc_pressure);
+	*h->async_temperature_ptr = hsc_calc_temperature(h, hsc_temperature);
+
+exit:
+	if(h->async_read_cb)
+		h->async_read_cb(ret);
+
+}
+
+
+/* public API for triggering read */
+int hsc_read(hsc_handle_t *h, float *pressure_bar, float *temperature_c,
+	     void (*read_cb)(int status))
+{
+	i2c_xfer_list_t xfers = {
+		.xfer_num = 1,
+		.xfers = &h->read_xfer
+	};
+
+	h->async_pressure_ptr = pressure_bar;
+	h->async_temperature_ptr = temperature_c;
+	h->async_read_cb = read_cb;
+
+	return h->i2c_xfer(&xfers, h->addr, hsc_read_cb, h);
+}
+
+int hsc_config_device(hsc_handle_t *h, hsc_sensor_t *cfg)
+{
+	h->cfg = *cfg;
 
 	return 0;
 }
 
 
-int hsc_config_device(hsc_handle_t *h, hsc_sensor_t *cfg)
-{
-	h->cfg = *cfg;
-}
-
-
 int hsc_init(hsc_handle_t *h,
-	     int(*i2c_xfer)(i2c_xfer_list_t *xfers, int addr), int addr)
+	     int(*i2c_xfer)(i2c_xfer_list_t *xfers, int addr,
+			    i2c_xfer_cb_t i2c_xfer_cb, void *arg),
+	     int addr)
 {
 	h->i2c_xfer = i2c_xfer;
 	h->addr = addr;
 	h->first_data = true;
+
+	/* initialize read xfer descriptor: we can recycle this one forever */
+	h->read_xfer.direction = READ;
+	h->read_xfer.len = 4;
+	h->read_xfer.buf = h->hsc_word;
+
+	return 0;
 }

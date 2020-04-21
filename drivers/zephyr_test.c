@@ -26,9 +26,12 @@ int fsm_xfer_done[XFER_BRANCH_NUM];
 
 /* internal FSM use only */
 int mock_xfer_addr;
-int mock_xfer_status;
 int mock_xfer_direction;
 int mock_sn;
+
+/* async API aux vars */
+int cb_status;
+bool cb_invoked = false;
 
 enum {
 	STATE_UNK,
@@ -223,8 +226,10 @@ int zephyr_mock(uint8_t *buf, int direction)
 
 
 /* mock for the I2C xfer API */
-int i2c_xfer_mock(i2c_xfer_list_t *xfers, int addr)
+int i2c_xfer_mock(i2c_xfer_list_t *xfers, int addr,
+		  void (*i2c_xfer_cb)(int status, void *arg), void *arg)
 {
+	int ret;
 	int expected_len;
 
 	if (addr != mock_xfer_addr)
@@ -248,9 +253,43 @@ int i2c_xfer_mock(i2c_xfer_list_t *xfers, int addr)
 	if (xfers->xfers->len != expected_len)
 		fail("Unexpected xfer len %d", xfers->xfers->len);
 
-	return zephyr_mock(xfers->xfers->buf, xfers->xfers->direction);
+	ret = zephyr_mock(xfers->xfers->buf, xfers->xfers->direction);
+
+	if (!i2c_xfer_cb)
+		return ret;
+
+	i2c_xfer_cb(ret, arg);
+
+#warning TODO
+	return 0;
 };
 
+void read_cb(int status)
+{
+	cb_invoked = true;
+	cb_status = status;
+}
+
+int mock_read(zephyr_handle_t *h, uint16_t *data)
+{
+	int ret;
+
+	cb_invoked = false;
+	ret = zephyr_read(h, data, read_cb);
+	if (ret)
+		test_silent(!cb_invoked, "unexpected callback invokation!");
+	else
+		test_silent(cb_invoked, "callback not invoked!");
+	return ret;
+}
+
+
+#define TEST_RET_CB(fmt, ...) TEST_RET_CBX_COND(0, 1, fmt, ##__VA_ARGS__)
+#define TEST_RET_CBN(fmt, ...) TEST_RET_CBX_COND(1, 1, fmt, ##__VA_ARGS__)
+#define TEST_RET_CB_COND(cond, fmt, ...) TEST_RET_CBX_COND(0, cond, fmt, ##__VA_ARGS__)
+#define TEST_RET_CBX_COND(cbx, cond, fmt, ...) 				\
+	test((ret == 0) && ((!!cb_status) == (!!cbx)) && (cond),	\
+	     fmt". (ret:%d cb_status:%d)" , ##__VA_ARGS__, ret, cb_status)
 
 int main()
 {
@@ -278,9 +317,8 @@ int main()
 	/* check that for zephyr_read() API is working */
 	mock_flow_data[0] = 0x03;
 	mock_flow_data[1] = 0x21;
-	ret = zephyr_read(&zephyr_handle, &data);
-	test(ret == 0, "read operation status");
-	test(data == 0x321, "read data 0x%x", data);
+	ret = mock_read(&zephyr_handle, &data);
+	TEST_RET_CB_COND(data == 0x321, "read data 0x%x", data);
 
 	/*
 	 * check whether zephyr_read() recognizes invalid data
@@ -288,8 +326,8 @@ int main()
 	 */
 	mock_flow_data[0] = 0x83;
 	mock_flow_data[1] = 0x21;
-	ret = zephyr_read(&zephyr_handle, &data);
-	test(ret != 0, "recognize invalid read data");
+	ret = mock_read(&zephyr_handle, &data);
+	TEST_RET_CBN("recognize invalid read data");
 	mock_flow_data[0] = 0x03;
 
 	/* see if bad csum is recognized */
@@ -350,7 +388,7 @@ int main()
 	ARRAY_ZERO(xfer_status,XFER_BRANCH_NUM);
 	ret = zephyr_init(&zephyr_handle,
 			  i2c_xfer_mock, mock_xfer_addr);
-	test(ret == 0, "unexpected failure", i);
+	test_silent(ret == 0, "unexpected failure", i);
 
 	for (i = 0; i < XFER_BRANCH_NUM; i++) {
 
@@ -360,11 +398,11 @@ int main()
 		/* clear coverage buffer */
 		zephyr_fsm_clear_xfer_done();
 
-		ret = zephyr_read(&zephyr_handle, &data);
-		if (!fsm_xfer_done[i])
-			continue;
-
-		test(ret != 0, "xfer failure check when reading (%d)", i);
+		ret = mock_read(&zephyr_handle, &data);
+		if (fsm_xfer_done[i])
+			TEST_RET_CBN("xfer failure check when reading %d", i);
+		else
+			TEST_RET_CB("xfer NOT failure check when reading %d", i);
 	}
 
 	printf("\nAll test passed!\n\n");

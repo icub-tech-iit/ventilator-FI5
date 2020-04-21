@@ -1,6 +1,7 @@
 /* driver for honeywell zephyr sensors */
 
 #include <errno.h>
+#include <stdio.h>
 #include "delay.h"
 #include "zephyr.h"
 
@@ -11,6 +12,12 @@
 
 static int zephyr_read_word(zephyr_handle_t *h, uint16_t *word);
 static int zephyr_write_cmd(zephyr_handle_t *h, uint8_t cmd);
+
+static uint16_t zephyr_unpack_word(uint8_t zephyr_word[2])
+{
+	return ((uint16_t)zephyr_word[0] << 8) |
+		(uint16_t)zephyr_word[1];
+}
 
 
 /* provide the device SN as read and verified in the initialization procedure */
@@ -24,8 +31,32 @@ int zephyr_get_sn(zephyr_handle_t *h, uint32_t *sn)
 }
 
 
+/* internal read callback */
+static void zephyr_read_cb(int ret, void *arg)
+
+{
+	uint16_t tmp;
+	zephyr_handle_t *h = arg;
+
+	if (ret)
+		goto exit;
+
+	tmp = zephyr_unpack_word(h->async_zephyr_word);
+
+	/* we expect regular sensor data; 2 MSBs has to be zero */
+	if (tmp & 0xC000)
+		ret = -EIO;
+	else
+		*h->async_flow_ptr = tmp;
+
+exit:
+	h->async_read_cb(ret);
+}
+
+
 /* read and provide the flow measured by the device */
-int zephyr_read(zephyr_handle_t *h, uint16_t *flow)
+int zephyr_read(zephyr_handle_t *h, uint16_t *flow,
+		void (*read_cb)(int status))
 {
 	int ret;
 	uint16_t zephyr_word;
@@ -33,17 +64,14 @@ int zephyr_read(zephyr_handle_t *h, uint16_t *flow)
 	if (!h->init_ok)
 		return -EIO;
 
-	ret = zephyr_read_word(h, &zephyr_word);
-	if (ret)
-		return ret;
+	i2c_xfer_list_t xfers = {
+		.xfer_num = 1,
+		.xfers = &h->async_read_xfer
+	};
 
-	/* we expect regular sensor data; 2 MSBs has to be zero */
-	if (zephyr_word & 0xC000)
-		return -EIO;
-
-	*flow = zephyr_word;
-
-	return 0;
+	h->async_read_cb = read_cb;
+	h->async_flow_ptr = flow;
+	return h->i2c_xfer(&xfers, h->addr, zephyr_read_cb, h);
 }
 
 
@@ -99,14 +127,11 @@ static int zephyr_read_word(zephyr_handle_t *h, uint16_t *word)
 		.xfers = &xfer
 	};
 
-	ret = h->i2c_xfer(&xfers, h->addr);
+	ret = h->i2c_xfer(&xfers, h->addr, NULL, NULL);
 	if (ret)
 		return ret;
 
-	tmp = ((uint16_t)zephyr_word[0] << 8) |
-		(uint16_t)zephyr_word[1];
-
-	*word = tmp;
+	*word = zephyr_unpack_word(zephyr_word);
 
 	return 0;
 }
@@ -161,7 +186,7 @@ static int zephyr_write_cmd(zephyr_handle_t *h, uint8_t cmd)
 		.xfers = &xfer
 	};
 
-	return h->i2c_xfer(&xfers, h->addr);
+	return h->i2c_xfer(&xfers, h->addr, NULL, NULL);
 }
 
 
@@ -217,7 +242,8 @@ static int zephyr_verify_sn(zephyr_handle_t *h)
 
 
 int zephyr_init(zephyr_handle_t *h,
-		int(*i2c_xfer)(i2c_xfer_list_t *xfers, int addr), int addr)
+		int(*i2c_xfer)(i2c_xfer_list_t *xfers, int addr,
+			       i2c_xfer_cb_t i2c_xfer_cb, void *arg), int addr)
 {
 	uint32_t sn;
 	int ret;
@@ -225,6 +251,11 @@ int zephyr_init(zephyr_handle_t *h,
 	h->init_ok = false;
 	h->i2c_xfer = i2c_xfer;
 	h->addr = addr;
+
+	/* initialize read xfer descriptor: we can recycle this one forever */
+	h->async_read_xfer.direction = READ;
+	h->async_read_xfer.len = 2;
+	h->async_read_xfer.buf = h->async_zephyr_word;
 
 	/*
 	 * Ensure initial startup time is elapsed. No assumption about elapsed

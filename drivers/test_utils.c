@@ -30,6 +30,19 @@ void fail(const char *fmt, ...)
 }
 
 
+void test_silent(bool cond, const char *fmt, ...)
+{
+    va_list args;
+    va_start(args, fmt);
+    if (!cond) {
+	    printf(" ----- FAILED ------\n");
+	    vprintf(fmt, args);
+	    va_end(args);
+	    printf("\n -------------------\n");
+	    exit(-1);
+    }
+
+}
 void test(bool cond, const char *fmt, ...)
 {
     va_list args;
