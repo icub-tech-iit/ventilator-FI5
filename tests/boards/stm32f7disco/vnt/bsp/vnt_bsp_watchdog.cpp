@@ -33,12 +33,21 @@
 
 namespace vnt { namespace bsp { namespace watchdog {
     
+    // TODO: when and if supported... set it to true and add code
+    // for now keep it false
+    constexpr bool supported = false;
+    
     Config theconfig {};
     bool initted {false};   
     vnt::core::Time lastrefresh {0};
   
     bool init(const Config &config)
     {
+        if(false == supported)
+        {
+            return false;
+        }
+        
         if(initted)
         {
             return false;
@@ -50,8 +59,7 @@ namespace vnt { namespace bsp { namespace watchdog {
 #endif
         
         // TODO_CODE: PUT ACTUAL CODE IN HERE
-        
-        
+               
         
         lastrefresh = vnt::core::now();
         
@@ -62,6 +70,10 @@ namespace vnt { namespace bsp { namespace watchdog {
     
     bool refresh()
     {
+        if(false == initted)
+        {
+            return false;
+        }
         
         // TODO_CODE: put actual code in here
         
