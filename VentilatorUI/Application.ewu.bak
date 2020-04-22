@@ -674,7 +674,7 @@ class DataplotterWin32 : Core::Group
   $rect <1040,160,1240,200>
   var float max = -10000.0;
 
-  $rect <1250,520,1450,560>
+  $rect <490,460,690,500>
   var float sum = 0.0;
 
   $rect <60,300,260,340>
@@ -728,6 +728,59 @@ class DataplotterWin32 : Core::Group
     // TO DO:
     // 
     // Now you can handle the alternation of the property.
+  }
+
+  $rect <1250,410,1450,450>
+  property float minYAxis = 0;
+
+  $rect <1250,450,1450,490>
+  onset minYAxis
+  {
+    // The value doesn't change - nothing to do.
+    if ( pure minYAxis == value )
+      return;
+
+    // Remember the property's new value.
+    pure minYAxis = value;
+    MinAxisValue.String = string(minYAxis,0,2); 
+    // TO DO:
+    // 
+    // Now you can handle the alternation of the property.
+  }
+
+  $rect <1240,270,1440,310>
+  property float maxYAxis = 0;
+
+  $rect <1240,310,1440,350>
+  onset maxYAxis
+  {
+    // The value doesn't change - nothing to do.
+    if ( pure maxYAxis == value )
+      return;
+
+    // Remember the property's new value.
+    pure maxYAxis = value;
+    MaxAxisValue.String = string(maxYAxis,0,2); 
+
+    // TO DO:
+    // 
+    // Now you can handle the alternation of the property.
+  }
+
+  $rect <20,20,160,60>
+  object Views::Text MaxAxisValue
+  {
+    preset Bounds = <0,5,30,35>;
+    preset String = "0.00";
+    preset Font = Resources::DefaultFont;
+  }
+
+  $rect <20,20,160,60>
+  object Views::Text MinAxisValue
+  {
+    preset Bounds = <0,120,40,155>;
+    preset String = "0";
+    preset Font = Resources::DefaultFont;
   }
 
   $reorder InvalidateViewState 1
@@ -1054,6 +1107,7 @@ vclass ApplicationVariantSTM32 : Application::Application
     preset ColorProp = #40FF0AFF;
     preset NameProp = "V_tidal(mL)";
     preset DataProvider = DataSource1;
+    preset XAxisHeight = 34;
   }
 
   $rect <20,20,160,60>
@@ -1768,6 +1822,25 @@ class DataplotterSTM32 : Core::Group
     preset Point2 = <412,58>;
     preset Point1 = <10,58>;
     preset Width = 1;
+  }
+
+  $rect <820,310,1020,350>
+  property int32 XAxisHeight = 0;
+
+  $rect <820,350,1020,390>
+  onset XAxisHeight
+  {
+    // The value doesn't change - nothing to do.
+    if ( pure XAxisHeight == value )
+      return;
+
+    // Remember the property's new value.
+    pure XAxisHeight = value;
+    this.XAxis.Point1.y = value;
+    this.XAxis.Point2.y = value;
+    // TO DO:
+    // 
+    // Now you can handle the alternation of the property.
   }
 }
 
