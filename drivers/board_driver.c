@@ -5,6 +5,7 @@
 #include "hsc.h"
 #include "pwm.h"
 #include "zephyr.h"
+#include "mcp23017.h"
 
 #ifdef DEBUG_HAL
     #include "board_sim.h"
@@ -26,6 +27,8 @@
 #define FLOW_SENSOR_1_ADDRESS           (0x49)
 #define FLOW_SENSOR_2_ADDRESS           (0x49)
 
+#define GPIO_EXPANDER_ADDRESS           (0x22)
+
 /****************************************************************/
 /* Local type definitions.                                      */
 /****************************************************************/
@@ -40,6 +43,9 @@ typedef struct
 {
     i2c_xfer_cb_t cb;
     void* args;
+    i2c_xfer_list_t xfers;
+    int addr;
+    int index;
 } i2c_xfer_cb_data_t;
 
 typedef struct
@@ -51,6 +57,7 @@ typedef struct
     zephyr_handle_t flow_sensor1;
     zephyr_handle_t flow_sensor2;
     i2c_mux_handle_t i2c_mux;
+    mcp23017_handle_t gpio_expander;
 
     // Actuator devices
     pwm_handle_t pwm_valve1;
@@ -81,6 +88,7 @@ enum
     BOARD_STATE_FLOW2,
     BOARD_STATE_CHANNEL3,
     BOARD_STATE_PRESSURE3,
+    BOARD_STATE_GPIO,
     BOARD_STATE_COMPLETED
 };
 
@@ -98,6 +106,8 @@ static int board_read_pressure(pressure_sensor_t* sensor,
                                int16_t* temperature);
 
 static int board_read_flow(zephyr_handle_t* sensor, uint16_t* flow);
+
+static int board_read_gpio_expander(mcp23017_handle_t* gpio_dev, uint16_t* value);
 
 static int board_pressure_data_received(void);
 
@@ -119,6 +129,11 @@ extern TIM_HandleTypeDef htim1;
 extern TIM_HandleTypeDef htim2;
 extern I2C_HandleTypeDef hi2c1;
 
+static mcp23017_cfg_t gpio_cfg = {
+    .direction = 0x00FF,
+    .pup = 0x0000
+};
+
 static pwm_config_t pwm1_cfg = {
     .timer_frequency = 108000000,
     .pwm_frequency = 10000,
@@ -136,7 +151,8 @@ static pwm_config_t pwm2_cfg = {
 static i2c_xfer_cb_data_t i2c_xfer_cb_data = 
 {
     .cb = 0,
-    .args = 0
+    .args = 0,
+    .index = 0
 };
 
 static int i2c_mux_semaphore = 0;
@@ -176,6 +192,10 @@ int board_init(void)
     i2c_mux_select(&board_dev.i2c_mux, 1, i2c_mux_select_completed);
     i2c_mux_select_wait();
     zephyr_init(&board_dev.flow_sensor2, i2c_xfer_async, FLOW_SENSOR_2_ADDRESS);
+
+    // Initialize the I2C GPIO expander
+    mcp23017_init(&board_dev.gpio_expander, i2c_xfer_async, GPIO_EXPANDER_ADDRESS); 
+    mcp23017_config_device(&board_dev.gpio_expander, &gpio_cfg);
 
     // Initialize the PWM devices
     pwm_init(&board_dev.pwm_valve1, (void*)&htim1, &pwm1_cfg);
@@ -239,30 +259,60 @@ int board_apply_actuation(board_actuation_data_t* out_data)
         return RC_PWM_ERROR;
     }
 
+    ret_code = mcp23017_write(&board_dev.gpio_expander, out_data->gpio, 0);
+
     return RC_OK;
 }
 
 /****************************************************************/
 /* Local functions definitions.                                 */
 /****************************************************************/
+
+static int i2c_xfer_segment(i2c_xfer_list_t *xfers, int addr, int index)
+{
+    int flag = HAL_I2C_NEXT_FRAME;
+    i2c_xfer_t* xfer = &xfers->xfers[index];
+
+    if(xfers->xfer_num == 1)
+        flag = HAL_I2C_FIRST_AND_LAST_FRAME;
+    else if (index == 0)
+        flag = HAL_I2C_FIRST_FRAME;
+    else if (index == (xfers->xfer_num - 1))
+        flag = HAL_I2C_LAST_FRAME;
+    else
+        flag = HAL_I2C_NEXT_FRAME;
+
+    if(xfer->direction == WRITE)
+    {
+        return HAL_I2C_Master_Sequential_Transmit_IT(&hi2c1, addr, (uint8_t*)xfer->buf, xfer->len, flag);
+    }
+    else
+    {
+        return HAL_I2C_Master_Sequential_Receive_IT(&hi2c1, addr, (uint8_t*)xfer->buf, xfer->len, flag);
+    }
+}
+
 static int i2c_xfer(i2c_xfer_list_t *xfers, int addr)
 {
     int retcode;
     int i;
 
+    /* we want our callback on IT to simply bail out */
+    i2c_xfer_cb_data.cb = 0;
+    i2c_xfer_cb_data.index = 0;
+    i2c_xfer_cb_data.xfers.xfer_num = 0;
+
     for(i = 0; i < xfers->xfer_num; ++i)
     {
-        i2c_xfer_t* xfer = &xfers->xfers[i];
+        retcode = i2c_xfer_segment(xfers, addr, i);
 
-        if(xfer->direction == WRITE)
-        {
-            retcode = HAL_I2C_Master_Transmit(&hi2c1, addr, (uint8_t*)xfer->buf, xfer->len, 0);
-        }
-        else
-        {
-            retcode = HAL_I2C_Master_Receive(&hi2c1, addr, (uint8_t*)xfer->buf, xfer->len, 0);
-        }
+        if(retcode != 0)
+            break;
 
+#warning TODO_timeout?
+        while(HAL_I2C_GetState(&hi2c1) == HAL_I2C_STATE_BUSY);
+
+        retcode = HAL_I2C_GetError(&hi2c1);
         if(retcode != 0)
             break;
     }
@@ -273,7 +323,6 @@ static int i2c_xfer(i2c_xfer_list_t *xfers, int addr)
 static int i2c_xfer_async(i2c_xfer_list_t *xfers, int addr, i2c_xfer_cb_t cb, void* args)
 {
     int retcode;
-    int i;
 
     // When no callback is passed the transfer falls back 
     // into the synchronous way.
@@ -284,30 +333,29 @@ static int i2c_xfer_async(i2c_xfer_list_t *xfers, int addr, i2c_xfer_cb_t cb, vo
     // bus operation is completed
     i2c_xfer_cb_data.cb = cb;
     i2c_xfer_cb_data.args = args;
+    i2c_xfer_cb_data.index = 0;
+    i2c_xfer_cb_data.xfers = *xfers;
+    i2c_xfer_cb_data.addr = addr;
 
-    for(i = 0; i < xfers->xfer_num; ++i)
-    {
-        i2c_xfer_t* xfer = &xfers->xfers[i];
-
-        if(xfer->direction == WRITE)
-        {
-            retcode = HAL_I2C_Master_Transmit_IT(&hi2c1, addr, (uint8_t*)xfer->buf, xfer->len);
-        }
-        else
-        {
-            retcode = HAL_I2C_Master_Receive_IT(&hi2c1, addr, (uint8_t*)xfer->buf, xfer->len);
-        }
-
-        if(retcode != 0)
-            break;
-    }
+    retcode = i2c_xfer_segment(xfers, addr, 0);
 
     return (retcode == 0) ? RC_OK : RC_BUS_ERROR;
 }
 
 void i2c_xfer_completed(int retcode)
 {
-    if(i2c_xfer_cb_data.cb)
+    int last = 1;
+
+    i2c_xfer_cb_data.index++;
+    /* As long as we don't hit an error, and there are segments, keep on TXing */
+    if((retcode == 0) && (i2c_xfer_cb_data.index < i2c_xfer_cb_data.xfers.xfer_num))
+    {
+        retcode = i2c_xfer_segment(&i2c_xfer_cb_data.xfers, i2c_xfer_cb_data.addr, i2c_xfer_cb_data.index);
+        if (retcode == 0)
+            last = 0; /* segment successfully enqueued, this is not the last CB invokation */
+    }
+
+    if(i2c_xfer_cb_data.cb && last)
         i2c_xfer_cb_data.cb(retcode, i2c_xfer_cb_data.args);
 }
 
@@ -375,6 +423,15 @@ static int board_read_flow(zephyr_handle_t* sensor, uint16_t* flow)
     return (result == 0) ? RC_OK : RC_SENSOR_ERROR;
 }
 
+static int board_read_gpio_expander(mcp23017_handle_t* gpio_dev, uint16_t* value)
+{
+    int result;
+
+    result = mcp23017_read(gpio_dev, value, board_fsm_update);
+
+    return (result == 0) ? RC_OK : RC_SENSOR_ERROR;
+}
+
 static int board_pressure_data_received()
 {
     *board_fsm.pressure    = (uint16_t)(board_fsm.sensor_pressure * 1000.0f);
@@ -401,7 +458,8 @@ static void board_fsm_clear(int ret_code)
 
 static void board_fsm_update(int status)
 {
-    int ret_code;
+    int ret_code = RC_OK;
+    int skip_state = 0;
 
     // If there's any error abort sensor reading
     // Note: Whoever calls this function must correcly
@@ -412,81 +470,163 @@ static void board_fsm_update(int status)
         return;
     }
 
+    // The FSM update function was called due to 
+    // an event raising. The exit function of the
+    // FSM old state must be called before switch to the 
+    // new state.
     switch(board_fsm.state)
     {
-        case BOARD_STATE_CHANNEL1:
-            ret_code = i2c_mux_select(&board_dev.i2c_mux, 0, board_fsm_update);
-            break;
-
-        case BOARD_STATE_PRESSURE1:
-            // Trigger sensor 1 reading
-            ret_code = board_read_pressure(&board_dev.pressure_sensor1, 
-                                           &board_fsm.in_data->pressure1,
-                                           &board_fsm.in_data->temperature1);
-            break;
-
         case BOARD_STATE_FLOW1:
             // Process the pressure sensor 1 data  
-            board_pressure_data_received();
-
-            ret_code = board_read_flow(&board_dev.flow_sensor1,
-                                       &board_fsm.in_data->flow1);
-            break;
-
-
-        case BOARD_STATE_CHANNEL2:
-            ret_code = i2c_mux_select(&board_dev.i2c_mux, 1, board_fsm_update);
-            break;
-
-        case BOARD_STATE_PRESSURE2:
-            // Trigger sensor 2 reading
-            ret_code = board_read_pressure(&board_dev.pressure_sensor2, 
-                                           &board_fsm.in_data->pressure2,
-                                           &board_fsm.in_data->temperature2);
+            ret_code = board_pressure_data_received();
             break;
 
         case BOARD_STATE_FLOW2:
             // Process the pressure sensor 2 data  
-            board_pressure_data_received();
-
-            ret_code = board_read_flow(&board_dev.flow_sensor2,
-                                       &board_fsm.in_data->flow2);
+            ret_code = board_pressure_data_received();
             break;
 
-        case BOARD_STATE_CHANNEL3:
-            ret_code = i2c_mux_select(&board_dev.i2c_mux, 2, board_fsm_update);
-            break;
-
-        case BOARD_STATE_PRESSURE3:
-            // Trigger sensor 3 reading
-            ret_code = board_read_pressure(&board_dev.pressure_sensor3, 
-                                           &board_fsm.in_data->pressure3,
-                                           &board_fsm.in_data->temperature3);
-            break;
-
-        case BOARD_STATE_COMPLETED:
+        case BOARD_STATE_GPIO:
             // Process the pressure sensor 2 data  
             ret_code = board_pressure_data_received();
             break;
+
+        default:
+            break;
     }
 
-    if(ret_code == RC_OK)
+    // If any error happened reset the FSM
+    if(ret_code != RC_OK)
     {
-        if(board_fsm.state == BOARD_STATE_COMPLETED)
+        board_fsm_clear(ret_code);
+        return;
+    }
+    
+    // Loop over the FSM states until there's something usefull to do.
+    // The read mask inside the in_sensor data structure defines
+    // which sensors are to be read. When the FSM is in a state responsible to
+    // the read action of a sensor which is not needed that state is skipped.
+    // The FSM evolve immediately into the next one until it finds some 
+    // needed sensor reading or the complete state. 
+    do
+    {
+        // Reset the skip flag. We assume that the state will be skipped.
+        // Only when an action is executed the skip flag is reset.
+        skip_state = 1;
+
+        switch(board_fsm.state)
         {
-            // If all the work is done call the completion callback
-            board_fsm_clear(RC_OK);
+            case BOARD_STATE_CHANNEL1:
+                if((board_fsm.in_data->read_mask & (BOARD_PRESSURE_1 | BOARD_TEMPERATURE_1 | BOARD_FLOW_1)) != 0)
+                {
+                    ret_code = i2c_mux_select(&board_dev.i2c_mux, 0, board_fsm_update);
+                    skip_state = 0;
+                }
+                break;
+
+            case BOARD_STATE_PRESSURE1:
+                // Trigger sensor 1 reading
+                if((board_fsm.in_data->read_mask & (BOARD_PRESSURE_1 | BOARD_TEMPERATURE_1)) != 0)
+                {
+                    ret_code = board_read_pressure(&board_dev.pressure_sensor1, 
+                                                &board_fsm.in_data->pressure1,
+                                                &board_fsm.in_data->temperature1);
+                    skip_state = 0;
+                }
+                break;
+
+            case BOARD_STATE_FLOW1:
+                if((board_fsm.in_data->read_mask & BOARD_FLOW_1) != 0)
+                {
+                    ret_code = board_read_flow(&board_dev.flow_sensor1,
+                                               &board_fsm.in_data->flow1);
+                    skip_state = 0;
+                }
+                break;
+
+
+            case BOARD_STATE_CHANNEL2:
+                if((board_fsm.in_data->read_mask & (BOARD_PRESSURE_2 | BOARD_TEMPERATURE_2 | BOARD_FLOW_2)) != 0)
+                {
+                    ret_code = i2c_mux_select(&board_dev.i2c_mux, 1, board_fsm_update);
+                    skip_state = 0;
+                }
+                break;
+
+            case BOARD_STATE_PRESSURE2:
+                // Trigger sensor 2 reading
+                if((board_fsm.in_data->read_mask & (BOARD_PRESSURE_2 | BOARD_TEMPERATURE_2)) != 0)
+                {
+                    ret_code = board_read_pressure(&board_dev.pressure_sensor2, 
+                                                &board_fsm.in_data->pressure2,
+                                                &board_fsm.in_data->temperature2);
+                    skip_state = 0;
+                }
+                break;
+
+            case BOARD_STATE_FLOW2:
+                if((board_fsm.in_data->read_mask & BOARD_FLOW_2) != 0)
+                {
+                    ret_code = board_read_flow(&board_dev.flow_sensor2,
+                                               &board_fsm.in_data->flow2);
+                    skip_state = 0;
+                }
+                break;
+
+            case BOARD_STATE_CHANNEL3:
+                if((board_fsm.in_data->read_mask & (BOARD_PRESSURE_3 | BOARD_TEMPERATURE_3)) != 0)
+                {
+                    ret_code = i2c_mux_select(&board_dev.i2c_mux, 2, board_fsm_update);
+                    skip_state = 0;
+                }
+                break;
+
+            case BOARD_STATE_PRESSURE3:
+                // Trigger sensor 3 reading
+                if((board_fsm.in_data->read_mask & (BOARD_PRESSURE_3 | BOARD_TEMPERATURE_3)) != 0)
+                {
+                    ret_code = board_read_pressure(&board_dev.pressure_sensor3, 
+                                                &board_fsm.in_data->pressure3,
+                                                &board_fsm.in_data->temperature3);
+                    skip_state = 0;
+                }
+                break;
+
+            case BOARD_STATE_GPIO:
+                // Trigger sensor 3 reading
+                if((board_fsm.in_data->read_mask & BOARD_GPIO) != 0)
+                {
+                    ret_code = board_read_gpio_expander(&board_dev.gpio_expander, 
+                                                &board_fsm.in_data->gpio);
+                    skip_state = 0;
+                }
+                break;
+
+            case BOARD_STATE_COMPLETED:
+                // Never skip the final state
+                skip_state = 0;
+                break;
+        }
+
+        if(ret_code == RC_OK)
+        {
+            if(board_fsm.state == BOARD_STATE_COMPLETED)
+            {
+                // If all the work is done call the completion callback
+                board_fsm_clear(RC_OK);
+            }
+            else
+            {
+                // Go into the next state
+                board_fsm.state++;
+            }
         }
         else
         {
-            // Go into the next state
-            board_fsm.state++;
+            board_fsm_clear(ret_code);
+            break;
         }
-    }
-    else
-    {
-        board_fsm_clear(ret_code);
-    }
+    } while(skip_state != 0);
 }
 
 static void board_read_completed_callback(int status)

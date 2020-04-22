@@ -81,10 +81,18 @@ HAL_StatusTypeDef HAL_I2C_Master_Receive(I2C_HandleTypeDef *hi2c,
     return result;
 }
 
+HAL_StatusTypeDef HAL_I2C_Master_Sequential_Transmit_IT(I2C_HandleTypeDef *hi2c,
+                                             uint16_t DevAddress,
+                                             uint8_t *pData,
+					     uint16_t Size,
+					     uint32_t XferOptions)
+{
+	return HAL_I2C_Master_Transmit_IT(hi2c, DevAddress, pData, Size);
+}
 
-HAL_StatusTypeDef HAL_I2C_Master_Transmit_IT(I2C_HandleTypeDef *hi2c, 
-                                             uint16_t DevAddress, 
-                                             uint8_t *pData, 
+HAL_StatusTypeDef HAL_I2C_Master_Transmit_IT(I2C_HandleTypeDef *hi2c,
+                                             uint16_t DevAddress,
+                                             uint8_t *pData,
                                              uint16_t Size)
 {
     int busId;
@@ -97,6 +105,15 @@ HAL_StatusTypeDef HAL_I2C_Master_Transmit_IT(I2C_HandleTypeDef *hi2c,
     result = board_sim_bus_write(busId, DevAddress, pData, Size);
 
     return result;
+}
+
+HAL_StatusTypeDef HAL_I2C_Master_Sequential_Receive_IT(I2C_HandleTypeDef *hi2c,
+                                             uint16_t DevAddress,
+                                             uint8_t *pData,
+					     uint16_t Size,
+					     uint32_t XferOptions)
+{
+	return HAL_I2C_Master_Receive_IT(hi2c, DevAddress, pData, Size);
 }
 
 HAL_StatusTypeDef HAL_I2C_Master_Receive_IT(I2C_HandleTypeDef *hi2c, uint16_t DevAddress, uint8_t *pData, uint16_t Size)
@@ -112,6 +129,24 @@ HAL_StatusTypeDef HAL_I2C_Master_Receive_IT(I2C_HandleTypeDef *hi2c, uint16_t De
 
     return result;
 }
+
+HAL_StatusTypeDef HAL_I2C_GetState(I2C_HandleTypeDef *hi2c)
+{
+	static int retry = 10;
+
+	if (!retry--) {
+		retry = 10;
+        board_sim_bus_irq(1);
+		return HAL_I2C_STATE_READY;
+	} else
+		return HAL_I2C_STATE_BUSY;
+}
+
+uint32_t HAL_I2C_GetError(I2C_HandleTypeDef *hi2c)
+{
+	return 0;
+}
+
 
 static void HAL_I2C_IRQHandler(int status)
 {

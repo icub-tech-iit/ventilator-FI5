@@ -15,6 +15,7 @@ static int test_board_sim_read(int busId, int address, void* data, int size, int
 static int test_board_sim_write(int busId, int address, void* data, int size, int expectd_result);
 static int test_board_buffer(void* buffer, void* expected, int size);
 static int test_board_dump_sensor_data(board_sensor_data_t* data);
+static int test_board_read_sensor(board_sensor_data_t* data, board_sensor_data_t* test_data);
 
 static void test_board_read_callback(int status);
 
@@ -118,6 +119,8 @@ static int test_board_driver(void)
     int result;
 
     board_sensor_data_t sensor_data;
+    board_sensor_data_t all_sensor_data;
+    board_sensor_data_t test_sensor_data;
 
     printf("\n");
     printf("################################\n");
@@ -166,6 +169,7 @@ static int test_board_driver(void)
     // Read the sensors
     printf("board_read_sensors() ");
     memset((void*)&sensor_data, 0x0, sizeof(board_sensor_data_t));
+    sensor_data.read_mask = BOARD_ALL_SENSORS;
     result = board_read_sensors(&sensor_data);
     if(result != RC_OK)
     {
@@ -189,10 +193,15 @@ static int test_board_driver(void)
         return 1;
     }
 
-    // Read the sensors
+    // Suppose that the first reading is ok.
+    // Should check with a static sensor data value
+    all_sensor_data = sensor_data;
+
     printf("board_read_sensors_async() ");
     memset((void*)&sensor_data, 0x0, sizeof(board_sensor_data_t));
-    result = board_read_sensors_async(&sensor_data, test_board_read_callback);
+    memcpy(&test_sensor_data, &all_sensor_data, sizeof(board_sensor_data_t));
+    sensor_data.read_mask = BOARD_ALL_SENSORS;
+    result = test_board_read_sensor(&sensor_data, &test_sensor_data);
     if(result != RC_OK)
     {
         printf("FAILED [%d]\n", result);
@@ -203,30 +212,55 @@ static int test_board_driver(void)
         printf("PASSED\n");
     }
 
-    for(int i = 0; i < 10; ++i)
+    printf("board_read_sensors_async() ");
+    memset((void*)&sensor_data, 0x0, sizeof(board_sensor_data_t));
+    memset((void*)&test_sensor_data, 0x0, sizeof(board_sensor_data_t));
+    sensor_data.read_mask = BOARD_NO_SENSOR;
+    test_sensor_data.read_mask = BOARD_NO_SENSOR;
+    result = test_board_read_sensor(&sensor_data, &test_sensor_data);
+    if(result != RC_OK)
     {
-        board_sim_bus_irq(1);
-        if(board_sensor_read_completed)
-            break;
-    }
-
-    if(!board_sensor_read_completed)
-    {
-        printf("FAILED [callback never called]\n");
+        printf("FAILED [%d]\n", result);
         return 1;
-    }
-
-    
-    printf("Check sensor data ");
-    if(board_sensor_read_status == 0)
-    {
-        printf("PASSED\n");
-        test_board_dump_sensor_data(&sensor_data);
     }
     else
     {
-        printf("FAILED [%d] \n", board_sensor_read_status);
+        printf("PASSED\n");
+    }
+
+    printf("board_read_sensors_async() ");
+    memset((void*)&sensor_data, 0x0, sizeof(board_sensor_data_t));
+    memset((void*)&test_sensor_data, 0x0, sizeof(board_sensor_data_t));
+    sensor_data.read_mask = BOARD_PRESSURE_1;
+    test_sensor_data.read_mask = BOARD_PRESSURE_1;
+    test_sensor_data.pressure1 = all_sensor_data.pressure1;
+    test_sensor_data.temperature1 = all_sensor_data.temperature1;
+    result = test_board_read_sensor(&sensor_data, &test_sensor_data);
+    if(result != RC_OK)
+    {
+        printf("FAILED [%d]\n", result);
         return 1;
+    }
+    else
+    {
+        printf("PASSED\n");
+    }
+
+    printf("board_read_sensors_async() ");
+    memset((void*)&sensor_data, 0x0, sizeof(board_sensor_data_t));
+    memset((void*)&test_sensor_data, 0x0, sizeof(board_sensor_data_t));
+    sensor_data.read_mask = BOARD_FLOW_2;
+    test_sensor_data.read_mask = BOARD_FLOW_2;
+    test_sensor_data.flow2 = all_sensor_data.flow2;
+    result = test_board_read_sensor(&sensor_data, &test_sensor_data);
+    if(result != RC_OK)
+    {
+        printf("FAILED [%d]\n", result);
+        return 1;
+    }
+    else
+    {
+        printf("PASSED\n");
     }
 
     printf("\nTEST CASE PASSED\n");
@@ -322,8 +356,47 @@ static int test_board_dump_sensor_data(board_sensor_data_t* sensor_data)
     printf("  temperature1 --> %hd\n", sensor_data->temperature1);
     printf("  temperature2 --> %hd\n", sensor_data->temperature2);
     printf("  temperature3 --> %hd\n", sensor_data->temperature3);
+    printf("  gpio         --> %hu\n", sensor_data->gpio);
 
     return 0;
+}
+
+static int test_board_read_sensor(board_sensor_data_t* data, board_sensor_data_t* test_data)
+{
+    int result;
+    int i = 0;
+
+    board_sensor_read_completed = 0;
+
+    result = board_read_sensors_async(data, test_board_read_callback);
+    if(result != RC_OK)
+        return result;
+
+    while((i < 10) && (!board_sensor_read_completed))
+    {
+        board_sim_bus_irq(1);
+    }
+
+    if(!board_sensor_read_completed)
+    {
+        printf("FAILED [callback never called]\n");
+        return 1;
+    }
+
+    if(test_data)
+    {
+        result = memcmp(data, test_data, sizeof(board_sensor_data_t));
+
+        if(result != 0)
+        {
+            printf("test_data:\n");
+            test_board_dump_sensor_data(test_data);
+            printf("\ndata:\n");
+            test_board_dump_sensor_data(data);
+        }
+    }
+
+    return result;
 }
 
 static void test_board_read_callback(int status)

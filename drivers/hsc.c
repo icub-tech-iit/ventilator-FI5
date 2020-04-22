@@ -54,8 +54,6 @@ static float hsc_calc_temperature(hsc_handle_t *h, int code)
 static void hsc_unpack(uint8_t hsc_word[4],
 		       int *hsc_status, int *hsc_pressure, int *hsc_temperature)
 {
-	int tmp;
-
 	*hsc_status = hsc_word[0] >> 6;
 	*hsc_pressure = ((hsc_word[0] & 0x3f) << 8) | hsc_word[1];
 	*hsc_temperature = (hsc_word[2] << 3) | (hsc_word[3] >> 5);
@@ -65,7 +63,6 @@ static void hsc_unpack(uint8_t hsc_word[4],
 static void hsc_read_cb(int ret, void *arg)
 {
 	hsc_handle_t *h = arg;
-	float pres;
 	int hsc_pressure, hsc_temperature, hsc_status;
 
 	if (ret)

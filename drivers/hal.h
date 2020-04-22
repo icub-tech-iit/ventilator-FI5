@@ -48,6 +48,20 @@
         int id; // Todo: fill
     } I2C_HandleTypeDef;
 
+    enum
+    {
+        HAL_I2C_FIRST_AND_LAST_FRAME,
+        HAL_I2C_FIRST_FRAME,
+        HAL_I2C_LAST_FRAME,
+        HAL_I2C_NEXT_FRAME,
+    };
+
+    enum
+    {
+        HAL_I2C_STATE_BUSY,
+        HAL_I2C_STATE_READY,
+    };
+
     // Replace with CubeMx like initialization or whatever
     HAL_StatusTypeDef HAL_Init(void);
 
@@ -62,6 +76,11 @@
     HAL_StatusTypeDef HAL_I2C_Master_Transmit_IT(I2C_HandleTypeDef *hi2c, uint16_t DevAddress, uint8_t *pData, uint16_t Size);
     HAL_StatusTypeDef HAL_I2C_Master_Receive_IT(I2C_HandleTypeDef *hi2c, uint16_t DevAddress, uint8_t *pData, uint16_t Size);
 
+    HAL_StatusTypeDef HAL_I2C_Master_Sequential_Transmit_IT(I2C_HandleTypeDef *hi2c, uint16_t DevAddress, uint8_t *pData, uint16_t Size, uint32_t XferOptions);
+    HAL_StatusTypeDef HAL_I2C_Master_Sequential_Receive_IT(I2C_HandleTypeDef *hi2c, uint16_t DevAddress, uint8_t *pData, uint16_t Size, uint32_t XferOptions);
+
+    HAL_StatusTypeDef HAL_I2C_GetState(I2C_HandleTypeDef *hi2c);
+    uint32_t HAL_I2C_GetError(I2C_HandleTypeDef *hi2c);
 #else
 
     #include <robadellahal.h>

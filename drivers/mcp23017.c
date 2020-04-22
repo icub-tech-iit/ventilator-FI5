@@ -45,7 +45,6 @@ int mcp23017_read_reg(mcp23017_handle_t *h, uint8_t reg, uint16_t *val,
 		void (*read_cb)(int status))
 {
 	int ret;
-	uint16_t tmp;
 	i2c_xfer_list_t xfers = {
 		.xfer_num = 2,
 		.xfers = h->xfer
@@ -112,7 +111,6 @@ int mcp23017_read(mcp23017_handle_t *h,
 int mcp23017_config_device(mcp23017_handle_t *h, mcp23017_cfg_t *cfg)
 {
 	int ret;
-	int i;
 
 	/* PUPs can be acrivated only on input pins */
 	if ((cfg->pup & cfg->direction) != cfg->pup)
@@ -131,9 +129,6 @@ int mcp23017_init(mcp23017_handle_t *h,
 		int(*i2c_xfer)(i2c_xfer_list_t *xfers, int addr,
 			       i2c_xfer_cb_t i2c_xfer_cb, void *arg), int addr)
 {
-	uint32_t sn;
-	int ret;
-
 	h->i2c_xfer = i2c_xfer;
 	h->addr = addr;
 

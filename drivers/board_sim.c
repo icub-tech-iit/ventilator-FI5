@@ -27,6 +27,13 @@ struct flow_sensor_data_t
     int state;
 };
 
+struct gpio_exp_data_t
+{
+    uint16_t direction;
+    uint16_t pullup;
+    uint16_t gpio;
+};
+
 static void connect_remote_device(struct bus_t* bus, struct remote_device_t* dev);
 static int get_remote_device(struct bus_t* bus, int address, struct remote_device_t** slave);
 
@@ -35,6 +42,7 @@ static int execute_bus_write(struct bus_t* bus);
 
 static struct bus_t* get_mux_line(struct remote_device_t* dev, int line);
 static void mux_route(struct remote_device_t* dev);
+static void bus_reset(struct bus_t* bus);
 
 static int pressure_write(struct remote_device_t* dev, void* data, int size);
 static int pressure_read(struct remote_device_t* dev, void* data, int size);
@@ -42,6 +50,8 @@ static int flow_write(struct remote_device_t* dev, void* data, int size);
 static int flow_read(struct remote_device_t* dev, void* data, int size);
 static int mux_write(struct remote_device_t* dev, void* data, int size);
 static int mux_read(struct remote_device_t* dev, void* data, int size);
+static int gpio_exp_write(struct remote_device_t* dev, void* data, int size);
+static int gpio_exp_read(struct remote_device_t* dev, void* data, int size);
 
 static struct ventilator_dev device;
 static struct pressure_sensor_data_t pressure_sensor_data[] = 
@@ -88,6 +98,15 @@ static struct flow_sensor_data_t flow_sensor_data[] =
         .raw = { 0x16, 0x78 },
         .data_ptr = flow_sensor_data[1].boot,
         .state = 0
+    }
+};
+
+static struct gpio_exp_data_t gpio_exp_data[] = 
+{
+    {
+        .direction = 0x0,
+        .pullup = 0x0,
+        .gpio = 0xabcd
     }
 };
 
@@ -142,8 +161,15 @@ int board_sim_init(void)
     device.flow2.ops.read = flow_read;
     device.flow2.data = (void*)(&flow_sensor_data[1]);
 
+    // GPIO expander
+    device.gpio.address = 0x22; // Check pins A0, A1 and A2
+    device.gpio.ops.write = gpio_exp_write;
+    device.gpio.ops.read = gpio_exp_read;
+    device.gpio.data = (void*)(&gpio_exp_data[0]);
+
     // Bus connections
     connect_remote_device(&device.i2c_1, &device.mux);
+    connect_remote_device(&device.i2c_1, &device.gpio);
 
     connect_remote_device(get_mux_line(&device.mux, 0), &device.pressure1);
     connect_remote_device(get_mux_line(&device.mux, 1), &device.pressure2);
@@ -394,9 +420,8 @@ static void mux_route(struct remote_device_t* dev)
 
     struct bus_mux_data_t* data = (struct bus_mux_data_t*)dev->data;
 
-    memset(dev->bus->dev_list, 0x0, sizeof(dev->bus->dev_list));
-
-    connect_remote_device(dev->bus, dev);
+    // Reset the bus inter-connections
+    bus_reset(dev->bus);
 
     if(data)
     {
@@ -418,6 +443,22 @@ static void mux_route(struct remote_device_t* dev)
 
             mapping = mapping >> 1;
         }
+    }
+}
+
+static void bus_reset(struct bus_t* bus)
+{
+    if(!bus)
+        return;
+
+    // Clear all the connection informations
+    memset(bus->dev_list, 0x0, sizeof(bus->dev_list));
+
+    // Add to the bus the directly connected devices
+    if(bus == &device.i2c_1)
+    {
+        connect_remote_device(&device.i2c_1, &device.mux);
+        connect_remote_device(&device.i2c_1, &device.gpio);
     }
 }
 
@@ -561,5 +602,15 @@ static int mux_read(struct remote_device_t* dev, void* data, int size)
         memcpy(data, &mux_data->status, size);
     }
     
+    return 0;
+}
+
+static int gpio_exp_write(struct remote_device_t* dev, void* data, int size)
+{
+    return 0;
+}
+
+static int gpio_exp_read(struct remote_device_t* dev, void* data, int size)
+{
     return 0;
 }

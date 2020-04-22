@@ -58,6 +58,8 @@ struct ventilator_dev
     struct remote_device_t flow2;
 
     struct remote_device_t mux;
+
+    struct remote_device_t gpio;
 };
 
 int board_sim_init(void);

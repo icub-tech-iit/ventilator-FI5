@@ -18,7 +18,6 @@ uint16_t mock_port = 0xbeef;
 int mcp23017_mock(i2c_xfer_t *xfers, int num)
 {
 	int i;
-	uint16_t tmp;
 	uint16_t *sel_reg = NULL;
 	int ret = 0;
 
@@ -64,7 +63,6 @@ int i2c_xfer_mock(i2c_xfer_list_t *xfers, int addr,
 		  void (*i2c_xfer_cb)(int status, void *arg), void *arg)
 {
 	int ret;
-	int expected_len;
 	int i;
 
 	if (addr != mock_xfer_addr)

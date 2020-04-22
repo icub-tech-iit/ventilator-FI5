@@ -58,9 +58,6 @@ exit:
 int zephyr_read(zephyr_handle_t *h, uint16_t *flow,
 		void (*read_cb)(int status))
 {
-	int ret;
-	uint16_t zephyr_word;
-
 	if (!h->init_ok)
 		return -EIO;
 
@@ -114,7 +111,6 @@ static int zephyr_read_word(zephyr_handle_t *h, uint16_t *word)
 {
 	int ret;
 	uint8_t zephyr_word[2];
-	uint16_t tmp;
 
 	i2c_xfer_t xfer = {
 		.direction = READ,

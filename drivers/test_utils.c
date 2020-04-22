@@ -7,7 +7,6 @@
 long long get_time_ms(void)
 {
     long long ms;
-    time_t s;
     struct timespec spec;
 
     clock_gettime(CLOCK_REALTIME, &spec);
