@@ -1102,6 +1102,7 @@ vclass ApplicationVariantSTM32 : Application::Application
     preset ColorProp = #F9FF0AFF;
     preset NameProp = "P_ins(mBar)";
     preset DataProvider = DataSource0;
+    preset maxYAxis = 30.0;
   }
 
   $rect <20,20,160,60>
@@ -1112,6 +1113,8 @@ vclass ApplicationVariantSTM32 : Application::Application
     preset NameProp = "V_tidal(mL)";
     preset DataProvider = DataSource1;
     preset XAxisHeight = 34;
+    preset minYAxis = -30.0;
+    preset maxYAxis = 30.0;
   }
 
   $rect <20,20,160,60>
@@ -1121,6 +1124,7 @@ vclass ApplicationVariantSTM32 : Application::Application
     preset ColorProp = #0AFFF5FF;
     preset NameProp = "MVe (slpm)";
     preset DataProvider = DataSource2;
+    preset maxYAxis = 30.0;
   }
 }
 
@@ -1845,6 +1849,59 @@ class DataplotterSTM32 : Core::Group
     // TO DO:
     // 
     // Now you can handle the alternation of the property.
+  }
+
+  $rect <1250,410,1450,450>
+  property float minYAxis = 0;
+
+  $rect <1250,450,1450,490>
+  onset minYAxis
+  {
+    // The value doesn't change - nothing to do.
+    if ( pure minYAxis == value )
+      return;
+
+    // Remember the property's new value.
+    pure minYAxis = value;
+    MinAxisValue.String = string(minYAxis,0,2); 
+    // TO DO:
+    // 
+    // Now you can handle the alternation of the property.
+  }
+
+  $rect <1240,270,1440,310>
+  property float maxYAxis = 0;
+
+  $rect <1240,310,1440,350>
+  onset maxYAxis
+  {
+    // The value doesn't change - nothing to do.
+    if ( pure maxYAxis == value )
+      return;
+
+    // Remember the property's new value.
+    pure maxYAxis = value;
+    MaxAxisValue.String = string(maxYAxis,0,2); 
+
+    // TO DO:
+    // 
+    // Now you can handle the alternation of the property.
+  }
+
+  $rect <20,20,160,60>
+  object Views::Text MaxAxisValue
+  {
+    preset Bounds = <10,0,30,20>;
+    preset String = "0.00";
+    preset Font = Application::FontXS;
+  }
+
+  $rect <20,20,160,60>
+  object Views::Text MinAxisValue
+  {
+    preset Bounds = <4,56,19,71>;
+    preset String = "0";
+    preset Font = Application::FontXS;
   }
 }
 
