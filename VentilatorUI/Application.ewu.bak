@@ -227,7 +227,6 @@ class DataplotterWin32 : Core::Group
 
     // Remember the property's new value.
     pure ColorProp = value;
-    pure BeamColor = value;
 
     MaxValue.Color   = value;
     MeanValue.Color  = value;
@@ -648,9 +647,6 @@ class DataplotterWin32 : Core::Group
     // NOTE: if you increase the pixelPerUnit you have a zoomed in effect, if you decrease it, you have a zoom out
     var float hOffset = Graph.Bounds.w / Graph.PixelPerUnit.x;
     var float vScalingFactor = float(Graph.PixelPerUnit.y) / float(Graph.Bounds.h);
-    // TODO FIX IT
-    Graph.CoordOrigin.x = YAxis.Point1.x;
-    Graph.CoordOrigin.y = XAxis.Point1.y;
     // It is top left oriented, then the y have to be put with opposite sign.
     CoordList.AddCoord( index, -vScalingFactor * float(currVal));
     Graph.Coordinates = CoordList;
@@ -708,6 +704,86 @@ class DataplotterWin32 : Core::Group
     preset Point1 = <0,80>;
     preset Width = 3;
   }
+
+  $rect <1040,210,1240,250>
+  inherited method UpdateViewState()
+  {
+    super( aState );
+    Graph.CoordOrigin.x = YAxis.Point1.x;
+    Graph.CoordOrigin.y = XAxis.Point1.y;
+  }
+
+  $reorder InvalidateViewState 1
+  $reorder InvalidateArea 1
+  $reorder Init 1
+  $reorder GetIndexOfView 1
+  $reorder GetViewAtIndex 1
+  $reorder CountViews 1
+  $reorder FindViewInDirection 1
+  $reorder FindViewWithinArea 1
+  $reorder FindViewAtPosition 1
+  $reorder FindPrevView 1
+  $reorder FindNextView 1
+  $reorder FindSiblingView 1
+  $reorder GetContentArea 1
+  $reorder FadeGroup 1
+  $reorder RestackBehind 1
+  $reorder RestackBack 1
+  $reorder RestackTop 1
+  $reorder Restack 1
+  $reorder Remove 1
+  $reorder AddBehind 1
+  $reorder Add 1
+  $reorder Focus 1
+  $reorder Buffered 1
+  $reorder Enabled 1
+  $reorder Opacity 1
+  $reorder Embedded 1
+  $reorder AlphaBlended 1
+  $reorder Visible 1
+  $reorder Graph 1
+  $reorder Rectangle 1
+  $reorder Name 1
+  $reorder CurrValue 1
+  $reorder MeanText 1
+  $reorder MaxText 1
+  $reorder MeanValue 1
+  $reorder MaxValue 1
+  $reorder Border 1
+  $reorder ColorProp 1
+  $reorder OnSetColorProp 1
+  $reorder NameProp 1
+  $reorder OnSetNameProp 1
+  $reorder Border1 1
+  $reorder Speed 1
+  $reorder OnSetSpeed 1
+  $reorder RefreshRate 1
+  $reorder OnSetRefreshRate 1
+  $reorder ScreenWiper 1
+  $reorder OnSetScreenWiper 1
+  $reorder BeamColor 1
+  $reorder BeamGlow 1
+  $reorder OnSetBeamGlow 1
+  $reorder Gain 1
+  $reorder OnSetGain 1
+  $reorder Image 1
+  $reorder Canvas 1
+  $reorder Clipping 1
+  $reorder BeamPosition 1
+  $reorder UpdateTimer 1
+  $reorder DrawBeamLine 1
+  $reorder UpdateSlot 1
+  $reorder GetSampleData 1
+  $reorder DrawGraph 1
+  $reorder index 1
+  $reorder CoordList 1
+  $reorder mean 1
+  $reorder max 1
+  $reorder sum 1
+  $reorder DataProvider 1
+  $reorder OnSetDataProvider 1
+  $reorder YAxis 1
+  $reorder XAxis 1
 }
 
 $rect <20,210,220,250>
@@ -1015,7 +1091,8 @@ class DataplotterSTM32 : Core::Group
   {
     // Always invoke the inherited method.
     super( aState );
-    //Graph.CoordOrigin = point (index, Graph.Bounds.h-68);
+    Graph.CoordOrigin.x = YAxis.Point1.x;
+    Graph.CoordOrigin.y = XAxis.Point1.y;
 
     /*
 
@@ -1614,7 +1691,6 @@ class DataplotterSTM32 : Core::Group
   $rect <830,210,1030,250>
   slot DrawGraph
   {
-    //var int32 randomNumber = math_rand( 0, 10 );
 
     if (DataProvider == null)
         return;
@@ -1630,12 +1706,11 @@ class DataplotterSTM32 : Core::Group
         MeanValue.String = string(sum / float(index),0,1);
     }
     CurrValue.String = string(currVal, 0, 1); // 2 decimal values
-    var float vOffset = Graph.Bounds.h / Graph.PixelPerUnit.y;
+    // NOTE: if you increase the pixelPerUnit you have a zoomed in effect, if you decrease it, you have a zoom out
     var float hOffset = Graph.Bounds.w / Graph.PixelPerUnit.x;
     var float vScalingFactor = float(Graph.PixelPerUnit.y) / float(Graph.Bounds.h);
-    var float hScalingFactor = float(Graph.PixelPerUnit.x) / float(Graph.Bounds.w);
-    CoordList.AddCoord( float(index) + float(YAxis.Point1.x) * float(hScalingFactor) ,
-                         vOffset/2.0 - vScalingFactor * float(currVal));
+    // It is top left oriented, then the y have to be put with opposite sign.
+    CoordList.AddCoord( index, -vScalingFactor * float(currVal));
     Graph.Coordinates = CoordList;
     // to do loop graph and reset statistics
     if(float(index)>=hOffset) {
