@@ -3,10 +3,10 @@ $version 1.0
 attr active = Application::DataplotterSTM32;
 attr callStackMonitor_Show = false;
 attr codeColSelect = false;
-attr codeFirstPos = <0,22>;
+attr codeFirstPos = <0,17>;
 attr codeInspector = Application::DataplotterSTM32.DrawGraph;
-attr codeSelEnd = <27,31>;
-attr codeSelStart = <27,31>;
+attr codeSelEnd = <27,32>;
+attr codeSelStart = <27,32>;
 attr connectInspectors = false;
 attr debug_TrackUpdates = false;
 attr extractDoc_ClassOverview = true;
@@ -47,10 +47,10 @@ view unit Application
 view class Application::DataplotterWin32
 {
   attr codeColSelect = false;
-  attr codeFirstPos = <0,12>;
+  attr codeFirstPos = <0,0>;
   attr codeInspector = DrawGraph;
-  attr codeSelEnd = <42,19>;
-  attr codeSelStart = <42,19>;
+  attr codeSelEnd = <0,0>;
+  attr codeSelStart = <27,32>;
   attr enableGrid = true;
   attr grid = 10;
   attr scrollTo = <-7,-7>;
@@ -65,23 +65,15 @@ view vclass Application::ApplicationVariantSTM32
   attr zoom = 1.0;
 }
 
-view vclass Application::ApplicationVariantWin32
-{
-  attr enableGrid = true;
-  attr grid = 10;
-  attr scrollTo = <-7,-7>;
-  attr zoom = 1.0;
-}
-
 view class Application::DataplotterSTM32
 {
   attr codeColSelect = false;
-  attr codeFirstPos = <0,22>;
+  attr codeFirstPos = <0,15>;
   attr codeInspector = DrawGraph;
-  attr codeSelEnd = <27,31>;
-  attr codeSelStart = <27,31>;
+  attr codeSelEnd = <0,16>;
+  attr codeSelStart = <58,16>;
   attr enableGrid = true;
   attr grid = 10;
-  attr scrollTo = <-7,-7>;
-  attr zoom = 4.0;
+  attr scrollTo = <-7,89>;
+  attr zoom = 2.0;
 }

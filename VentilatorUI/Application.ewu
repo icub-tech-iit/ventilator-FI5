@@ -141,6 +141,7 @@ class DataplotterWin32 : Core::Group
   {
     preset Layout = Core::Layout[AlignToLeft, AlignToTop, ResizeHorz, ResizeVert];
     preset Bounds = <0,0,640,160>;
+    preset PixelPerUnit = <15,15>;
     preset GridDistance = <15,15>;
   }
 
@@ -212,83 +213,6 @@ class DataplotterWin32 : Core::Group
   {
     preset Layout = Core::Layout[AlignToLeft, AlignToTop, ResizeHorz, ResizeVert];
     preset Bounds = <0,0,800,160>;
-  }
-
-  $rect <20,20,160,60>
-  object Charts::Graph Graph1
-  {
-    preset Layout = Core::Layout[AlignToLeft, AlignToTop, ResizeHorz, ResizeVert];
-    preset Bounds = <210,260,622,328>;
-    preset Buffered = true;
-    preset Coordinates = CoordList;
-    preset LineWidth = 3.0;
-    preset DotColor = #FFFFFFFF;
-    preset DotWidth = 3.0;
-    preset PixelPerUnit = <5,5>;
-    preset GridDistance = <10,10>;
-  }
-
-  $rect <20,20,160,60>
-  object Views::Rectangle Rectangle1
-  {
-    preset Layout = Core::Layout[AlignToLeft, AlignToTop, ResizeHorz, ResizeVert];
-    preset Bounds = <620,260,688,328>;
-    preset Color = #040404FF;
-  }
-
-  $rect <20,20,160,60>
-  object Views::Text Name1
-  {
-    preset Layout = Core::Layout[AlignToLeft, AlignToTop, ResizeHorz, ResizeVert];
-    preset Bounds = <620,260,690,280>;
-    preset String = "Name";
-    preset Font = Resources::DefaultFont;
-  }
-
-  $rect <20,20,160,60>
-  object Views::Text CurrValue1
-  {
-    preset Layout = Core::Layout[AlignToLeft, AlignToTop, ResizeHorz, ResizeVert];
-    preset Bounds = <620,280,688,300>;
-    preset String = "00";
-    preset Font = Resources::FontMedium;
-  }
-
-  $rect <20,20,160,60>
-  object Views::Text MeanText1
-  {
-    preset Layout = Core::Layout[AlignToLeft, AlignToTop, ResizeHorz, ResizeVert];
-    preset Bounds = <620,302,654,312>;
-    preset String = "Mean";
-    preset Font = Application::FontXS;
-  }
-
-  $rect <20,20,160,60>
-  object Views::Text MaxText1
-  {
-    preset Layout = Core::Layout[AlignToLeft, AlignToTop, ResizeHorz, ResizeVert];
-    preset Bounds = <620,314,654,324>;
-    preset Alignment = Views::TextAlignment[AlignHorzCenter, AlignHorzLeft, AlignVertCenter];
-    preset String = "Max";
-    preset Font = Application::FontXS;
-  }
-
-  $rect <20,20,160,60>
-  object Views::Text MeanValue1
-  {
-    preset Layout = Core::Layout[AlignToLeft, AlignToTop, ResizeHorz, ResizeVert];
-    preset Bounds = <654,302,688,312>;
-    preset String = "00.0";
-    preset Font = Application::FontXS;
-  }
-
-  $rect <20,20,160,60>
-  object Views::Text MaxValue1
-  {
-    preset Layout = Core::Layout[AlignToLeft, AlignToTop, ResizeHorz, ResizeVert];
-    preset Bounds = <654,314,688,324>;
-    preset String = "00.0";
-    preset Font = Application::FontXS;
   }
 
   $rect <800,210,1000,250>
@@ -706,7 +630,6 @@ class DataplotterWin32 : Core::Group
   $rect <1030,10,1230,50>
   slot DrawGraph
   {
-    //var int32 randomNumber = math_rand( 0, 10 );
 
     if (DataProvider == null)
         return;
@@ -722,12 +645,14 @@ class DataplotterWin32 : Core::Group
         MeanValue.String = string(sum / float(index),0,1);
     }
     CurrValue.String = string(currVal, 0, 1); // 2 decimal values
-    var float vOffset = Graph.Bounds.h / Graph.PixelPerUnit.y;
+    // NOTE: if you increase the pixelPerUnit you have a zoomed in effect, if you decrease it, you have a zoom out
     var float hOffset = Graph.Bounds.w / Graph.PixelPerUnit.x;
     var float vScalingFactor = float(Graph.PixelPerUnit.y) / float(Graph.Bounds.h);
-    var float hScalingFactor = float(Graph.PixelPerUnit.x) / float(Graph.Bounds.w);
-    CoordList.AddCoord( float(index) + float(YAxis.Point1.x) * float(hScalingFactor) ,
-                         vOffset/2.0 - vScalingFactor * float(currVal));
+    // TODO FIX IT
+    Graph.CoordOrigin.x = YAxis.Point1.x;
+    Graph.CoordOrigin.y = XAxis.Point1.y;
+    // It is top left oriented, then the y have to be put with opposite sign.
+    CoordList.AddCoord( index, -vScalingFactor * float(currVal));
     Graph.Coordinates = CoordList;
     // to do loop graph and reset statistics
     if(float(index)>=hOffset) {
@@ -1689,7 +1614,6 @@ class DataplotterSTM32 : Core::Group
   $rect <830,210,1030,250>
   slot DrawGraph
   {
-    //var int32 randomNumber = math_rand( 0, 10 );
 
     if (DataProvider == null)
         return;
@@ -1705,12 +1629,14 @@ class DataplotterSTM32 : Core::Group
         MeanValue.String = string(sum / float(index),0,1);
     }
     CurrValue.String = string(currVal, 0, 1); // 2 decimal values
-    var float vOffset = Graph.Bounds.h / Graph.PixelPerUnit.y;
+    // NOTE: if you increase the pixelPerUnit you have a zoomed in effect, if you decrease it, you have a zoom out
     var float hOffset = Graph.Bounds.w / Graph.PixelPerUnit.x;
     var float vScalingFactor = float(Graph.PixelPerUnit.y) / float(Graph.Bounds.h);
-    var float hScalingFactor = float(Graph.PixelPerUnit.x) / float(Graph.Bounds.w);
-    CoordList.AddCoord( float(index) + float(YAxis.Point1.x) * float(hScalingFactor) ,
-                         vOffset/2.0 - vScalingFactor * float(currVal));
+    // TODO FIX IT
+    Graph.CoordOrigin.x = YAxis.Point1.x;
+    Graph.CoordOrigin.y = XAxis.Point1.y;
+    // It is top left oriented, then the y have to be put with opposite sign.
+    CoordList.AddCoord( index, -vScalingFactor * float(currVal));
     Graph.Coordinates = CoordList;
     // to do loop graph and reset statistics
     if(float(index)>=hOffset) {
