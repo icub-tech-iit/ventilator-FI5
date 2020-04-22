@@ -1,12 +1,12 @@
 $version 1.0
 
-attr active = Application;
+attr active = Application::DataplotterSTM32;
 attr callStackMonitor_Show = false;
 attr codeColSelect = false;
-attr codeFirstPos = <0,6>;
-attr codeInspector = Application::DataplotterWin32.DrawGraph;
-attr codeSelEnd = <4,8>;
-attr codeSelStart = <4,8>;
+attr codeFirstPos = <0,22>;
+attr codeInspector = Application::DataplotterSTM32.DrawGraph;
+attr codeSelEnd = <27,31>;
+attr codeSelStart = <27,31>;
 attr connectInspectors = false;
 attr debug_TrackUpdates = false;
 attr extractDoc_ClassOverview = true;
@@ -19,7 +19,7 @@ attr extractDoc_Variants = false;
 attr generateClut_ReservedColors = 0;
 attr heapMonitor_Show = false;
 attr language = Default;
-attr profile = STM32F746;
+attr profile = WIN32;
 attr profilerMonitor_Show = false;
 attr search_CaseSensitive = false;
 attr search_IgnoreDescription = false;
@@ -47,26 +47,13 @@ view unit Application
 view class Application::DataplotterWin32
 {
   attr codeColSelect = false;
-  attr codeFirstPos = <0,6>;
+  attr codeFirstPos = <0,12>;
   attr codeInspector = DrawGraph;
-  attr codeSelEnd = <34,14>;
-  attr codeSelStart = <34,14>;
+  attr codeSelEnd = <42,19>;
+  attr codeSelStart = <42,19>;
   attr enableGrid = true;
   attr grid = 10;
-  attr scrollTo = <-7,377>;
-  attr zoom = 2.0;
-}
-
-view class Application::DataplotterSTM32
-{
-  attr codeColSelect = false;
-  attr codeFirstPos = <0,0>;
-  attr codeInspector = DrawGraph;
-  attr codeSelEnd = <63,4>;
-  attr codeSelStart = <63,4>;
-  attr enableGrid = true;
-  attr grid = 10;
-  attr scrollTo = <1456,-7>;
+  attr scrollTo = <-7,-7>;
   attr zoom = 2.0;
 }
 
@@ -84,4 +71,17 @@ view vclass Application::ApplicationVariantWin32
   attr grid = 10;
   attr scrollTo = <-7,-7>;
   attr zoom = 1.0;
+}
+
+view class Application::DataplotterSTM32
+{
+  attr codeColSelect = false;
+  attr codeFirstPos = <0,22>;
+  attr codeInspector = DrawGraph;
+  attr codeSelEnd = <27,31>;
+  attr codeSelStart = <27,31>;
+  attr enableGrid = true;
+  attr grid = 10;
+  attr scrollTo = <-7,-7>;
+  attr zoom = 4.0;
 }

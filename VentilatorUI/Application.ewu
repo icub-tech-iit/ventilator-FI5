@@ -141,6 +141,7 @@ class DataplotterWin32 : Core::Group
   {
     preset Layout = Core::Layout[AlignToLeft, AlignToTop, ResizeHorz, ResizeVert];
     preset Bounds = <0,0,640,160>;
+    preset GridDistance = <15,15>;
   }
 
   $rect <20,20,160,60>
@@ -724,7 +725,9 @@ class DataplotterWin32 : Core::Group
     var float vOffset = Graph.Bounds.h / Graph.PixelPerUnit.y;
     var float hOffset = Graph.Bounds.w / Graph.PixelPerUnit.x;
     var float vScalingFactor = float(Graph.PixelPerUnit.y) / float(Graph.Bounds.h);
-    CoordList.AddCoord( index,  vOffset/2.0 - vScalingFactor * float(currVal));
+    var float hScalingFactor = float(Graph.PixelPerUnit.x) / float(Graph.Bounds.w);
+    CoordList.AddCoord( float(index) + float(YAxis.Point1.x) * float(hScalingFactor) ,
+                         vOffset/2.0 - vScalingFactor * float(currVal));
     Graph.Coordinates = CoordList;
     // to do loop graph and reset statistics
     if(float(index)>=hOffset) {
@@ -763,6 +766,22 @@ class DataplotterWin32 : Core::Group
   {
     pure DataProvider = value;
 
+  }
+
+  $rect <20,20,160,60>
+  object Views::Line YAxis
+  {
+    preset Point2 = <30,160>;
+    preset Point1 = <30,0>;
+    preset Width = 3;
+  }
+
+  $rect <20,20,160,60>
+  object Views::Line XAxis
+  {
+    preset Point2 = <640,80>;
+    preset Point1 = <0,80>;
+    preset Width = 3;
   }
 }
 
@@ -1445,7 +1464,7 @@ class DataplotterSTM32 : Core::Group
   object Core::Timer UpdateTimer
   {
     preset OnTrigger = DrawGraph;
-    preset Period = 100;
+    preset Period = 300;
     preset Enabled = true;
   }
 
@@ -1689,7 +1708,9 @@ class DataplotterSTM32 : Core::Group
     var float vOffset = Graph.Bounds.h / Graph.PixelPerUnit.y;
     var float hOffset = Graph.Bounds.w / Graph.PixelPerUnit.x;
     var float vScalingFactor = float(Graph.PixelPerUnit.y) / float(Graph.Bounds.h);
-    CoordList.AddCoord( index,  vOffset/2.0 - vScalingFactor * float(currVal));
+    var float hScalingFactor = float(Graph.PixelPerUnit.x) / float(Graph.Bounds.w);
+    CoordList.AddCoord( float(index) + float(YAxis.Point1.x) * float(hScalingFactor) ,
+                         vOffset/2.0 - vScalingFactor * float(currVal));
     Graph.Coordinates = CoordList;
     // to do loop graph and reset statistics
     if(float(index)>=hOffset) {
@@ -1719,6 +1740,22 @@ class DataplotterSTM32 : Core::Group
 
   $rect <1040,260,1240,300>
   var float sum = 0.0;
+
+  $rect <20,20,160,60>
+  object Views::Line YAxis
+  {
+    preset Point2 = <10,68>;
+    preset Point1 = <10,0>;
+    preset Width = 1;
+  }
+
+  $rect <20,20,160,60>
+  object Views::Line XAxis
+  {
+    preset Point2 = <412,34>;
+    preset Point1 = <0,34>;
+    preset Width = 1;
+  }
 }
 
 $rect <580,210,780,250>
