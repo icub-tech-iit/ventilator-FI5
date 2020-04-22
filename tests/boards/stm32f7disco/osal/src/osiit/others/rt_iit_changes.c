@@ -192,10 +192,6 @@ extern void rt_iit_debug_global_init(void);
 // --------------------------------------------------------------------------------------------------------------------
 
 
-#if defined(OOSIIT_DBG_ENABLE)
-static uint8_t s_dbg_previous_id = ev_ID_idle;
-#endif
-
 
 
 // --------------------------------------------------------------------------------------------------------------------
@@ -1893,7 +1889,7 @@ void rt_iit_sys_start(oosiit_task_properties_t* inittsk, oosiit_task_properties_
     os_idle_TCB.msg             = idletsk->param;                       // IIT-EXT: and has a parameter !! 
     os_idle_TCB.extdata         = idletsk->extdata;
     rt_init_context (&os_idle_TCB, 0, (FUNCP)tIDLE);                    // IIT-EXT: as well as an externally passed function
- 
+    DBG_TASK_NOTIFY(&os_idle_TCB, __TRUE);
     
     /* Set up ready list: initially empty */
     os_rdy.cb_type = HCB;
@@ -2179,7 +2175,8 @@ extern void rt_iit_dbg_task_notify(void* ptcb, BOOL create)
         return;
     }
     
-    id = ev_ID_first_ostask+p_tcb->task_id-1;
+    id = (255==p_tcb->task_id) ? (ev_ID_idle) : (ev_ID_first_ostask+(U8)p_tcb->task_id-1);
+    //id = ev_ID_first_ostask+p_tcb->task_id-1;
 
     
     if(1 == create)
@@ -2217,6 +2214,9 @@ extern void rt_iit_dbg_syscall_register(U8 id)
   osal_scope_load(idev, fptr);
 }
 
+#if defined(OOSIIT_DBG_SYSTICK) | defined(OOSIIT_DBG_PENDSV) | defined(OOSIIT_DBG_SVC)
+
+static uint8_t s_dbg_previous_id = ev_ID_idle;
 
 //extern void rt_iit_dbg_syscall_enter (U8 id) {
 //  while (ITM_PORT31_U32 == 0);
@@ -2241,6 +2241,8 @@ extern void rt_iit_dbg_syscall_exit (void)
   }
   //osal_scope_switch_to
 }
+
+#endif
 
 #ifdef OOSIIT_DBG_SYSTICK
 extern void rt_iit_dbg_systick_enter(void)
