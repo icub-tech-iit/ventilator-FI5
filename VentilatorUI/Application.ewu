@@ -117,6 +117,7 @@ vclass ApplicationVariantWin32 : Application::Application
     preset ColorProp = #40FF0AFF;
     preset NameProp = "V_tidal(mL)";
     preset DataProvider = DataSource1;
+    preset XAxisHeight = 80;
   }
 
   $rect <20,20,160,60>
@@ -206,13 +207,6 @@ class DataplotterWin32 : Core::Group
     preset Bounds = <720,120,800,150>;
     preset String = "00.0";
     preset Font = Resources::FontSmall;
-  }
-
-  $rect <20,20,160,60>
-  object Views::Border Border
-  {
-    preset Layout = Core::Layout[AlignToLeft, AlignToTop, ResizeHorz, ResizeVert];
-    preset Bounds = <0,0,800,160>;
   }
 
   $rect <800,210,1000,250>
@@ -632,12 +626,16 @@ class DataplotterWin32 : Core::Group
 
     if (DataProvider == null)
         return;
-    var float currVal = float(DataProvider.GetSampleData( index ));
+    var float demoOffset = 0.0;
+    var float currVal = float(DataProvider.GetSampleData( index )) + demoOffset;
     // compute max
     if (currVal > max) {
         max = currVal;
         MaxValue.String = string(max, 0, 1);
     }
+    //Graph.PixelPerUnit.x = index;
+    //Graph.PixelPerUnit.y = index;
+
     // get mean
     if (index!=0) {
         sum = sum + currVal;
@@ -692,16 +690,16 @@ class DataplotterWin32 : Core::Group
   $rect <20,20,160,60>
   object Views::Line YAxis
   {
-    preset Point2 = <30,160>;
-    preset Point1 = <30,0>;
+    preset Point2 = <30,140>;
+    preset Point1 = <30,20>;
     preset Width = 3;
   }
 
   $rect <20,20,160,60>
   object Views::Line XAxis
   {
-    preset Point2 = <640,80>;
-    preset Point1 = <0,80>;
+    preset Point2 = <640,140>;
+    preset Point1 = <30,140>;
     preset Width = 3;
   }
 
@@ -711,6 +709,25 @@ class DataplotterWin32 : Core::Group
     super( aState );
     Graph.CoordOrigin.x = YAxis.Point1.x;
     Graph.CoordOrigin.y = XAxis.Point1.y;
+  }
+
+  $rect <1010,280,1210,320>
+  property int32 XAxisHeight = 0;
+
+  $rect <1010,320,1210,360>
+  onset XAxisHeight
+  {
+    // The value doesn't change - nothing to do.
+    if ( pure XAxisHeight == value )
+      return;
+
+    // Remember the property's new value.
+    pure XAxisHeight = value;
+    this.XAxis.Point1.y = value;
+    this.XAxis.Point2.y = value;
+    // TO DO:
+    // 
+    // Now you can handle the alternation of the property.
   }
 
   $reorder InvalidateViewState 1
@@ -749,7 +766,6 @@ class DataplotterWin32 : Core::Group
   $reorder MaxText 1
   $reorder MeanValue 1
   $reorder MaxValue 1
-  $reorder Border 1
   $reorder ColorProp 1
   $reorder OnSetColorProp 1
   $reorder NameProp 1
@@ -1038,6 +1054,7 @@ vclass ApplicationVariantSTM32 : Application::Application
     preset ColorProp = #40FF0AFF;
     preset NameProp = "V_tidal(mL)";
     preset DataProvider = DataSource1;
+    preset XAxisHeight = 34;
   }
 
   $rect <20,20,160,60>
@@ -1302,13 +1319,6 @@ class DataplotterSTM32 : Core::Group
     pure NameProp = value;
 
     Name.String = value;
-  }
-
-  $rect <20,20,160,60>
-  object Views::Border Border
-  {
-    preset Layout = Core::Layout[AlignToLeft, AlignToTop, ResizeHorz, ResizeVert];
-    preset Bounds = <0,0,480,68>;
   }
 
   // The property 'DataProvider' stores the source for getting the data to display.
@@ -1694,12 +1704,16 @@ class DataplotterSTM32 : Core::Group
 
     if (DataProvider == null)
         return;
-    var float currVal = float(DataProvider.GetSampleData( index ));
+    var float demoOffset = 0.0;
+    var float currVal = float(DataProvider.GetSampleData( index )) + demoOffset;
     // compute max
     if (currVal > max) {
         max = currVal;
         MaxValue.String = string(max, 0, 1);
     }
+    //Graph.PixelPerUnit.x = index;
+    //Graph.PixelPerUnit.y = index;
+
     // get mean
     if (index!=0) {
         sum = sum + currVal;
@@ -1744,17 +1758,36 @@ class DataplotterSTM32 : Core::Group
   $rect <20,20,160,60>
   object Views::Line YAxis
   {
-    preset Point2 = <10,68>;
-    preset Point1 = <10,0>;
+    preset Point2 = <10,58>;
+    preset Point1 = <10,10>;
     preset Width = 1;
   }
 
   $rect <20,20,160,60>
   object Views::Line XAxis
   {
-    preset Point2 = <412,34>;
-    preset Point1 = <0,34>;
+    preset Point2 = <412,58>;
+    preset Point1 = <10,58>;
     preset Width = 1;
+  }
+
+  $rect <820,310,1020,350>
+  property int32 XAxisHeight = 0;
+
+  $rect <820,350,1020,390>
+  onset XAxisHeight
+  {
+    // The value doesn't change - nothing to do.
+    if ( pure XAxisHeight == value )
+      return;
+
+    // Remember the property's new value.
+    pure XAxisHeight = value;
+    this.XAxis.Point1.y = value;
+    this.XAxis.Point2.y = value;
+    // TO DO:
+    // 
+    // Now you can handle the alternation of the property.
   }
 }
 
