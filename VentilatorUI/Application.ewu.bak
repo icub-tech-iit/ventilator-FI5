@@ -102,17 +102,17 @@ vclass ApplicationVariantWin32 : Application::Application
   }
 
   $rect <20,20,160,60>
-  object Application::DataplotterWin32 DataplotterInspPress
+  object Application::DataplotterWin32 DataplotterPress
   {
     preset Bounds = <0,0,800,160>;
     preset ColorProp = #F9FF0AFF;
-    preset NameProp = "Pressure (cmH20)";
+    preset NameProp = "Pressure (cmH2O)";
     preset DataProvider = DataSource0;
     preset maxYAxis = 50.0;
   }
 
   $rect <20,20,160,60>
-  object Application::DataplotterWin32 DataplotterVTidal
+  object Application::DataplotterWin32 DataplotterFlow
   {
     preset Bounds = <0,160,800,320>;
     preset ColorProp = #40FF0AFF;
@@ -124,7 +124,7 @@ vclass ApplicationVariantWin32 : Application::Application
   }
 
   $rect <20,20,160,60>
-  object Application::DataplotterWin32 DataplotterMve
+  object Application::DataplotterWin32 DataplotterVTidal
   {
     preset Bounds = <0,320,800,480>;
     preset ColorProp = #0AFFF5FF;
@@ -238,10 +238,10 @@ class DataplotterWin32 : Core::Group
 
   }
 
-  $rect <810,120,1010,160>
+  $rect <810,140,1010,180>
   property string NameProp = "Name";
 
-  $rect <810,160,1010,200>
+  $rect <810,170,1010,210>
   onset NameProp
   {
     // The value doesn't change - nothing to do.
@@ -631,6 +631,9 @@ class DataplotterWin32 : Core::Group
     if (DataProvider == null)
         return;
 
+    var int32 samplingStep = 100;
+    var int32 xSpaceDraw = XAxis.Point2.x - XAxis.Point1.x; // pixel
+    var int32 nSamples = DataProvider.DummyData.size / samplingStep; 
     var float demoOffset = 0.0;
     var float currVal = float(DataProvider.GetSampleData( dataIndex )) + demoOffset;
 
@@ -640,8 +643,8 @@ class DataplotterWin32 : Core::Group
         MaxValue.String = string(max, 0, 1);
     }
 
-    Graph.PixelPerUnit.x = 10;
-    Graph.PixelPerUnit.y = 1;
+    Graph.PixelPerUnit.x = xSpaceDraw / nSamples;
+    Graph.PixelPerUnit.y = 10;
 
     // get mean
     if (plotIndex!=0) {
@@ -663,13 +666,14 @@ class DataplotterWin32 : Core::Group
     // to do loop graph and reset statistics
 
     if(float(plotIndex)>=hOffset) {
-        plotIndex= 0;
+        plotIndex = 0;
+        dataIndex = 0;
         CoordList.ClearList();
         sum = 0;
     }
 
     plotIndex = plotIndex + 1;
-    dataIndex = dataIndex + 100;
+    dataIndex = dataIndex + samplingStep;
 
     if (dataIndex >= 5819)
         dataIndex = 0;
@@ -1114,31 +1118,35 @@ vclass ApplicationVariantSTM32 : Application::Application
   }
 
   $rect <20,20,160,60>
-  object Application::DataplotterSTM32 DataplotterInspPress
+  object Application::DataplotterSTM32 DataplotterPress
   {
     preset Bounds = <0,0,480,68>;
     preset ColorProp = #F9FF0AFF;
-    preset NameProp = "P_ins(mBar)";
+    preset NameProp = "Press. (cmH2O)";
     preset DataProvider = DataSource0;
+    preset maxYAxis = 50.0;
+  }
+
+  $rect <20,20,160,60>
+  object Application::DataplotterSTM32 DataplotterFlow
+  {
+    preset Bounds = <0,68,480,136>;
+    preset ColorProp = #40FF0AFF;
+    preset NameProp = "Flow (L/min)";
+    preset DataProvider = DataSource1;
+    preset XAxisHeight = 34;
+    preset minYAxis = -50.0;
+    preset maxYAxis = 50.0;
   }
 
   $rect <20,20,160,60>
   object Application::DataplotterSTM32 DataplotterVTidal
   {
-    preset Bounds = <0,68,480,136>;
-    preset ColorProp = #40FF0AFF;
-    preset NameProp = "V_tidal(mL)";
-    preset DataProvider = DataSource1;
-    preset XAxisHeight = 34;
-  }
-
-  $rect <20,20,160,60>
-  object Application::DataplotterSTM32 DataplotterMve
-  {
     preset Bounds = <0,136,480,204>;
     preset ColorProp = #0AFFF5FF;
-    preset NameProp = "MVe (slpm)";
+    preset NameProp = "Tidal Volume (L)";
     preset DataProvider = DataSource2;
+    preset maxYAxis = 1.0;
   }
 }
 
@@ -1551,7 +1559,7 @@ class DataplotterSTM32 : Core::Group
   object Core::Timer UpdateTimer
   {
     preset OnTrigger = DrawGraph;
-    preset Period = 300;
+    preset Period = 100;
     preset Enabled = true;
   }
 
@@ -1778,41 +1786,57 @@ class DataplotterSTM32 : Core::Group
   {
     if (DataProvider == null)
         return;
+
+    var int32 samplingStep = 100;
+    var int32 xSpaceDraw = XAxis.Point2.x - XAxis.Point1.x; // pixel
+    var int32 nSamples = DataProvider.DummyData.size / samplingStep; 
     var float demoOffset = 0.0;
-    var float currVal = float(DataProvider.GetSampleData( index )) + demoOffset;
+    var float currVal = float(DataProvider.GetSampleData( dataIndex )) + demoOffset;
+
     // compute max
     if (currVal > max) {
         max = currVal;
         MaxValue.String = string(max, 0, 1);
     }
-    //Graph.PixelPerUnit.x = index;
-    //Graph.PixelPerUnit.y = index;
+
+    Graph.PixelPerUnit.x = xSpaceDraw / nSamples;
+    Graph.PixelPerUnit.y = 1;
 
     // get mean
-    if (index!=0) {
+    if (plotIndex!=0) {
         sum = sum + currVal;
-        MeanValue.String = string(sum / float(index),0,1);
+        MeanValue.String = string(sum / float(plotIndex),0,1);
     }
-    CurrValue.String = string(currVal, 0, 1); // 2 decimal values
+
     // NOTE: if you increase the pixelPerUnit you have a zoomed in effect, if you decrease it, you have a zoom out
     var float hOffset = Graph.Bounds.w / Graph.PixelPerUnit.x;
-    var float vScalingFactor = float(Graph.PixelPerUnit.y) / float(Graph.Bounds.h);
+
+    var float valY = (float(currVal) * (float(XAxis.Point2.y) - float(YAxis.Point1.y)) ) / maxYAxis;
+
+    CurrValue.String = string(currVal, 2, 2); // 2 decimal values
+
     // It is top left oriented, then the y have to be put with opposite sign.
-    CoordList.AddCoord( index, -vScalingFactor * float(currVal));
+    CoordList.AddCoord( float(plotIndex), -valY); // / float(Graph.PixelPerUnit.y)); 
+
     Graph.Coordinates = CoordList;
     // to do loop graph and reset statistics
-    if(float(index)>=hOffset) {
-        index= 0;
+
+    if(float(plotIndex)>=hOffset) {
+        plotIndex = 0;
+        dataIndex = 0;
         CoordList.ClearList();
         sum = 0;
     }
-    index = index + 1;
+
+    plotIndex = plotIndex + 1;
+    dataIndex = dataIndex + samplingStep;
+
+    if (dataIndex >= 5819)
+        dataIndex = 0;
+
     // Invoke UpdateViewState
     this.InvalidateViewState();
   }
-
-  $rect <830,250,1030,290>
-  var int32 index = 0;
 
   $rect <20,90,200,130>
   object Charts::CoordList CoordList
@@ -1863,6 +1887,65 @@ class DataplotterSTM32 : Core::Group
     // 
     // Now you can handle the alternation of the property.
   }
+
+  $rect <1050,450,1250,490>
+  property float minYAxis = 0;
+
+  $rect <1050,490,1250,530>
+  onset minYAxis
+  {
+    // The value doesn't change - nothing to do.
+    if ( pure minYAxis == value )
+      return;
+
+    // Remember the property's new value.
+    pure minYAxis = value;
+    MinAxisValue.String = string(minYAxis,0,2); 
+    // TO DO:
+    // 
+    // Now you can handle the alternation of the property.
+  }
+
+  $rect <1040,310,1240,350>
+  property float maxYAxis = 0;
+
+  $rect <1040,350,1240,390>
+  onset maxYAxis
+  {
+    // The value doesn't change - nothing to do.
+    if ( pure maxYAxis == value )
+      return;
+
+    // Remember the property's new value.
+    pure maxYAxis = value;
+    MaxAxisValue.String = string(maxYAxis,0,2); 
+
+    // TO DO:
+    // 
+    // Now you can handle the alternation of the property.
+  }
+
+  $rect <20,20,160,60>
+  object Views::Text MaxAxisValue
+  {
+    preset Bounds = <8,0,33,25>;
+    preset String = "0.00";
+    preset Font = Application::FontXS;
+  }
+
+  $rect <20,20,160,60>
+  object Views::Text MinAxisValue
+  {
+    preset Bounds = <1,56,26,71>;
+    preset String = "0";
+    preset Font = Application::FontXS;
+  }
+
+  $rect <810,450,1010,490>
+  var int32 plotIndex = 0;
+
+  $rect <810,410,1010,450>
+  var int32 dataIndex = 0;
 }
 
 $rect <580,210,780,250>
