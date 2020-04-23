@@ -172,16 +172,20 @@ void UsageFault_Handler(void)
   * @}
   */
   
+  
+#if defined(APP_HMI_disable)
+#else
 #include "stm32746g_discovery.h"
 #include "ewrte.h"
 #include "ew_bsp_clock.h"
 #include "ew_bsp_inout.h"
 
-#warning MUST: call EwBspClockTickIncrement(); every 1 ms  
+
 void EXTI15_10_IRQHandler( void )
 {
   HAL_GPIO_EXTI_IRQHandler( KEY_BUTTON_PIN );
   EwBspInOutEventHandler( KEY_BUTTON_PIN );
 }
+#endif
 
 /************************ (C) COPYRIGHT STMicroelectronics *****END OF FILE****/

@@ -22,13 +22,19 @@ this demo implements:
 - tHMI
   it is a second thread tHMI at lower priority which manages the hmi. the thread is event based
   and is regularly ticked every timeHMItick Hz (e.g., 50-100 milli). at the tick event,
-  the tHMI thread will sample the inputs (phiscal buttons + touch screen) and refresh
+  the tHMI thread will sample the inputs (phisical buttons + touch screen) and refresh
   the LCD and possibly propagates commands. the thread can also be triggered a-synchronously
   by specific events coming from physical buttons or sliders which may be labeled as 
   high priority.
 
 #endif
 
+
+#if defined(APP_HMI_disable)
+    #warning CAVEAT EMPTOR: the HMI is disabled
+#else
+    #warning CAVEAT EMPTOR: the HMI is enabled
+#endif
 
 #include "vnt_core.h"
 
@@ -80,11 +86,14 @@ void onOSerror(void *p)
     vnt::bsp::trace::puts("theScheduler will keep execution but the OS will stop the thread which caused the error. please check.");  
 }
 
+#if defined(APP_HMI_disable)
+#else
 #include "ewmain.h"
 #include "ewrte.h"
 #include "ew_bsp_system.h"
 #include "ew_bsp_console.h"
 #include "ew_bsp_clock.h"
+#endif
 
 void initSystem(vnt::os::Thread *t, void* initparam)
 {
@@ -105,6 +114,8 @@ void initSystem(vnt::os::Thread *t, void* initparam)
     // start the tHMI thread [at exit of tINIT thread]
     app::tHMI::start();
 
+#if defined(APP_HMI_disable)
+#else
     // for now: embedded wizard initialization must stay in here
     // it cannot stay in the tHMI.startup() ... one problem at a time     
     EwBspSystemInit();
@@ -113,7 +124,7 @@ void initSystem(vnt::os::Thread *t, void* initparam)
     /* initialize Embedded Wizard application */
     EwInit();
     EwPrintSystemInfo(); 
-    
+#endif    
     
     // start wdt
     vnt::bsp::watchdog::Config wdt {};

@@ -78,12 +78,14 @@ namespace app { namespace tHMI {
 #include "vnt_os_Timer.h"
 #include "vnt_app_theLEDmanager.h"
 
-
+#if defined(APP_HMI_disable)
+#else
 #include "ewmain.h"
 #include "ewrte.h"
 #include "ew_bsp_system.h"
 #include "ew_bsp_console.h"
 #include "ew_bsp_clock.h"
+#endif
 
 namespace app { namespace tHMI {
 
@@ -146,8 +148,12 @@ void onevent(vnt::os::Thread *t, vnt::os::EventMask eventmask, void *param)
 
     if(true == vnt::core::binary::mask::check(eventmask, vnt::core::tointegral(EVT::tick)))
     {
+#if defined(APP_HMI_disable)
+        vnt::bsp::delay(10*vnt::core::time1millisec);
+#else        
         EwProcess();
-//        vnt::bsp::delay(3*vnt::core::time1millisec);
+#endif        
+//        
     }
    
     if(true == vnt::core::binary::mask::check(eventmask, vnt::core::tointegral(EVT::userBTN01)))
