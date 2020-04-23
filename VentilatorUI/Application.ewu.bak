@@ -142,6 +142,22 @@ class DataplotterWin32 : Core::Group
   $rect <0,180,200,220>
   inherited property Bounds = <0,0,800,160>;
 
+  $rect <830,0,1010,40>
+  inherited method Init()
+  {
+    var int32 xSpaceDraw = XAxis.Point2.x - XAxis.Point1.x; // pixel
+    var int32 nSamples = DataProvider.DummyData.size / samplingStep;
+
+    // depends on how much memory is available
+    CoordList.MaxNoOfItems = nSamples;
+
+    Graph.CoordOrigin.x = YAxis.Point1.x;
+    Graph.CoordOrigin.y = XAxis.Point1.y;
+
+    Graph.PixelPerUnit.x = xSpaceDraw / nSamples;
+    Graph.PixelPerUnit.y = 1; 
+  }
+
   $rect <20,20,160,60>
   object Charts::Graph Graph
   {
@@ -625,26 +641,18 @@ class DataplotterWin32 : Core::Group
 
   }
 
-  $rect <1030,10,1230,50>
+  $rect <1030,390,1230,430>
   slot DrawGraph
   {
     if (DataProvider == null)
         return;
-
-    var int32 samplingStep = 100;
-    var int32 xSpaceDraw = XAxis.Point2.x - XAxis.Point1.x; // pixel
-    var int32 nSamples = DataProvider.DummyData.size / samplingStep; 
-    var float demoOffset = 0.0;
-    var float currVal = float(DataProvider.GetSampleData( dataIndex )) + demoOffset;
+    var float currVal = DataProvider.GetSampleData( dataIndex );
 
     // compute max
     if (currVal > max) {
         max = currVal;
         MaxValue.String = string(max, 0, 1);
     }
-
-    Graph.PixelPerUnit.x = xSpaceDraw / nSamples;
-    Graph.PixelPerUnit.y = 10;
 
     // get mean
     if (plotIndex!=0) {
@@ -675,14 +683,15 @@ class DataplotterWin32 : Core::Group
     plotIndex = plotIndex + 1;
     dataIndex = dataIndex + samplingStep;
 
-    if (dataIndex >= 5819)
+    // This is only for simulation
+    if (dataIndex >= DataProvider.DummyData.size)
         dataIndex = 0;
 
     // Invoke UpdateViewState
     this.InvalidateViewState();
   }
 
-  $rect <810,80,1010,120>
+  $rect <810,90,1010,130>
   var int32 plotIndex = 0;
 
   $rect <260,190,440,230>
@@ -730,8 +739,10 @@ class DataplotterWin32 : Core::Group
   inherited method UpdateViewState()
   {
     super( aState );
+
     Graph.CoordOrigin.x = YAxis.Point1.x;
     Graph.CoordOrigin.y = XAxis.Point1.y;
+
   }
 
   $rect <1010,280,1210,320>
@@ -806,8 +817,11 @@ class DataplotterWin32 : Core::Group
     preset Font = Resources::DefaultFont;
   }
 
-  $rect <810,40,1010,80>
+  $rect <810,50,1010,90>
   var int32 dataIndex = 0;
+
+  $rect <730,510,930,550>
+  var int32 samplingStep = 100;
 
   $reorder InvalidateViewState 1
   $reorder InvalidateArea 1
@@ -1284,6 +1298,22 @@ class DataplotterSTM32 : Core::Group
       method.
 
     */
+  }
+
+  $rect <840,260,1020,300>
+  inherited method Init()
+  {
+    var int32 xSpaceDraw = XAxis.Point2.x - XAxis.Point1.x; // pixel
+    var int32 nSamples = DataProvider.DummyData.size / samplingStep;
+
+    // depends on how much memory is available
+    CoordList.MaxNoOfItems = nSamples;
+
+    Graph.CoordOrigin.x = YAxis.Point1.x;
+    Graph.CoordOrigin.y = XAxis.Point1.y;
+
+    Graph.PixelPerUnit.x = xSpaceDraw / nSamples;
+    Graph.PixelPerUnit.y = 1; 
   }
 
   $rect <20,20,160,60>
@@ -1786,21 +1816,13 @@ class DataplotterSTM32 : Core::Group
   {
     if (DataProvider == null)
         return;
-
-    var int32 samplingStep = 100;
-    var int32 xSpaceDraw = XAxis.Point2.x - XAxis.Point1.x; // pixel
-    var int32 nSamples = DataProvider.DummyData.size / samplingStep; 
-    var float demoOffset = 0.0;
-    var float currVal = float(DataProvider.GetSampleData( dataIndex )) + demoOffset;
+    var float currVal = DataProvider.GetSampleData( dataIndex );
 
     // compute max
     if (currVal > max) {
         max = currVal;
         MaxValue.String = string(max, 0, 1);
     }
-
-    Graph.PixelPerUnit.x = xSpaceDraw / nSamples;
-    Graph.PixelPerUnit.y = 1;
 
     // get mean
     if (plotIndex!=0) {
@@ -1831,7 +1853,8 @@ class DataplotterSTM32 : Core::Group
     plotIndex = plotIndex + 1;
     dataIndex = dataIndex + samplingStep;
 
-    if (dataIndex >= 5819)
+    // This is only for simulation
+    if (dataIndex >= DataProvider.DummyData.size)
         dataIndex = 0;
 
     // Invoke UpdateViewState
