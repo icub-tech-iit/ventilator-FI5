@@ -187,7 +187,7 @@ static osal_task_t* s_osal_task_launcher = NULL;
 static osal_task_t* s_osal_task_idle = NULL;
 
 // indicates how many usec in a tick. used for time conversion
-static uint32_t s_osal_usec_in_tick = 0;
+extern uint32_t osal_usec_in_tick = 0;
 
 // pointer to the launcher function
 static void (*s_osal_launcher_fn)(void) = NULL;
@@ -375,7 +375,7 @@ extern osal_result_t osal_base_initialise(const osal_cfg_t *cfg, uint64_t *data0
     s_osal_task_launcher    = s_osal_taskobj_new();
     
 
-    s_osal_usec_in_tick = cfg->tick;
+    osal_usec_in_tick = cfg->tick;
 
     s_osal_info_status = osal_info_status_initialised;
 
@@ -392,7 +392,7 @@ extern osal_info_status_t osal_info_get_status(void)
 
 extern osal_reltime_t osal_info_get_tick(void)
 {
-    return(s_osal_usec_in_tick);
+    return(osal_usec_in_tick);
 }
 
 extern const osal_cfg_t* osal_info_get_config(void)
@@ -506,7 +506,7 @@ extern void osal_info_entities_get_stats(const uint16_t **used, const uint16_t *
 
 extern osal_abstime_t osal_info_idletime_get(void)
 {
-    return(s_osal_usec_in_tick * 0);
+    return(osal_usec_in_tick * 0);
 }
 
 
@@ -545,7 +545,7 @@ extern void osal_system_ticks_abstime_set(osal_abstime_t tot)
 
 extern osal_abstime_t osal_system_ticks_abstime_get(void)
 {
-    return((uint64_t)s_osal_usec_in_tick * oosiit_time_get());
+    return((uint64_t)osal_usec_in_tick * oosiit_time_get());
 }
 
 
@@ -586,7 +586,7 @@ extern osal_reltime_t osal_system_timeofnextevent(void)
         nextevent = oosiit_sys_timeofnextevent();
     }
     
-    return(s_osal_usec_in_tick*nextevent);    
+    return(osal_usec_in_tick*nextevent);    
 }
 
 
@@ -599,7 +599,7 @@ extern osal_reltime_t osal_system_suspend(void)
         s_osal_info_status = osal_info_status_suspended;
     }
     
-    return(s_osal_usec_in_tick*nextevent);
+    return(osal_usec_in_tick*nextevent);
 }
 
 extern void osal_system_resume(osal_reltime_t timeslept)
@@ -607,7 +607,7 @@ extern void osal_system_resume(osal_reltime_t timeslept)
     if(osal_info_status_suspended == s_osal_info_status)
     {   // order is important in here
         s_osal_info_status = osal_info_status_running;
-        oosiit_sys_resume(timeslept/s_osal_usec_in_tick);
+        oosiit_sys_resume(timeslept/osal_usec_in_tick);
     }
 }
 
@@ -1809,7 +1809,7 @@ extern void osal_hid_reset_static_ram(void)
     s_osal_task_maxnum              = 0;
     s_osal_task_next                = 0;
 
-    s_osal_usec_in_tick             = 0;
+    osal_usec_in_tick             = 0;
     s_osal_launcher_fn              = NULL;
 
     memset(s_resources_free, 0, osal_info_entity_numberof);
@@ -1998,7 +1998,7 @@ void tINIT(void* p)
 
 static uint32_t s_osal_period2tick(osal_reltime_t period)
 {
-    period /= s_osal_usec_in_tick;
+    period /= osal_usec_in_tick;
 
     if(osal_reltimeZERO == period)
     {   // cannot be zero
@@ -2007,8 +2007,8 @@ static uint32_t s_osal_period2tick(osal_reltime_t period)
     else if(period >= 0x80000000)
     {
         // there is a bug if called with period higher than 0x80000000
-        // however, we have this value only if s_osal_usec_in_tick is either 1 or 2
-        // and in case of s_osal_usec_in_tick = 1, the period is 2147 seconds.
+        // however, we have this value only if osal_usec_in_tick is either 1 or 2
+        // and in case of osal_usec_in_tick = 1, the period is 2147 seconds.
         period = 0x80000000 - 1;
     }
 
@@ -2017,7 +2017,7 @@ static uint32_t s_osal_period2tick(osal_reltime_t period)
 
 static uint32_t s_osal_delay2tick(osal_reltime_t delay)
 {
-    return(delay / s_osal_usec_in_tick);
+    return(delay / osal_usec_in_tick);
 }
 
 static uint64_t s_osal_abstime2tick(osal_abstime_t time)
@@ -2027,7 +2027,7 @@ static uint64_t s_osal_abstime2tick(osal_abstime_t time)
         return(OOSIIT_ASAPTIME);
     }
 
-    return(time / s_osal_usec_in_tick);
+    return(time / osal_usec_in_tick);
 }
 
 static uint32_t s_osal_timeout2tick(osal_reltime_t tout)
@@ -2044,7 +2044,7 @@ static uint32_t s_osal_timeout2tick(osal_reltime_t tout)
     else
     {
         // else  ... must do division.
-        return(tout / s_osal_usec_in_tick);
+        return(tout / osal_usec_in_tick);
     }
 
 }
