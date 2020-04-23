@@ -56,6 +56,8 @@ static void SystemClock_Config(void);
 
 static void CPU_CACHE_Enable(void);
 
+//void HHEwBspConsoleInit( void );
+
 // --------------------------------------------------------------------------------------------------------------------
 // - definition (and initialisation) of static variables
 // --------------------------------------------------------------------------------------------------------------------
@@ -95,8 +97,8 @@ extern void stm32hal_board_init(void)
   SystemClock_Config();    
 
     /* Reset of all peripherals, Initializes the Flash interface and the Systick. */
-    HAL_Init();
-    
+//    HAL_Init();
+   
 
 //    /* Configure the system clock */
 //    SystemClock_Config();
@@ -110,6 +112,9 @@ extern void stm32hal_board_init(void)
 //////    MX_USB_OTG_FS_PCD_Init();
 //////  MX_FDCAN1_Init();
 ////// this funtion is called inside embot::hw::i2c::init()  MX_I2C1_Init();
+
+
+//    HHEwBspConsoleInit();
 
  }
 
@@ -209,6 +214,83 @@ static void CPU_CACHE_Enable(void)
   SCB_EnableDCache();
 }
 
+
+#define UART_PORTID                     USART1
+
+#define USARTx_CLK_ENABLE()             __HAL_RCC_USART1_CLK_ENABLE();
+#define USARTx_RX_GPIO_CLK_ENABLE()     __HAL_RCC_GPIOB_CLK_ENABLE()
+#define USARTx_TX_GPIO_CLK_ENABLE()     __HAL_RCC_GPIOA_CLK_ENABLE()
+
+#define USARTx_FORCE_RESET()            __HAL_RCC_USART1_FORCE_RESET()
+#define USARTx_RELEASE_RESET()          __HAL_RCC_USART1_RELEASE_RESET()
+
+#define USARTx_TX_PIN                   GPIO_PIN_9
+#define USARTx_TX_GPIO_PORT             GPIOA
+#define USARTx_TX_AF                    GPIO_AF7_USART1
+#define USARTx_RX_PIN                   GPIO_PIN_7
+#define USARTx_RX_GPIO_PORT             GPIOB
+#define USARTx_RX_AF                    GPIO_AF7_USART1
+
+
+//UART_HandleTypeDef                      UART_Handle;
+
+
+void HAL_UART_MspInit(UART_HandleTypeDef *huart)
+{
+  GPIO_InitTypeDef  GPIO_InitStruct;
+
+  /*##-1- Enable peripherals and GPIO Clocks #################################*/
+  /* Enable GPIO TX/RX clock */
+  USARTx_TX_GPIO_CLK_ENABLE();
+  USARTx_RX_GPIO_CLK_ENABLE();
+
+  /* Enable USART1 clock */
+  USARTx_CLK_ENABLE();
+
+  /*##-2- Configure peripheral GPIO ##########################################*/
+  /* UART TX GPIO pin configuration  */
+  GPIO_InitStruct.Pin       = USARTx_TX_PIN;
+  GPIO_InitStruct.Mode      = GPIO_MODE_AF_PP;
+  GPIO_InitStruct.Pull      = GPIO_PULLUP;
+  GPIO_InitStruct.Speed     = GPIO_SPEED_FAST;
+  GPIO_InitStruct.Alternate = USARTx_TX_AF;
+
+  HAL_GPIO_Init(USARTx_TX_GPIO_PORT, &GPIO_InitStruct);
+
+  /* UART RX GPIO pin configuration  */
+  GPIO_InitStruct.Pin       = USARTx_RX_PIN;
+  GPIO_InitStruct.Alternate = USARTx_RX_AF;
+
+  HAL_GPIO_Init(USARTx_RX_GPIO_PORT, &GPIO_InitStruct);
+}
+
+
+void HAL_UART_MspDeInit(UART_HandleTypeDef *huart)
+{
+  /*##-1- Reset peripherals ##################################################*/
+  USARTx_FORCE_RESET();
+  USARTx_RELEASE_RESET();
+
+  /*##-2- Disable peripherals and GPIO Clocks #################################*/
+  /* Configure UART Tx as alternate function  */
+  HAL_GPIO_DeInit(USARTx_TX_GPIO_PORT, USARTx_TX_PIN);
+  /* Configure UART Rx as alternate function  */
+  HAL_GPIO_DeInit(USARTx_RX_GPIO_PORT, USARTx_RX_PIN);
+}
+
+//void HHEwBspConsoleInit( void )
+//{
+//  UART_Handle.Instance            = UART_PORTID;
+//  UART_Handle.Init.BaudRate       = 115200;
+//  UART_Handle.Init.WordLength     = UART_WORDLENGTH_8B;
+//  UART_Handle.Init.StopBits       = UART_STOPBITS_1;
+//  UART_Handle.Init.Parity         = UART_PARITY_NONE;
+//  UART_Handle.Init.Mode           = UART_MODE_TX_RX;
+//  UART_Handle.Init.HwFlowCtl      = UART_HWCONTROL_NONE;
+//  UART_Handle.Init.OverSampling   = UART_OVERSAMPLING_16;
+
+//  HAL_UART_Init( &UART_Handle );
+//}
 
 // --------------------------------------------------------------------------------------------------------------------
 // - end-of-file (leave a blank line after)
