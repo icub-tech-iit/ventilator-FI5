@@ -1,5 +1,8 @@
+slprj*
+*_rtw
+*.slxc
+models/*
 build*
 *~
 *.user
 .DS_Store
-
