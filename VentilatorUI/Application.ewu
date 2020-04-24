@@ -1064,7 +1064,7 @@ class MenubarWin32 : Core::Group
   object Views::Text Text2
   {
     preset Bounds = <540,5,670,55>;
-    preset String = "Isp/esp\nRatio";
+    preset String = "Isp/esp\n(1/xx)";
     preset Font = Resources::FontMedium;
     preset Color = #CDCDCDFF;
   }
@@ -2263,7 +2263,7 @@ class MenubarSTM32 : Core::Group
   object Views::Text Text2
   {
     preset Bounds = <315,0,405,20>;
-    preset String = "Isp/esp Ratio";
+    preset String = "Isp/esp (1/xx)";
     preset Font = Resources::DefaultFont;
     preset Color = #CDCDCDFF;
   }

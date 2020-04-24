@@ -420,7 +420,7 @@ class DataplotterWin32 : Core::Group
   {
     preset OnTrigger = DrawGraph;
     preset Period = 100;
-    preset Enabled = true;
+    preset Enabled = $prototyper;
   }
 
   // The method 'DrawBeamLine' is called to draw the beam at the given horizontal \
@@ -1583,7 +1583,7 @@ class DataplotterSTM32 : Core::Group
   {
     preset OnTrigger = DrawGraph;
     preset Period = 100;
-    preset Enabled = true;
+    preset Enabled = $prototyper;
   }
 
   // The method 'DrawBeamLine' is called to draw the beam at the given horizontal \
@@ -2263,7 +2263,7 @@ class MenubarSTM32 : Core::Group
   object Views::Text Text2
   {
     preset Bounds = <315,0,405,20>;
-    preset String = "Isp/esp Ratio";
+    preset String = "Isp/esp (1/xx)";
     preset Font = Resources::DefaultFont;
     preset Color = #CDCDCDFF;
   }

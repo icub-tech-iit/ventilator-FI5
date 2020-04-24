@@ -1,12 +1,12 @@
 $version 1.0
 
-attr active = Application::DataplotterSTM32;
+attr active = Application::MenubarWin32;
 attr callStackMonitor_Show = false;
 attr codeColSelect = false;
-attr codeFirstPos = <0,15>;
-attr codeInspector = Application::DataplotterSTM32.onDraw;
-attr codeSelEnd = <26,31>;
-attr codeSelStart = <26,31>;
+attr codeFirstPos = <0,0>;
+attr codeInspector = Application::MenubarSTM32.UpdateLayout;
+attr codeSelEnd = <0,0>;
+attr codeSelStart = <0,0>;
 attr connectInspectors = false;
 attr debug_TrackUpdates = false;
 attr extractDoc_ClassOverview = true;
@@ -63,19 +63,6 @@ view class Application::MenubarSTM32
   attr grid = 10;
   attr scrollTo = <-7,-7>;
   attr zoom = 3.0;
-}
-
-view class Application::DataplotterSTM32
-{
-  attr codeColSelect = false;
-  attr codeFirstPos = <0,15>;
-  attr codeInspector = onDraw;
-  attr codeSelEnd = <26,31>;
-  attr codeSelStart = <26,31>;
-  attr enableGrid = true;
-  attr grid = 10;
-  attr scrollTo = <-7,-7>;
-  attr zoom = 1.75;
 }
 
 view class Application::DataplotterWin32
