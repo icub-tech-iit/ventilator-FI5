@@ -1,7 +1,7 @@
 $version 9.30
 
 // This is the root component of the entire GUI application.
-$rect <30,40,230,80>
+$rect <20,10,220,50>
 $output false
 class Application : Core::Root
 {
@@ -77,7 +77,7 @@ resource Resources::Font Font
 }
 
 $rect <20,130,220,170>
-$variant WIN32,true
+$variant WIN32
 vclass ApplicationVariantWin32 : Application::Application
 {
   $rect <870,30,1150,70>
@@ -1101,7 +1101,7 @@ resource Resources::Font FontXS
 }
 
 $rect <580,130,780,170>
-$variant STM32F746,true
+$variant STM32F746
 vclass ApplicationVariantSTM32 : Application::Application
 {
   $rect <870,30,1150,70>

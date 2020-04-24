@@ -1,7 +1,7 @@
 $version 9.30
 
 // This is the root component of the entire GUI application.
-$rect <30,40,230,80>
+$rect <20,10,220,50>
 $output false
 class Application : Core::Root
 {
@@ -1969,6 +1969,9 @@ class DataplotterSTM32 : Core::Group
 
   $rect <810,410,1010,450>
   var int32 dataIndex = 0;
+
+  $rect <350,20,550,60>
+  var int32 samplingStep = 100;
 }
 
 $rect <580,210,780,250>
