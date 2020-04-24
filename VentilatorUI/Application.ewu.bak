@@ -823,6 +823,45 @@ class DataplotterWin32 : Core::Group
   $rect <730,510,930,550>
   var int32 samplingStep = 100;
 
+  $rect <1260,100,1460,140>
+  method void onDraw( arg float currVal )
+  {
+    // compute max
+    if (currVal > max) {
+        max = currVal;
+        MaxValue.String = string(max, 0, 1);
+    }
+
+    // get mean
+    if (plotIndex!=0) {
+        sum = sum + currVal;
+        MeanValue.String = string(sum / float(plotIndex),0,1);
+    }
+
+    // NOTE: if you increase the pixelPerUnit you have a zoomed in effect, if you decrease it, you have a zoom out
+    var float hOffset = Graph.Bounds.w / Graph.PixelPerUnit.x;
+
+    var float valY = (float(currVal) * (float(XAxis.Point2.y) - float(YAxis.Point1.y)) ) / maxYAxis;
+
+    CurrValue.String = string(currVal, 2, 2); // 2 decimal values
+
+    // It is top left oriented, then the y have to be put with opposite sign.
+    CoordList.AddCoord( float(plotIndex), -valY); // / float(Graph.PixelPerUnit.y)); 
+
+    Graph.Coordinates = CoordList;
+    // to do loop graph and reset statistics
+
+    if(float(plotIndex)>=hOffset) {
+        plotIndex = 0;
+        CoordList.ClearList();
+        sum = 0;
+    }
+
+    plotIndex = plotIndex + 1;
+    // Invoke UpdateViewState
+    this.InvalidateViewState();
+  }
+
   $reorder InvalidateViewState 1
   $reorder InvalidateArea 1
   $reorder Init 1
@@ -1472,7 +1511,7 @@ class DataplotterSTM32 : Core::Group
   }
 
   // The property 'BeamColor' stores the color value of the simulated beam.
-  $rect <1050,80,1250,120>
+  $rect <470,500,670,540>
   property color BeamColor = #00FF06FF;
 
   // The property 'BeamGlow' stores the width of the simulated beam point in the \
@@ -1924,8 +1963,47 @@ class DataplotterSTM32 : Core::Group
   $rect <810,410,1010,450>
   var int32 dataIndex = 0;
 
-  $rect <350,20,550,60>
+  $rect <540,80,740,120>
   var int32 samplingStep = 100;
+
+  $rect <1040,120,1240,160>
+  method void onDraw( arg float currVal )
+  {
+    // compute max
+    if (currVal > max) {
+        max = currVal;
+        MaxValue.String = string(max, 0, 1);
+    }
+
+    // get mean
+    if (plotIndex!=0) {
+        sum = sum + currVal;
+        MeanValue.String = string(sum / float(plotIndex),0,1);
+    }
+
+    // NOTE: if you increase the pixelPerUnit you have a zoomed in effect, if you decrease it, you have a zoom out
+    var float hOffset = Graph.Bounds.w / Graph.PixelPerUnit.x;
+
+    var float valY = (float(currVal) * (float(XAxis.Point2.y) - float(YAxis.Point1.y)) ) / maxYAxis;
+
+    CurrValue.String = string(currVal, 2, 2); // 2 decimal values
+
+    // It is top left oriented, then the y have to be put with opposite sign.
+    CoordList.AddCoord( float(plotIndex), -valY); // / float(Graph.PixelPerUnit.y)); 
+
+    Graph.Coordinates = CoordList;
+    // to do loop graph and reset statistics
+
+    if(float(plotIndex)>=hOffset) {
+        plotIndex = 0;
+        CoordList.ClearList();
+        sum = 0;
+    }
+
+    plotIndex = plotIndex + 1;
+    // Invoke UpdateViewState
+    this.InvalidateViewState();
+  }
 }
 
 $rect <580,210,780,250>
@@ -2169,7 +2247,7 @@ class MenubarSTM32 : Core::Group
     preset Bounds = <154,0,244,20>;
     preset String = "Resp rate(B/min)";
     preset Font = Resources::DefaultFont;
-    preset Color = #7A7A7AFF;
+    preset Color = #CDCDCDFF;
   }
 
   $rect <20,20,160,60>
@@ -2178,7 +2256,7 @@ class MenubarSTM32 : Core::Group
     preset Bounds = <236,0,326,20>;
     preset String = "PIP(cmH2O)";
     preset Font = Resources::DefaultFont;
-    preset Color = #7A7A7AFF;
+    preset Color = #CDCDCDFF;
   }
 
   $rect <20,20,160,60>
@@ -2187,7 +2265,7 @@ class MenubarSTM32 : Core::Group
     preset Bounds = <315,0,405,20>;
     preset String = "Isp/esp Ratio";
     preset Font = Resources::DefaultFont;
-    preset Color = #7A7A7AFF;
+    preset Color = #CDCDCDFF;
   }
 
   $rect <20,20,160,60>
@@ -2196,7 +2274,7 @@ class MenubarSTM32 : Core::Group
     preset Bounds = <395,0,485,20>;
     preset String = "Tidal Volume(L)";
     preset Font = Resources::DefaultFont;
-    preset Color = #7A7A7AFF;
+    preset Color = #CDCDCDFF;
   }
 
   $reorder Rectangle 94
