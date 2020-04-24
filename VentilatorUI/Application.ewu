@@ -646,41 +646,10 @@ class DataplotterWin32 : Core::Group
   {
     if (DataProvider == null)
         return;
+
     var float currVal = DataProvider.GetSampleData( dataIndex );
-
-    // compute max
-    if (currVal > max) {
-        max = currVal;
-        MaxValue.String = string(max, 0, 1);
-    }
-
-    // get mean
-    if (plotIndex!=0) {
-        sum = sum + currVal;
-        MeanValue.String = string(sum / float(plotIndex),0,1);
-    }
-
-    // NOTE: if you increase the pixelPerUnit you have a zoomed in effect, if you decrease it, you have a zoom out
-    var float hOffset = Graph.Bounds.w / Graph.PixelPerUnit.x;
-
-    var float valY = (float(currVal) * (float(XAxis.Point2.y) - float(YAxis.Point1.y)) ) / maxYAxis;
-
-    CurrValue.String = string(currVal, 2, 2); // 2 decimal values
-
-    // It is top left oriented, then the y have to be put with opposite sign.
-    CoordList.AddCoord( float(plotIndex), -valY); // / float(Graph.PixelPerUnit.y)); 
-
-    Graph.Coordinates = CoordList;
-    // to do loop graph and reset statistics
-
-    if(float(plotIndex)>=hOffset) {
-        plotIndex = 0;
-        dataIndex = 0;
-        CoordList.ClearList();
-        sum = 0;
-    }
-
-    plotIndex = plotIndex + 1;
+    // draw
+    this.onDraw( currVal );
     dataIndex = dataIndex + samplingStep;
 
     // This is only for simulation
@@ -853,6 +822,8 @@ class DataplotterWin32 : Core::Group
 
     if(float(plotIndex)>=hOffset) {
         plotIndex = 0;
+        // Used only in prototyping
+        dataIndex = 0;
         CoordList.ClearList();
         sum = 0;
     }
@@ -1809,41 +1780,10 @@ class DataplotterSTM32 : Core::Group
   {
     if (DataProvider == null)
         return;
+
     var float currVal = DataProvider.GetSampleData( dataIndex );
-
-    // compute max
-    if (currVal > max) {
-        max = currVal;
-        MaxValue.String = string(max, 0, 1);
-    }
-
-    // get mean
-    if (plotIndex!=0) {
-        sum = sum + currVal;
-        MeanValue.String = string(sum / float(plotIndex),0,1);
-    }
-
-    // NOTE: if you increase the pixelPerUnit you have a zoomed in effect, if you decrease it, you have a zoom out
-    var float hOffset = Graph.Bounds.w / Graph.PixelPerUnit.x;
-
-    var float valY = (float(currVal) * (float(XAxis.Point2.y) - float(YAxis.Point1.y)) ) / maxYAxis;
-
-    CurrValue.String = string(currVal, 2, 2); // 2 decimal values
-
-    // It is top left oriented, then the y have to be put with opposite sign.
-    CoordList.AddCoord( float(plotIndex), -valY); // / float(Graph.PixelPerUnit.y)); 
-
-    Graph.Coordinates = CoordList;
-    // to do loop graph and reset statistics
-
-    if(float(plotIndex)>=hOffset) {
-        plotIndex = 0;
-        dataIndex = 0;
-        CoordList.ClearList();
-        sum = 0;
-    }
-
-    plotIndex = plotIndex + 1;
+    // draw
+    this.onDraw( currVal );
     dataIndex = dataIndex + samplingStep;
 
     // This is only for simulation
@@ -1996,6 +1936,8 @@ class DataplotterSTM32 : Core::Group
 
     if(float(plotIndex)>=hOffset) {
         plotIndex = 0;
+        // Used only in prototyping
+        dataIndex = 0;
         CoordList.ClearList();
         sum = 0;
     }
