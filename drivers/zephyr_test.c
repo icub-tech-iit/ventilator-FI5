@@ -180,13 +180,6 @@ int zephyr_mock(uint8_t *buf, int direction)
 			break;
 
 		case STATE_PENDING_RESET:
-			buf[0] = 0x00;
-			buf[1] = 0x00;
-			zephyr_fsm_switch(STATE_PENDING_SN);
-			ret = xfer_status[5];
-			fsm_xfer_done[5] = 1;
-			break;
-
 		case STATE_PENDING_SN:
 			buf[0] = mock_sn >> 24;
 			buf[1] = (mock_sn >> 16) & 0xff;

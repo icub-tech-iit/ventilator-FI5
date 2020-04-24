@@ -75,7 +75,6 @@ int zephyr_read(zephyr_handle_t *h, uint16_t *flow,
 /* trigger a SW reset and wait for completion */
 static int zephyr_reset(zephyr_handle_t *h)
 {
-	uint16_t tmp;
 	int ret;
 
 	ret = zephyr_write_cmd(h, ZEPHYR_RESET_CMD);
@@ -86,22 +85,6 @@ static int zephyr_reset(zephyr_handle_t *h)
 	 * We add some extra margin..
 	 */
 	mdelay(25);
-	ret = zephyr_read_word(h, &tmp);
-	if (ret)
-		return ret;
-
-#warning FIXME
-	/* _datasheet_and_i2c_spec_mismatch.. is it 0x0 or 0xCCA5 ? */
-	if ((tmp != ZEPHYR_RESPONSE_ACK) &&
-	    (tmp != 0))
-
-		return -EIO;
-
-	/*
-	 * Sensor will enter in SN read mode, wait for the time it would need
-	 * when it receives "GetSerialNumber" command.
-	 */
-	mdelay(15);
 	return 0;
 }
 

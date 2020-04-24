@@ -17,6 +17,8 @@ typedef struct
     int state;
     i2c_mux_callback_t completed_callback;
     uint8_t required_config;
+    i2c_xfer_t xfer;
+    uint8_t xfer_buf[1];
 } i2c_mux_handle_t;
 
 int i2c_mux_init(i2c_mux_handle_t* dev, 

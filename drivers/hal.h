@@ -1,9 +1,9 @@
 #ifndef __HAL_H__
 #define __HAL_H__
 
-#ifndef DEBUG_HAL
-    #define DEBUG_HAL 
-#endif
+//#ifndef DEBUG_HAL
+//   #define DEBUG_HAL
+//#endif
 
 #ifdef DEBUG_HAL
     #include <stdint.h>
@@ -50,10 +50,10 @@
 
     enum
     {
-        HAL_I2C_FIRST_AND_LAST_FRAME,
-        HAL_I2C_FIRST_FRAME,
-        HAL_I2C_LAST_FRAME,
-        HAL_I2C_NEXT_FRAME,
+        I2C_FIRST_AND_LAST_FRAME,
+        I2C_FIRST_FRAME,
+        I2C_LAST_FRAME,
+        I2C_NEXT_FRAME,
     };
 
     enum
@@ -83,7 +83,8 @@
     uint32_t HAL_I2C_GetError(I2C_HandleTypeDef *hi2c);
 #else
 
-    #include <robadellahal.h>
+#include "stm32f7xx_hal.h"
+#include "stm32f7xx_hal_i2c.h"
 
 #endif
 

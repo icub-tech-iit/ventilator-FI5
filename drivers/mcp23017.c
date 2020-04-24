@@ -2,7 +2,6 @@
 
 #include <errno.h>
 #include <stdio.h>
-#include "delay.h"
 #include "mcp23017.h"
 
 #define MCP23017_DIRECTION_REG 	0x00

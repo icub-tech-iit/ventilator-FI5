@@ -78,19 +78,21 @@ int i2c_mux_reset(i2c_mux_handle_t* dev)
 
 static int i2c_mux_config_write(i2c_mux_handle_t* dev, uint8_t config)
 {
-    i2c_xfer_t xfer;
     i2c_xfer_list_t xfer_list;
 
     // Setup the I2C transfer
-    xfer.direction = WRITE;
-    xfer.len       = 1;
-    xfer.buf       = &config;
+    dev->xfer.direction = WRITE;
+    dev->xfer.len = 1;
+
+    // Use bounce buffer for async write
+    dev->xfer.buf = dev->xfer_buf;
+    dev->xfer_buf[0] = config;
 
     // I2C MUX switch command needs a single transfer
     xfer_list.xfer_num = 1;
-    xfer_list.xfers    = &xfer;
+    xfer_list.xfers    = &dev->xfer;
 
-    return dev->i2c_xfer(&xfer_list, dev->address, 
+    return dev->i2c_xfer(&xfer_list, dev->address,
         i2c_mux_callback, (void*)dev);
 }
 
@@ -143,17 +145,15 @@ static void i2c_mux_callback(int status, void* args)
 #ifdef CONFIG_READBACK
     static int i2c_mux_config_read(i2c_mux_handle_t* dev, uint8_t* config)
     {
-        i2c_xfer_t xfer;
         i2c_xfer_list_t xfer_list;
 
         // Setup the I2C transfer
-        xfer.direction = READ;
-        xfer.len       = 1;
-        xfer.buf       = (char*)config;
+        dev->xfer.direction = READ;
+        dev->xfer.buf       = (char*)config;
 
         // I2C MUX switch command needs a single transfer
         xfer_list.xfer_num = 1;
-        xfer_list.xfers    = &xfer;
+        xfer_list.xfers    = &dev->xfer;
 
         return dev->i2c_xfer(&xfer_list, dev->address, i2c_mux_callback, (void*)dev);
     }

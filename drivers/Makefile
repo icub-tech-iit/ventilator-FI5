@@ -4,13 +4,16 @@ WARNFLAGS = -Werror=implicit-function-declaration -Werror=implicit-int \
 
 CFLAGS = -g -O0
 
-all: hsc_test zephyr_test mcp23017_test #encoder_test
+all: board_test hsc_test zephyr_test mcp23017_test
+
+board_test: hsc.c zephyr.c board_driver.c board_test.c delay_mock.c i2c_mux.c pwm.c board_sim.c hal.c
+	gcc $(CFLAGS) -DDEBUG_HAL delay_mock.c hsc.c zephyr.c i2c_mux.c pwm.c board_driver.c board_sim.c hal.c board_test.c mcp23017.c -o board_test
 
 hsc_test:  hsc.c hsc_test.c test_utils.c
 	gcc $(CFLAGS) $(WARNFLAGS) hsc.c hsc_test.c test_utils.c -o hsc_test
 
 zephyr_test:  zephyr.c zephyr_test.c test_utils.c delay_mock.c
-	gcc $(CFLAGS) $(WARNFLAGS) delay_mock.c zephyr.c zephyr_test.c test_utils.c -o zephyr_test
+	gcc $(CFLAGS) $(WARNFLAGS) -DDEBUG_HAL delay_mock.c zephyr.c zephyr_test.c test_utils.c -o zephyr_test
 
 mcp23017_test: mcp23017.c mcp23017_test.c
 	gcc $(CFLAGS) $(WARNFLAGS) mcp23017.c mcp23017_test.c test_utils.c -o mcp23017_test
@@ -35,6 +38,6 @@ board_sim: directories
 	gcc build/hsc.o build/i2c_mux.o build/pwm.o build/zephyr.o build/mcp23017.o build/board_driver.o build/hal.o build/delay_mock.o build/board_sim.o build/board_test.o -o board_sim
 
 clean:
-	rm -f board_test hsc_test zephyr_test mcp23017_test
+	rm -f board_test hsc_test zephyr_test mcp23017_test encoder_test
 	rm -rf build
 	rm -f board_sim

@@ -139,9 +139,9 @@ static int pwm_timer_channel(pwm_handle_t* dev, uint32_t* channel)
         TIM_CHANNEL_6
     };
 
-    if(dev->config->channel < sizeof(channelIds) / sizeof(channelIds[0]))
+    if(dev->config->channel <= sizeof(channelIds) / sizeof(channelIds[0]))
     {
-        *channel = channelIds[ dev->config->channel ];
+        *channel = channelIds[ dev->config->channel - 1 ];
         result = 0;
     }
     else

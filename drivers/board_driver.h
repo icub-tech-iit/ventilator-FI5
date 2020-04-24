@@ -54,4 +54,5 @@ int board_read_sensors(board_sensor_data_t* in_data);
 int board_read_sensors_async(board_sensor_data_t* in_data, board_read_callback_t read_completed);
 int board_apply_actuation(board_actuation_data_t* out_data);
 
+void i2c_xfer_completed(int retcode);
 #endif //_IIT_BOARD_DRIVER_H_

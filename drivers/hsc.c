@@ -28,6 +28,15 @@ hsc_sensor_t HSCMAND160MD2A5 = {
 	.conv_fn = NULL,
 };
 
+hsc_sensor_t HSCSANN100PA2A5 = {
+	.has_diagnostic = false,
+	.pressure_max = 100,
+	.pressure_min = 0,
+	.output_max = 0x3999,
+	.output_min = 0x666,
+	.conv_fn = psi2bar,
+};
+
 static float psi2bar(float psi)
 {
 	return psi * 0.0689476;

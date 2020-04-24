@@ -15,6 +15,7 @@ typedef struct {
 
 hsc_sensor_t HSCDANN150PG2A5;
 hsc_sensor_t HSCMAND160MD2A5;
+hsc_sensor_t HSCSANN100PA2A5;
 
 typedef struct {
 	hsc_sensor_t cfg;
