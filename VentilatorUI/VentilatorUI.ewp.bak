@@ -137,6 +137,7 @@ profile WIN32 : Tara.Win32.RGBA8888
   attr Optimization = High;
   attr CleanOutputDirectories = false;
   attr OutputFileNameExtension = c;
+  attr ApplicationClass = Application::Application;
 }
 
 $rect <40,270,240,310>

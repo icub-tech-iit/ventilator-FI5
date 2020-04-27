@@ -3,6 +3,6 @@ classdef ControlMode < Simulink.IntEnumType
     IDLE(0)
     CPAP(1)
     VCV(2)
-    PCV(3)
+    PRVC(3)
   end
 end 

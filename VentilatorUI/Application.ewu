@@ -418,9 +418,9 @@ class DataplotterWin32 : Core::Group
   $rect <790,315,990,355>
   object Core::Timer UpdateTimer
   {
-    preset OnTrigger = DrawGraph;
+    preset OnTrigger = onDrawPrototype;
     preset Period = 100;
-    preset Enabled = true;
+    preset Enabled = $prototyper;
   }
 
   // The method 'DrawBeamLine' is called to draw the beam at the given horizontal \
@@ -642,45 +642,14 @@ class DataplotterWin32 : Core::Group
   }
 
   $rect <1030,390,1230,430>
-  slot DrawGraph
+  slot onDrawPrototype
   {
     if (DataProvider == null)
         return;
+
     var float currVal = DataProvider.GetSampleData( dataIndex );
-
-    // compute max
-    if (currVal > max) {
-        max = currVal;
-        MaxValue.String = string(max, 0, 1);
-    }
-
-    // get mean
-    if (plotIndex!=0) {
-        sum = sum + currVal;
-        MeanValue.String = string(sum / float(plotIndex),0,1);
-    }
-
-    // NOTE: if you increase the pixelPerUnit you have a zoomed in effect, if you decrease it, you have a zoom out
-    var float hOffset = Graph.Bounds.w / Graph.PixelPerUnit.x;
-
-    var float valY = (float(currVal) * (float(XAxis.Point2.y) - float(YAxis.Point1.y)) ) / maxYAxis;
-
-    CurrValue.String = string(currVal, 2, 2); // 2 decimal values
-
-    // It is top left oriented, then the y have to be put with opposite sign.
-    CoordList.AddCoord( float(plotIndex), -valY); // / float(Graph.PixelPerUnit.y)); 
-
-    Graph.Coordinates = CoordList;
-    // to do loop graph and reset statistics
-
-    if(float(plotIndex)>=hOffset) {
-        plotIndex = 0;
-        dataIndex = 0;
-        CoordList.ClearList();
-        sum = 0;
-    }
-
-    plotIndex = plotIndex + 1;
+    // draw
+    this.onDraw( currVal );
     dataIndex = dataIndex + samplingStep;
 
     // This is only for simulation
@@ -823,6 +792,47 @@ class DataplotterWin32 : Core::Group
   $rect <730,510,930,550>
   var int32 samplingStep = 100;
 
+  $rect <1260,100,1460,140>
+  method void onDraw( arg float currVal )
+  {
+    // compute max
+    if (currVal > max) {
+        max = currVal;
+        MaxValue.String = string(max, 0, 1);
+    }
+
+    // get mean
+    if (plotIndex!=0) {
+        sum = sum + currVal;
+        MeanValue.String = string(sum / float(plotIndex),0,1);
+    }
+
+    // NOTE: if you increase the pixelPerUnit you have a zoomed in effect, if you decrease it, you have a zoom out
+    var float hOffset = Graph.Bounds.w / Graph.PixelPerUnit.x;
+
+    var float valY = (float(currVal) * (float(XAxis.Point2.y) - float(YAxis.Point1.y)) ) / maxYAxis;
+
+    CurrValue.String = string(currVal, 2, 2); // 2 decimal values
+
+    // It is top left oriented, then the y have to be put with opposite sign.
+    CoordList.AddCoord( float(plotIndex), -valY); // / float(Graph.PixelPerUnit.y)); 
+
+    Graph.Coordinates = CoordList;
+    // to do loop graph and reset statistics
+
+    if(float(plotIndex)>=hOffset) {
+        plotIndex = 0;
+        // Used only in prototyping
+        dataIndex = 0;
+        CoordList.ClearList();
+        sum = 0;
+    }
+
+    plotIndex = plotIndex + 1;
+    // Invoke UpdateViewState
+    this.InvalidateViewState();
+  }
+
   $reorder InvalidateViewState 1
   $reorder InvalidateArea 1
   $reorder Init 1
@@ -883,7 +893,7 @@ class DataplotterWin32 : Core::Group
   $reorder DrawBeamLine 1
   $reorder UpdateSlot 1
   $reorder GetSampleData 1
-  $reorder DrawGraph 1
+  $reorder onDrawPrototype 1
   $reorder plotIndex 1
   $reorder CoordList 1
   $reorder mean 1
@@ -899,190 +909,144 @@ $rect <20,210,220,250>
 $output false
 class MenubarWin32 : Core::Group
 {
-  $rect <10,230,210,270>
+  $rect <20,180,220,220>
   inherited property Bounds = <0,0,800,160>;
 
-  $rect <10,390,210,430>
-  inherited method UpdateLayout()
+  $rect <20,20,160,60>
+  object Views::Rectangle Rectangle
   {
-    // Always invoke the inherited method.
-    super( aSize );
-
-    /*
-
-      HINT:
-
-      This method exists for sophisticated layout calculation. Please note, that in 
-      most cases it is completely sufficient to use the views property 'Layout' to
-      determine how the view should behave when the component is resized.
-
-    */
-
-    /*
-
-      TO DO:
-
-      Put here the code to calculate new position and size of enclosed views. The
-      current (new) size of the component itself is passed in the parameter aSize.
-      For example:
-
-        SomeView.Bounds = rect( 10, 10, aSize.x - 20, aSize.y - 20 );
-
-    */
-  }
-
-  $rect <10,350,210,390>
-  inherited method UpdateViewState()
-  {
-    // Always invoke the inherited method.
-    super( aState );
-
-    /*
-
-      HINT 1:
-
-      This method is invoked automatically when the state set of the component has
-      been changed. The new state set can be found in the parameter aState.
-      Following are the important states:
-
-        Enabled   --> The component can react to user inputs.
-
-        Selected  --> The component is selected in context of its owner.
-
-        Focused   --> The component is selected in context of its owner and 
-                      the owner can react to keyboard events. In this manner the
-                      component is also able to react to keyboard events.
-
-        Modal     --> The component is modal. All events are redirected to this
-                      component.
-
-      To determine whether a state is currently active or not you have to test
-      the aState parameter. For example to test the 'Selected' state:
-
-        if ( aState.contains( Core::ViewState[ Selected ]))
-        {
-          ... yes, this component is currently selected.
-        }
-
-    */
-
-    /*
-
-      HINT 2:
-
-      Alternatively you can request this method invocation by executing explicitly
-      following code:
-
-
-        InvalidateViewState();
-
-    */
-      
-    /*
-
-      TO DO 1:
-
-      Put here the code to ensure that the visual aspect of the component does
-      reflect its current state. For example, depending on its 'Enabled' state
-      a component may appear with full colors or pale if it is disabled:
-
-        if ( aState.contains( Core::ViewState[ Enabled ]))
-        {
-          SomeBackgroundView.Opacity = 255;
-          SomeTextView.Color         = #000000FF;
-        }
-        else
-        {
-          SomeBackgroundView.Opacity = 128;
-          SomeTextView.Color         = #00000080;
-        }
-
-
-      TO DO 2:
-
-      You can evaluate here also the state of any other member in your component.
-      For example in a push-button component, the button should appear highlighted
-      as long as the user holds the finger within a touch area of the button:
-
-        if ( SomeTouchHandler.Down && SomeTouchHandler.Inside )
-          HighlightedBackground.Visible = true;
-        else
-          HighlightedBackground.Visible = false;
-
-      The touch handler itself only requests the update method to be called. Use
-      for this purpose 'InvalidateViewState()' method.
-
-
-      TO DO 3:
-
-      You can calculate here also the position/size of views accordingly to the
-      state of any other member in your component. For example in a slider you
-      can calculate the position of the slider knob from some properties like
-      'SliderValue' and 'SliderRange':
-
-        SliderKnob.Bounds.origin.x = ( SliderValue * Bounds.w ) / SliderRange;
-
-      Changing the 'SliderValue' or 'SliderRange' property should only request
-      the update method to be called. Use for this purpose 'InvalidateViewState()'
-      method.
-
-    */
+    preset Bounds = <0,0,800,160>;
+    preset Color = #000000DE;
   }
 
   $rect <20,20,160,60>
-  object WidgetSet::PushButton PushButton
+  object WidgetSet::PushButton SettingsButton
   {
-    preset Bounds = <0,0,100,160>;
-    preset Label = "Menu";
-    preset Appearance = WidgetSet::PushButton_Medium;
-  }
-
-  $rect <20,20,160,60>
-  object WidgetSet::PushButton PushButton1
-  {
-    preset Bounds = <100,0,200,160>;
+    preset Bounds = <0,0,133,80>;
     preset Label = "Settings";
     preset Appearance = WidgetSet::PushButton_Medium;
   }
 
   $rect <20,20,160,60>
-  object WidgetSet::PushButton PushButton2
+  object WidgetSet::PushButton CPAPButton
   {
-    preset Bounds = <200,0,300,160>;
-    preset Label = "Expr. Pause";
+    preset Bounds = <133,0,266,80>;
+    preset Label = "CPAP";
     preset Appearance = WidgetSet::PushButton_Medium;
   }
 
   $rect <20,20,160,60>
-  object WidgetSet::PushButton PushButton3
+  object WidgetSet::PushButton VCVButton
   {
-    preset Bounds = <300,0,400,160>;
-    preset Label = "Insp. Pause";
+    preset Bounds = <0,80,133,160>;
+    preset Label = "VCV";
     preset Appearance = WidgetSet::PushButton_Medium;
   }
 
   $rect <20,20,160,60>
-  object WidgetSet::PushButton PushButton4
+  object WidgetSet::PushButton PCVButton
   {
-    preset Bounds = <400,0,500,160>;
-    preset Label = "Set Assisted";
+    preset Bounds = <133,80,266,160>;
+    preset Label = "PCV";
     preset Appearance = WidgetSet::PushButton_Medium;
   }
 
   $rect <20,20,160,60>
-  object WidgetSet::PushButton PushButton5
+  object Views::Border Border
   {
-    preset Bounds = <500,0,600,160>;
-    preset Label = "Caption";
-    preset Appearance = WidgetSet::PushButton_Medium;
+    preset Bounds = <266,0,800,160>;
+    preset Width = 4;
+    preset Color = #CDCDCDFF;
   }
 
   $rect <20,20,160,60>
-  object WidgetSet::PushButton PushButton6
+  object WidgetSet::ValueDisplay ValueDisplayTidalVolume
   {
-    preset Bounds = <600,0,800,160>;
-    preset Label = "StartAutomatic";
-    preset Appearance = WidgetSet::PushButton_Medium;
+    preset Bounds = <670,85,790,135>;
+    preset AlphaBlended = true;
+    preset Unit = "";
+    preset Precision = 1;
+    preset NoOfDigits = 3;
+    preset Appearance = WidgetSet::ValueDisplay_Large;
+  }
+
+  $rect <20,20,160,60>
+  object WidgetSet::ValueDisplay ValueDisplayInspEspRatio
+  {
+    preset Bounds = <550,85,670,135>;
+    preset AlphaBlended = true;
+    preset Unit = "";
+    preset Precision = 1;
+    preset NoOfDigits = 3;
+    preset Appearance = WidgetSet::ValueDisplay_Large;
+  }
+
+  $rect <20,20,160,60>
+  object WidgetSet::ValueDisplay ValueDisplayPIP
+  {
+    preset Bounds = <418,85,538,135>;
+    preset AlphaBlended = true;
+    preset Unit = "";
+    preset Precision = 1;
+    preset NoOfDigits = 3;
+    preset Appearance = WidgetSet::ValueDisplay_Large;
+  }
+
+  $rect <20,20,160,60>
+  object WidgetSet::ValueDisplay ValueDisplayBreathMin
+  {
+    preset Layout = Core::Layout[AlignToLeft, AlignToTop];
+    preset Bounds = <290,85,410,135>;
+    preset AlphaBlended = true;
+    preset Unit = "";
+    preset Precision = 1;
+    preset NoOfDigits = 3;
+    preset Appearance = WidgetSet::ValueDisplay_Large;
+  }
+
+  $rect <20,20,160,60>
+  object Views::Line Line
+  {
+    preset Point2 = <800,60>;
+    preset Point1 = <267,60>;
+    preset Width = 4;
+    preset Color = #CDCDCDFF;
+  }
+
+  $rect <20,20,160,60>
+  object Views::Text Text
+  {
+    preset Bounds = <270,5,420,55>;
+    preset String = "Resp rate\n(B/min)";
+    preset Font = Resources::FontMedium;
+    preset Color = #CDCDCDFF;
+  }
+
+  $rect <20,20,160,60>
+  object Views::Text Text1
+  {
+    preset Bounds = <420,5,540,55>;
+    preset String = "PIP(cmH2O)";
+    preset Font = Resources::FontMedium;
+    preset Color = #CDCDCDFF;
+  }
+
+  $rect <20,20,160,60>
+  object Views::Text Text2
+  {
+    preset Bounds = <540,5,670,55>;
+    preset String = "Isp/esp\n(1/xx)";
+    preset Font = Resources::FontMedium;
+    preset Color = #CDCDCDFF;
+  }
+
+  $rect <20,20,160,60>
+  object Views::Text Text3
+  {
+    preset Bounds = <650,5,810,55>;
+    preset String = "Tidal Vol\n(L)";
+    preset Font = Resources::FontMedium;
+    preset Color = #CDCDCDFF;
   }
 }
 
@@ -1518,7 +1482,7 @@ class DataplotterSTM32 : Core::Group
   }
 
   // The property 'BeamColor' stores the color value of the simulated beam.
-  $rect <1050,80,1250,120>
+  $rect <470,500,670,540>
   property color BeamColor = #00FF06FF;
 
   // The property 'BeamGlow' stores the width of the simulated beam point in the \
@@ -1588,9 +1552,9 @@ class DataplotterSTM32 : Core::Group
   $rect <830,170,1030,210>
   object Core::Timer UpdateTimer
   {
-    preset OnTrigger = DrawGraph;
+    preset OnTrigger = onDrawPrototype;
     preset Period = 100;
-    preset Enabled = true;
+    preset Enabled = $prototyper;
   }
 
   // The method 'DrawBeamLine' is called to draw the beam at the given horizontal \
@@ -1812,45 +1776,14 @@ class DataplotterSTM32 : Core::Group
   }
 
   $rect <830,210,1030,250>
-  slot DrawGraph
+  slot onDrawPrototype
   {
     if (DataProvider == null)
         return;
+
     var float currVal = DataProvider.GetSampleData( dataIndex );
-
-    // compute max
-    if (currVal > max) {
-        max = currVal;
-        MaxValue.String = string(max, 0, 1);
-    }
-
-    // get mean
-    if (plotIndex!=0) {
-        sum = sum + currVal;
-        MeanValue.String = string(sum / float(plotIndex),0,1);
-    }
-
-    // NOTE: if you increase the pixelPerUnit you have a zoomed in effect, if you decrease it, you have a zoom out
-    var float hOffset = Graph.Bounds.w / Graph.PixelPerUnit.x;
-
-    var float valY = (float(currVal) * (float(XAxis.Point2.y) - float(YAxis.Point1.y)) ) / maxYAxis;
-
-    CurrValue.String = string(currVal, 2, 2); // 2 decimal values
-
-    // It is top left oriented, then the y have to be put with opposite sign.
-    CoordList.AddCoord( float(plotIndex), -valY); // / float(Graph.PixelPerUnit.y)); 
-
-    Graph.Coordinates = CoordList;
-    // to do loop graph and reset statistics
-
-    if(float(plotIndex)>=hOffset) {
-        plotIndex = 0;
-        dataIndex = 0;
-        CoordList.ClearList();
-        sum = 0;
-    }
-
-    plotIndex = plotIndex + 1;
+    // draw
+    this.onDraw( currVal );
     dataIndex = dataIndex + samplingStep;
 
     // This is only for simulation
@@ -1970,15 +1903,63 @@ class DataplotterSTM32 : Core::Group
   $rect <810,410,1010,450>
   var int32 dataIndex = 0;
 
-  $rect <350,20,550,60>
+  $rect <540,80,740,120>
   var int32 samplingStep = 100;
+
+  $rect <1040,120,1240,160>
+  method void onDraw( arg float currVal )
+  {
+    // compute max
+    if (currVal > max) {
+        max = currVal;
+        MaxValue.String = string(max, 0, 1);
+    }
+
+    // get mean
+    if (plotIndex!=0) {
+        sum = sum + currVal;
+        MeanValue.String = string(sum / float(plotIndex),0,1);
+    }
+
+    // NOTE: if you increase the pixelPerUnit you have a zoomed in effect, if you decrease it, you have a zoom out
+    var float hOffset = Graph.Bounds.w / Graph.PixelPerUnit.x;
+
+    var float valY = (float(currVal) * (float(XAxis.Point2.y) - float(YAxis.Point1.y)) ) / maxYAxis;
+
+    CurrValue.String = string(currVal, 2, 2); // 2 decimal values
+
+    // It is top left oriented, then the y have to be put with opposite sign.
+    CoordList.AddCoord( float(plotIndex), -valY); // / float(Graph.PixelPerUnit.y)); 
+
+    Graph.Coordinates = CoordList;
+    // to do loop graph and reset statistics
+
+    if(float(plotIndex)>=hOffset) {
+        plotIndex = 0;
+        // Used only in prototyping
+        dataIndex = 0;
+        CoordList.ClearList();
+        sum = 0;
+    }
+
+    plotIndex = plotIndex + 1;
+    // Invoke UpdateViewState
+    this.InvalidateViewState();
+  }
 }
 
 $rect <580,210,780,250>
 $output false
 class MenubarSTM32 : Core::Group
 {
-  $rect <10,230,210,270>
+  $rect <20,20,160,60>
+  object Views::Rectangle Rectangle
+  {
+    preset Bounds = <0,0,480,68>;
+    preset Color = #000000DE;
+  }
+
+  $rect <30,170,230,210>
   inherited property Bounds = <0,0,480,68>;
 
   $rect <10,390,210,430>
@@ -2109,68 +2090,136 @@ class MenubarSTM32 : Core::Group
   }
 
   $rect <20,20,160,60>
-  object WidgetSet::PushButton PushButton
+  object WidgetSet::PushButton SettingsButton
   {
-    preset Bounds = <0,0,70,70>;
-    preset Label = "Menu";
-    preset Appearance = WidgetSet::PushButton_Small;
-  }
-
-  $rect <20,20,160,60>
-  object WidgetSet::PushButton PushButton1
-  {
-    preset Bounds = <65,0,135,70>;
+    preset Bounds = <0,0,80,34>;
     preset Label = "Settings";
     preset Appearance = WidgetSet::PushButton_Small;
   }
 
   $rect <20,20,160,60>
-  object WidgetSet::PushButton PushButton2
+  object WidgetSet::PushButton CPAPButton
   {
-    preset Bounds = <135,0,205,70>;
-    preset Label = "Exp. pause";
+    preset Bounds = <80,0,160,34>;
+    preset Label = "CPAP";
     preset Appearance = WidgetSet::PushButton_Small;
   }
 
   $rect <20,20,160,60>
-  object WidgetSet::PushButton PushButton3
+  object WidgetSet::PushButton VCVButton
   {
-    preset Bounds = <205,0,270,70>;
-    preset Label = "Insp. Pause";
+    preset Bounds = <0,34,80,68>;
+    preset Label = "VCV";
     preset Appearance = WidgetSet::PushButton_Small;
   }
 
   $rect <20,20,160,60>
-  object WidgetSet::PushButton PushButton4
+  object WidgetSet::PushButton PCVButton
   {
-    preset Bounds = <270,0,340,70>;
-    preset Label = "Freeze";
+    preset Bounds = <80,34,160,68>;
+    preset Label = "PCV";
     preset Appearance = WidgetSet::PushButton_Small;
   }
 
   $rect <20,20,160,60>
-  object WidgetSet::PushButton PushButton5
+  object Views::Border Border
   {
-    preset Bounds = <340,0,410,70>;
-    preset Label = "Set Assisted";
-    preset Appearance = WidgetSet::PushButton_Small;
+    preset Bounds = <160,0,480,68>;
+    preset Width = 2;
+    preset Color = #FAFAFAFF;
   }
 
   $rect <20,20,160,60>
-  object WidgetSet::PushButton PushButton6
+  object WidgetSet::ValueDisplay ValueDisplayTidalVolume
   {
-    preset Bounds = <415,0,485,70>;
-    preset Label = "Caption";
-    preset Appearance = WidgetSet::PushButton_Small;
+    preset Bounds = <400,28,480,58>;
+    preset AlphaBlended = true;
+    preset Unit = "";
+    preset Precision = 1;
+    preset NoOfDigits = 3;
+    preset Appearance = WidgetSet::ValueDisplay_Medium;
   }
 
   $rect <20,20,160,60>
-  object WidgetSet::PushButton PushButton7
+  object WidgetSet::ValueDisplay ValueDisplayInspEspRatio
   {
-    preset Bounds = <410,0,480,70>;
-    preset Label = "Set auto";
-    preset Appearance = WidgetSet::PushButton_Small;
+    preset Bounds = <320,28,400,60>;
+    preset AlphaBlended = true;
+    preset Unit = "";
+    preset Precision = 1;
+    preset NoOfDigits = 3;
+    preset Appearance = WidgetSet::ValueDisplay_Medium;
   }
+
+  $rect <20,20,160,60>
+  object WidgetSet::ValueDisplay ValueDisplayPIP
+  {
+    preset Bounds = <240,28,320,60>;
+    preset AlphaBlended = true;
+    preset Unit = "";
+    preset Precision = 1;
+    preset NoOfDigits = 3;
+    preset Appearance = WidgetSet::ValueDisplay_Medium;
+  }
+
+  $rect <20,20,160,60>
+  object WidgetSet::ValueDisplay ValueDisplayBreathMin
+  {
+    preset Layout = Core::Layout[AlignToLeft, AlignToTop];
+    preset Bounds = <160,28,240,58>;
+    preset AlphaBlended = true;
+    preset Unit = "";
+    preset Precision = 1;
+    preset NoOfDigits = 3;
+    preset Appearance = WidgetSet::ValueDisplay_Medium;
+  }
+
+  $rect <20,20,160,60>
+  object Views::Line Line
+  {
+    preset Point2 = <480,20>;
+    preset Point1 = <160,20>;
+    preset Width = 2;
+    preset Color = #FFFFFFFF;
+  }
+
+  $rect <20,20,160,60>
+  object Views::Text Text
+  {
+    preset Bounds = <154,0,244,20>;
+    preset String = "Resp rate(B/min)";
+    preset Font = Resources::DefaultFont;
+    preset Color = #CDCDCDFF;
+  }
+
+  $rect <20,20,160,60>
+  object Views::Text Text1
+  {
+    preset Bounds = <236,0,326,20>;
+    preset String = "PIP(cmH2O)";
+    preset Font = Resources::DefaultFont;
+    preset Color = #CDCDCDFF;
+  }
+
+  $rect <20,20,160,60>
+  object Views::Text Text2
+  {
+    preset Bounds = <315,0,405,20>;
+    preset String = "Isp/esp (1/xx)";
+    preset Font = Resources::DefaultFont;
+    preset Color = #CDCDCDFF;
+  }
+
+  $rect <20,20,160,60>
+  object Views::Text Text3
+  {
+    preset Bounds = <395,0,485,20>;
+    preset String = "Tidal Volume(L)";
+    preset Font = Resources::DefaultFont;
+    preset Color = #CDCDCDFF;
+  }
+
+  $reorder Rectangle 94
 }
 
 // This is a font resource.
