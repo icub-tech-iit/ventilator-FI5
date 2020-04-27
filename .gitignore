@@ -6,3 +6,8 @@ build*
 *~
 *.user
 .DS_Store
+CMakeSettings.json
+*.vs
+# for now the embedded wizard code is not committed
+VentilatorUI/WIN32/*
+VentilatorUI/STM32F746/*
