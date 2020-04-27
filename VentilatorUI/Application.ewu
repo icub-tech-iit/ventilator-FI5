@@ -418,7 +418,7 @@ class DataplotterWin32 : Core::Group
   $rect <790,315,990,355>
   object Core::Timer UpdateTimer
   {
-    preset OnTrigger = DrawGraph;
+    preset OnTrigger = onDrawPrototype;
     preset Period = 100;
     preset Enabled = $prototyper;
   }
@@ -642,7 +642,7 @@ class DataplotterWin32 : Core::Group
   }
 
   $rect <1030,390,1230,430>
-  slot DrawGraph
+  slot onDrawPrototype
   {
     if (DataProvider == null)
         return;
@@ -893,7 +893,7 @@ class DataplotterWin32 : Core::Group
   $reorder DrawBeamLine 1
   $reorder UpdateSlot 1
   $reorder GetSampleData 1
-  $reorder DrawGraph 1
+  $reorder onDrawPrototype 1
   $reorder plotIndex 1
   $reorder CoordList 1
   $reorder mean 1
@@ -944,10 +944,10 @@ class MenubarWin32 : Core::Group
   }
 
   $rect <20,20,160,60>
-  object WidgetSet::PushButton PRCVButton
+  object WidgetSet::PushButton PCVButton
   {
     preset Bounds = <133,80,266,160>;
-    preset Label = "PRCV";
+    preset Label = "PCV";
     preset Appearance = WidgetSet::PushButton_Medium;
   }
 
@@ -1552,7 +1552,7 @@ class DataplotterSTM32 : Core::Group
   $rect <830,170,1030,210>
   object Core::Timer UpdateTimer
   {
-    preset OnTrigger = DrawGraph;
+    preset OnTrigger = onDrawPrototype;
     preset Period = 100;
     preset Enabled = $prototyper;
   }
@@ -1776,7 +1776,7 @@ class DataplotterSTM32 : Core::Group
   }
 
   $rect <830,210,1030,250>
-  slot DrawGraph
+  slot onDrawPrototype
   {
     if (DataProvider == null)
         return;
@@ -2114,10 +2114,10 @@ class MenubarSTM32 : Core::Group
   }
 
   $rect <20,20,160,60>
-  object WidgetSet::PushButton PRCVButton
+  object WidgetSet::PushButton PCVButton
   {
     preset Bounds = <80,34,160,68>;
-    preset Label = "PRCV";
+    preset Label = "PCV";
     preset Appearance = WidgetSet::PushButton_Small;
   }
 
