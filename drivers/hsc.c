@@ -8,6 +8,12 @@
 #define HSC_STATUS_OK 0
 #define HSC_STATUS_STALE 2
 
+#if defined(__ARMCOMPILER_VERSION)
+    #if !defined(EIO)
+    #define EIO 5
+    #endif
+#endif
+
 static float psi2bar(float psi);
 
 hsc_sensor_t HSCDANN150PG2A5 = {

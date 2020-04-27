@@ -5,6 +5,14 @@
 #include "delay.h"
 #include "zephyr.h"
 
+#if defined(__ARMCOMPILER_VERSION)
+
+    #if !defined(EIO)
+    #define EIO 5
+    #endif
+    
+#endif
+
 #define ZEPHYR_RESPONSE_ACK 0xCCA5
 #define ZEPHYR_SN_CMD 0x1
 #define ZEPHYR_RESET_CMD 0x2

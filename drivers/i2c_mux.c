@@ -2,6 +2,22 @@
 
 #include <errno.h>
 
+#if defined(__ARMCOMPILER_VERSION)
+
+    #if !defined(EPERM)
+    #define EPERM 1
+    #endif
+      
+    #if !defined(EINTR)
+    #define EINTR 4
+    #endif
+      
+    #if !defined(EBUSY)
+    #define EBUSY 16
+    #endif  
+     
+#endif
+
 //#define CONFIG_READBACK
 
 enum

@@ -83,8 +83,12 @@
     uint32_t HAL_I2C_GetError(I2C_HandleTypeDef *hi2c);
 #else
 
+#if defined(USE_STM32HAL)
+#include "stm32hal.h"
+#else
 #include "stm32f7xx_hal.h"
 #include "stm32f7xx_hal_i2c.h"
+#endif
 
 #endif
 

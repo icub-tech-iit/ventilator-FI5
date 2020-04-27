@@ -1,6 +1,10 @@
 #ifndef _IIT_BOARD_DRIVER_H_
 #define _IIT_BOARD_DRIVER_H_
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 #include <stdint.h>
 
 #define BOARD_PRESSURE_1        (0x0001)
@@ -53,6 +57,10 @@ int board_init(void);
 int board_read_sensors(board_sensor_data_t* in_data);
 int board_read_sensors_async(board_sensor_data_t* in_data, board_read_callback_t read_completed);
 int board_apply_actuation(board_actuation_data_t* out_data);
-
 void i2c_xfer_completed(int retcode);
+
+#ifdef __cplusplus
+}
+#endif
+  
 #endif //_IIT_BOARD_DRIVER_H_

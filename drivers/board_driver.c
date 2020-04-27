@@ -13,7 +13,11 @@
     #include "board_sim.h"
 #endif
 
+#if defined(__ARMCOMPILER_VERSION)
+#define ACCESS_ONCE(x) (x)
+#else
 #define ACCESS_ONCE(x) (*((volatile typeof(x) *)&(x)))
+#endif
 
 /****************************************************************/
 /* Local definitions.                                           */
@@ -162,8 +166,14 @@ static i2c_xfer_cb_data_t i2c_xfer_cb_data =
     .index = 0
 };
 
+#if defined(__ARMCOMPILER_VERSION)
+static volatile int i2c_mux_semaphore = 0;
+static volatile int i2c_xfer_semaphore = 0;
+#else
 static int i2c_mux_semaphore = 0;
 static int i2c_xfer_semaphore = 0;
+#endif
+
 /****************************************************************/
 /* Exported APIs.                                               */
 /****************************************************************/
@@ -316,13 +326,21 @@ static void i2c_xfer_sync_cb(int status, void *arg)
 
 static int i2c_xfer(i2c_xfer_list_t *xfers, int addr)
 {
-    int retcode;
+#if defined(__ARMCOMPILER_VERSION)
+    volatile int retcode = RC_OK;
+    ACCESS_ONCE(i2c_xfer_semaphore) = 0;
+    i2c_xfer_async(xfers, addr,  i2c_xfer_sync_cb, (int*)&retcode);
+    while (!ACCESS_ONCE(i2c_xfer_semaphore));
 
+    return (ACCESS_ONCE(retcode) == 0) ? RC_OK : RC_BUS_ERROR;  
+#else
+    int retcode;   
     ACCESS_ONCE(i2c_xfer_semaphore) = 0;
     i2c_xfer_async(xfers, addr,  i2c_xfer_sync_cb, &retcode);
     while (!ACCESS_ONCE(i2c_xfer_semaphore));
 
-    return (ACCESS_ONCE(retcode) == 0) ? RC_OK : RC_BUS_ERROR;
+    return (ACCESS_ONCE(retcode) == 0) ? RC_OK : RC_BUS_ERROR;  
+#endif    
 }
 
 static int i2c_xfer_async(i2c_xfer_list_t *xfers, int addr, i2c_xfer_cb_t cb, void* args)
