@@ -1,6 +1,5 @@
 $version 1.0
 
-attr active = Application::MenubarWin32;
 attr callStackMonitor_Show = false;
 attr codeColSelect = false;
 attr codeFirstPos = <0,0>;
@@ -83,9 +82,9 @@ view class Application::MenubarWin32
 {
   attr codeColSelect = false;
   attr codeFirstPos = <0,0>;
-  attr codeInspector = onTidalVolumeChanged;
-  attr codeSelEnd = <23,0>;
-  attr codeSelStart = <23,0>;
+  attr codeInspector = onInspExpChanged;
+  attr codeSelEnd = <27,0>;
+  attr codeSelStart = <27,0>;
   attr enableGrid = true;
   attr grid = 10;
   attr scrollTo = <-7,-7>;

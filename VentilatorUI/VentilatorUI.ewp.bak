@@ -151,3 +151,9 @@ unit Charts
 {
   attr Directory = $Mosaic\Charts;
 }
+
+$rect <40,350,240,390>
+unit Templates
+{
+  attr Directory = $Mosaic\;
+}
