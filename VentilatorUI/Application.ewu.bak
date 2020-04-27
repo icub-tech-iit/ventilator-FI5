@@ -1132,7 +1132,7 @@ class MenubarWin32 : Core::Group
   }
 
   $rect <20,20,160,60>
-  object Views::Text ValueDisplayInspExpRatio
+  object Views::Text ValueDisplayInspExp
   {
     preset Bounds = <530,80,680,130>;
     preset String = "0.00";
@@ -1176,7 +1176,7 @@ class MenubarWin32 : Core::Group
   $rect <650,330,850,370>
   slot onInspExpChanged
   {
-    ValueDisplayInspExp.String = string(InspExp,0,2);
+    ValueDisplayInspExp. = string(InspExp,0,2);
   }
 
   $rect <440,380,640,420>
@@ -2275,51 +2275,6 @@ class MenubarSTM32 : Core::Group
   }
 
   $rect <20,20,160,60>
-  object WidgetSet::ValueDisplay ValueDisplayTidalVolume
-  {
-    preset Bounds = <400,28,480,58>;
-    preset AlphaBlended = true;
-    preset Unit = "";
-    preset Precision = 1;
-    preset NoOfDigits = 3;
-    preset Appearance = WidgetSet::ValueDisplay_Medium;
-  }
-
-  $rect <20,20,160,60>
-  object WidgetSet::ValueDisplay ValueDisplayInspExpRatio
-  {
-    preset Bounds = <320,28,400,60>;
-    preset AlphaBlended = true;
-    preset Unit = "";
-    preset Precision = 1;
-    preset NoOfDigits = 3;
-    preset Appearance = WidgetSet::ValueDisplay_Medium;
-  }
-
-  $rect <20,20,160,60>
-  object WidgetSet::ValueDisplay ValueDisplayPIP
-  {
-    preset Bounds = <240,28,320,60>;
-    preset AlphaBlended = true;
-    preset Unit = "";
-    preset Precision = 1;
-    preset NoOfDigits = 3;
-    preset Appearance = WidgetSet::ValueDisplay_Medium;
-  }
-
-  $rect <20,20,160,60>
-  object WidgetSet::ValueDisplay ValueDisplayBreathMin
-  {
-    preset Layout = Core::Layout[AlignToLeft, AlignToTop];
-    preset Bounds = <160,28,240,58>;
-    preset AlphaBlended = true;
-    preset Unit = "";
-    preset Precision = 1;
-    preset NoOfDigits = 3;
-    preset Appearance = WidgetSet::ValueDisplay_Medium;
-  }
-
-  $rect <20,20,160,60>
   object Views::Line Line
   {
     preset Point2 = <480,20>;
@@ -2361,6 +2316,182 @@ class MenubarSTM32 : Core::Group
     preset Bounds = <395,0,485,20>;
     preset String = "Tidal Volume(L)";
     preset Font = Resources::DefaultFont;
+    preset Color = #CDCDCDFF;
+  }
+
+  $rect <480,90,680,130>
+  property float RespRate = 0;
+
+  // This method is intended to be called by the device to notify the GUI application \
+  // about an alternation of its setting or state value.
+  $rect <280,90,480,130>
+  $output true
+  method void UpdateRespRate( arg float aNewValue )
+  {
+    // Only if the reported value does differ from the one stored currently in the property.
+    if ( aNewValue != pure RespRate )
+    {
+      // Remember the new value in the internal memory of the property.
+      pure RespRate = aNewValue;
+
+      // Notify all associated property observers.
+      notifyobservers ^RespRate;
+    }
+  }
+
+  $rect <470,140,670,180>
+  property float PIP = 0;
+
+  // This method is intended to be called by the device to notify the GUI application \
+  // about an alternation of its setting or state value.
+  $rect <270,140,470,180>
+  $output true
+  method void UpdatePIP( arg float aNewValue )
+  {
+    // Only if the reported value does differ from the one stored currently in the property.
+    if ( aNewValue != pure PIP )
+    {
+      // Remember the new value in the internal memory of the property.
+      pure PIP = aNewValue;
+
+      // Notify all associated property observers.
+      notifyobservers ^PIP;
+    }
+  }
+
+  $rect <470,200,670,240>
+  property float InspExp = 0;
+
+  // This method is intended to be called by the device to notify the GUI application \
+  // about an alternation of its setting or state value.
+  $rect <270,200,470,240>
+  $output true
+  method void UpdateInspExp( arg float aNewValue )
+  {
+    // Only if the reported value does differ from the one stored currently in the property.
+    if ( aNewValue != pure InspExp )
+    {
+      // Remember the new value in the internal memory of the property.
+      pure InspExp = aNewValue;
+
+      // Notify all associated property observers.
+      notifyobservers ^InspExp;
+    }
+  }
+
+  $rect <440,250,640,290>
+  property float TidalVolume = 0;
+
+  // This method is intended to be called by the device to notify the GUI application \
+  // about an alternation of its setting or state value.
+  $rect <240,250,440,290>
+  $output true
+  method void UpdateTidalVolume( arg float aNewValue )
+  {
+    // Only if the reported value does differ from the one stored currently in the property.
+    if ( aNewValue != pure TidalVolume )
+    {
+      // Remember the new value in the internal memory of the property.
+      pure TidalVolume = aNewValue;
+
+      // Notify all associated property observers.
+      notifyobservers ^TidalVolume;
+    }
+  }
+
+  $rect <690,90,890,130>
+  object Core::PropertyObserver RespRateObserver
+  {
+    preset OnEvent = onRespRateChanged;
+    preset Outlet = ^RespRate;
+  }
+
+  // This slot method is executed when the associated property observer 'PropertyObserver' \
+  // is notified.
+  $rect <900,90,1100,130>
+  slot onRespRateChanged
+  {
+    ValueDisplayBreathMin.String = string(RespRate,0,2);
+  }
+
+  $rect <690,130,890,170>
+  object Core::PropertyObserver PIPObserver
+  {
+    preset OnEvent = onPIPChanged;
+    preset Outlet = ^PIP;
+  }
+
+  // This slot method is executed when the associated property observer 'PropertyObserver' \
+  // is notified.
+  $rect <890,130,1090,170>
+  slot onPIPChanged
+  {
+    ValueDisplayPIP.String = string(PIP,0,2);
+  }
+
+  $rect <680,200,880,240>
+  object Core::PropertyObserver InspExpObserver
+  {
+    preset OnEvent = onInspExpChanged;
+    preset Outlet = ^InspExp;
+  }
+
+  // This slot method is executed when the associated property observer 'PropertyObserver' \
+  // is notified.
+  $rect <880,200,1080,240>
+  slot onInspExpChanged
+  {
+    ValueDisplayInspExp.String = string(InspExp,0,2);
+  }
+
+  $rect <670,250,870,290>
+  object Core::PropertyObserver TidalVolumeObserver
+  {
+    preset OnEvent = onTidalVolumeChanged;
+    preset Outlet = ^TidalVolume;
+  }
+
+  // This slot method is executed when the associated property observer 'PropertyObserver' \
+  // is notified.
+  $rect <870,250,1070,290>
+  slot onTidalVolumeChanged
+  {
+    ValueDisplayTidalVolume.String = string(TidalVolume,0,2);
+  }
+
+  $rect <20,20,160,60>
+  object Views::Text ValueDisplayBreathMin
+  {
+    preset Bounds = <151,23,246,63>;
+    preset String = "0.00";
+    preset Font = Resources::FontLarge;
+    preset Color = #CDCDCDFF;
+  }
+
+  $rect <20,20,160,60>
+  object Views::Text ValueDisplayPIP
+  {
+    preset Bounds = <233,23,328,63>;
+    preset String = "0.00";
+    preset Font = Resources::FontLarge;
+    preset Color = #CDCDCDFF;
+  }
+
+  $rect <20,20,160,60>
+  object Views::Text ValueDisplayInspExp
+  {
+    preset Bounds = <314,23,409,63>;
+    preset String = "0.00";
+    preset Font = Resources::FontLarge;
+    preset Color = #CDCDCDFF;
+  }
+
+  $rect <20,20,160,60>
+  object Views::Text ValueDisplayTidalVolume
+  {
+    preset Bounds = <397,23,491,63>;
+    preset String = "0.00";
+    preset Font = Resources::FontLarge;
     preset Color = #CDCDCDFF;
   }
 

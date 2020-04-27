@@ -1132,7 +1132,7 @@ class MenubarWin32 : Core::Group
   }
 
   $rect <20,20,160,60>
-  object Views::Text ValueDisplayInspExpRatio
+  object Views::Text ValueDisplayInspExp
   {
     preset Bounds = <530,80,680,130>;
     preset String = "0.00";
@@ -2478,7 +2478,7 @@ class MenubarSTM32 : Core::Group
   }
 
   $rect <20,20,160,60>
-  object Views::Text ValueDisplayInspExpRatio
+  object Views::Text ValueDisplayInspExp
   {
     preset Bounds = <314,23,409,63>;
     preset String = "0.00";

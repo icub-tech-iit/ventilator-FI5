@@ -1,12 +1,12 @@
 $version 1.0
 
-attr active = Application::MenubarSTM32;
+attr active = Application::MenubarWin32;
 attr callStackMonitor_Show = false;
 attr codeColSelect = false;
 attr codeFirstPos = <0,0>;
-attr codeInspector = Application::MenubarWin32.onTidalVolumeChanged;
-attr codeSelEnd = <23,0>;
-attr codeSelStart = <23,0>;
+attr codeInspector = Application::MenubarWin32.onInspExpChanged;
+attr codeSelEnd = <27,0>;
+attr codeSelStart = <27,0>;
 attr connectInspectors = false;
 attr debug_TrackUpdates = false;
 attr extractDoc_ClassOverview = true;
@@ -96,6 +96,6 @@ view class Application::MenubarSTM32
 {
   attr enableGrid = true;
   attr grid = 10;
-  attr scrollTo = <440,-7>;
-  attr zoom = 5.0;
+  attr scrollTo = <-7,-7>;
+  attr zoom = 1.75;
 }
