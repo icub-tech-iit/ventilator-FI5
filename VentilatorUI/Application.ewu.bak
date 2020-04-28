@@ -25889,201 +25889,6 @@ note group Note6
   attr Bounds = <0,270,520,490>;
 }
 
-$rect <230,10,430,50>
-class DeviceClass : Templates::DeviceClass
-{
-  $rect <420,60,620,100>
-  onset Property
-  {
-    // The property doesn't change -> nothing to do.
-    if ( pure Property == value )
-      return;
-
-    // Remember the new value in the internal memory of the property.
-    pure Property = value;
-
-    // For target code generation you will use your specific device API 
-    // to change the affected value.
-    $if !$prototyper
-      native ( value )
-      {
-        /*
-           TO DO:
-
-           You can call a function of your own device API or you simply
-           modify a variable existing in your middleware to reflect the
-           new value:
-
-           YourDevice_SetSomeValue( value );
-
-           or
-
-           YourDevice_SomeVariable = value;
-        */
-      }
-    $endif
-
-    // Notify all associated property observers.
-    notifyobservers ^Property;
-  }
-
-  // This property represents an individual setting or state value existing within \
-  // the device.
-  $rect <220,60,420,100>
-  property int32 Property = 0;
-
-  // This method is intended to be called by the device to notify the GUI application \
-  // about an alternation of its setting or state value.
-  $rect <20,60,220,100>
-  $output true
-  method void UpdateProperty( arg int32 aNewValue )
-  {
-    // Only if the reported value does differ from the one stored currently in the property.
-    if ( aNewValue != pure Property )
-    {
-      // Remember the new value in the internal memory of the property.
-      pure Property = aNewValue;
-
-      // Notify all associated property observers.
-      notifyobservers ^Property;
-    }
-  }
-
-  // This object represents an individual system event.
-  $rect <220,280,420,320>
-  object Core::SystemEvent SystemEvent;
-
-  // This method is intended to be called by the device to notify the GUI application \
-  // about a particular system event.
-  $rect <20,280,220,320>
-  $output true
-  method void TriggerEvent()
-  {
-    // Just trigger the system event. All associated system event handler
-    // will then be notified automatically.
-    SystemEvent.Trigger( null, false );
-
-    /*
-       HINT 1:
-
-       When triggering the event you can pass an optional 'context' object.
-       With it additional event specific data can be attached at the event
-       and dispatched with it. All notified system event handler can thus
-       evaluate this 'context' information.
-
-       To do this, you will need to define a particular 'context' class
-       suitable to store the event specific information. Then create an
-       instance of the class, initialize it with all the specific context
-       data and finally pass the instance in the first parameter of the
-       Trigger() method:
-
-
-       var YourUnit::ContextClass context = new YourUnit::ContextClass;
-
-       context.SomeData1 = ...
-       context.SomeData2 = ...
-
-       SystemEvent.Trigger( context, false );
-
-
-       You can add parameters to the method in order to simply receive
-       values from the device.
-    */
-
-    /*
-       HINT 2:
-
-       When triggering a system event you can determine its priority. Per
-       default system events are delivered strictly in the order in which
-       they have been triggered. When you pass 'true' in the last parameter
-       of Trigger() you can force the event to be dispatched early:
-
-       SystemEvent.Trigger( null, true );
-    */
-  }
-
-  // This method implements a device command.
-  $rect <20,430,220,470>
-  method void onDrawAll( arg float pressure, arg float flow, arg float vtidal )
-  {
-    // The following code is used during prototyping only. It simply returns
-    // a dummy value. No device specific API is used during prototyping.
-    $if $prototyper
-    $endif
-
-    // For target code generation you will use your specific device API 
-    // to perform the command in the device.
-    $if !$prototyper
-
-      native ( pressure, flow, vtidal )
-      {
-        /*
-           TO DO:
-
-           You can call a function of your own device API or you simply
-           modify variables existing in your middleware to reflect the
-           command:
-
-           YourDevice_DoSomething( aParameter1, aParameter2, ... );
-
-           or
-
-           YourDevice_SomeVariable    = aParameter1;
-           YourDevice_AnotherVariable = aParameter2;
-
-           Also receive a return value:
-
-           result = YourDevice_DoSomething();
-        */
-      }
-    $endif
-
-  }
-
-  // Example of an interface to read and modify a device setting or state value
-  note group Note1
-  {
-    attr Bounds = <10,10,630,110>;
-  }
-
-  // Example of an interface to react to a system event
-  note group Note2
-  {
-    attr Bounds = <10,230,630,330>;
-  }
-
-  // Example of an interface to perform an operation in the device
-  note group Note3
-  {
-    attr Bounds = <10,380,630,480>;
-  }
-
-  note arrow Note5
-  {
-    attr Point1 = <630,60>;
-    attr Point2 = <700,60>;
-  }
-
-  note arrow Note7
-  {
-    attr Point1 = <630,280>;
-    attr Point2 = <700,280>;
-  }
-
-  // More functionality ... ?
-  // 
-  // Within the device class you can add as many commands, system events and properties \
-  // as required by your target device. Use for this purpose the templates from the \
-  // Gallery folder 'Device'.
-  note legend Note10
-  {
-    attr Bounds = <10,500,630,600>;
-  }
-}
-
-$rect <440,10,640,50>
-autoobject Application::DeviceClass Device;
-
 $rect <580,170,780,210>
 $variant STM32F746
 vclass DataplotterSTM32 : Application::Dataplotter;
@@ -26098,6 +25903,106 @@ vclass DataplotterWin32 : Application::Dataplotter
 {
   $rect <10,180,210,220>
   inherited property Bounds = <0,0,800,160>;
+
+  $rect <480,230,680,270>
+  inherited method UpdateViewState()
+  {
+    // Always invoke the inherited method.
+    super( aState );
+    Graph.CoordOrigin.x = YAxis.Point1.x;
+    Graph.CoordOrigin.y = XAxis.Point1.y;
+
+    /*
+
+      HINT 1:
+
+      This method is invoked automatically when the state set of the component has
+      been changed. The new state set can be found in the parameter aState.
+      Following are the important states:
+
+        Enabled   --> The component can react to user inputs.
+
+        Selected  --> The component is selected in context of its owner.
+
+        Focused   --> The component is selected in context of its owner and 
+                      the owner can react to keyboard events. In this manner the
+                      component is also able to react to keyboard events.
+
+        Modal     --> The component is modal. All events are redirected to this
+                      component.
+
+      To determine whether a state is currently active or not you have to test
+      the aState parameter. For example to test the 'Selected' state:
+
+        if ( aState.contains( Core::ViewState[ Selected ]))
+        {
+          ... yes, this component is currently selected.
+        }
+
+    */
+
+    /*
+
+      HINT 2:
+
+      Alternatively you can request this method invocation by executing explicitly
+      following code:
+
+
+        InvalidateViewState();
+
+    */
+      
+    /*
+
+      TO DO 1:
+
+      Put here the code to ensure that the visual aspect of the component does
+      reflect its current state. For example, depending on its 'Enabled' state
+      a component may appear with full colors or pale if it is disabled:
+
+        if ( aState.contains( Core::ViewState[ Enabled ]))
+        {
+          SomeBackgroundView.Opacity = 255;
+          SomeTextView.Color         = #000000FF;
+        }
+        else
+        {
+          SomeBackgroundView.Opacity = 128;
+          SomeTextView.Color         = #00000080;
+        }
+
+
+      TO DO 2:
+
+      You can evaluate here also the state of any other member in your component.
+      For example in a push-button component, the button should appear highlighted
+      as long as the user holds the finger within a touch area of the button:
+
+        if ( SomeTouchHandler.Down && SomeTouchHandler.Inside )
+          HighlightedBackground.Visible = true;
+        else
+          HighlightedBackground.Visible = false;
+
+      The touch handler itself only requests the update method to be called. Use
+      for this purpose 'InvalidateViewState()' method.
+
+
+      TO DO 3:
+
+      You can calculate here also the position/size of views accordingly to the
+      state of any other member in your component. For example in a slider you
+      can calculate the position of the slider knob from some properties like
+      'SliderValue' and 'SliderRange':
+
+        SliderKnob.Bounds.origin.x = ( SliderValue * Bounds.w ) / SliderRange;
+
+      Changing the 'SliderValue' or 'SliderRange' property should only request
+      the update method to be called. Use for this purpose 'InvalidateViewState()'
+      method.
+
+    */
+  }
 
   $rect <20,230,220,270>
   inherited method Init()
