@@ -1,11 +1,12 @@
 $version 1.0
 
+attr active = Application::DataplotterWin32;
 attr callStackMonitor_Show = false;
 attr codeColSelect = false;
-attr codeFirstPos = <0,0>;
-attr codeInspector = Application::MenubarWin32.onInspExpChanged;
-attr codeSelEnd = <27,0>;
-attr codeSelStart = <27,0>;
+attr codeFirstPos = <0,80>;
+attr codeInspector = Application::DataplotterWin32.UpdateViewState;
+attr codeSelEnd = <2,94>;
+attr codeSelStart = <2,94>;
 attr connectInspectors = false;
 attr debug_TrackUpdates = false;
 attr extractDoc_ClassOverview = true;
@@ -41,60 +42,31 @@ view unit Application
   attr enableGrid = true;
   attr grid = 10;
   attr scrollTo = <-7,-7>;
-  attr zoom = 2.5;
+  attr zoom = 1.5;
 }
 
-view class Application::DataplotterSTM32
+view vclass Application::DataplotterWin32
 {
   attr codeColSelect = false;
   attr codeFirstPos = <0,0>;
-  attr codeInspector = onDrawPrototype;
+  attr codeInspector = Init;
+  attr codeSelEnd = <26,9>;
+  attr codeSelStart = <26,9>;
+  attr enableGrid = true;
+  attr grid = 10;
+  attr scrollTo = <-7,-7>;
+  attr zoom = 1.0;
+}
+
+view class Application::Dataplotter
+{
+  attr codeColSelect = false;
+  attr codeFirstPos = <0,0>;
+  attr codeInspector = UpdateViewState;
   attr codeSelEnd = <0,0>;
-  attr codeSelStart = <0,0>;
+  attr codeSelStart = <2,94>;
   attr enableGrid = true;
   attr grid = 10;
   attr scrollTo = <-7,-7>;
-  attr zoom = 2.0;
-}
-
-view class Application::DataplotterWin32
-{
-  attr codeColSelect = false;
-  attr codeFirstPos = <0,0>;
-  attr codeInspector = OnSetScreenWiper;
-  attr codeSelEnd = <16,8>;
-  attr codeSelStart = <5,8>;
-  attr enableGrid = true;
-  attr grid = 10;
-  attr scrollTo = <188,-7>;
-  attr zoom = 1.75;
-}
-
-view class Application::Application
-{
-  attr enableGrid = true;
-  attr grid = 10;
-  attr scrollTo = <-7,-7>;
-  attr zoom = 2.0;
-}
-
-view class Application::MenubarWin32
-{
-  attr codeColSelect = false;
-  attr codeFirstPos = <0,0>;
-  attr codeInspector = onInspExpChanged;
-  attr codeSelEnd = <27,0>;
-  attr codeSelStart = <27,0>;
-  attr enableGrid = true;
-  attr grid = 10;
-  attr scrollTo = <-7,-7>;
-  attr zoom = 2.0;
-}
-
-view class Application::MenubarSTM32
-{
-  attr enableGrid = true;
-  attr grid = 10;
-  attr scrollTo = <-7,-7>;
-  attr zoom = 1.75;
+  attr zoom = 1.0;
 }
