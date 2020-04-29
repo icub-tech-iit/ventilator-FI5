@@ -124,6 +124,7 @@ profile STM32F746 : STM.STM32.RGB565
   attr CleanOutputDirectories = false;
   attr OutputFileNameExtension = c;
   attr Verbose = false;
+  attr ApplicationName = VentilatorUI;
 
   $rect <10,10,154,50>
   macro Author = "Dipl. Ing. Paul Banach and Dipl. Ing. Manfred Schweyer, Copyright (C) TARA Systems GmbH";
@@ -138,6 +139,7 @@ profile WIN32 : Tara.Win32.RGBA8888
   attr CleanOutputDirectories = false;
   attr OutputFileNameExtension = c;
   attr ApplicationClass = Application::Application;
+  attr ApplicationName = VentilatorUI;
 }
 
 $rect <40,270,240,310>

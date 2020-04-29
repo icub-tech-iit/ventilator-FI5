@@ -1,6 +1,5 @@
 $version 1.0
 
-attr active = Application;
 attr callStackMonitor_Show = false;
 attr codeColSelect = false;
 attr codeFirstPos = <0,0>;
@@ -42,7 +41,7 @@ view unit Application
   attr enableGrid = true;
   attr grid = 10;
   attr scrollTo = <-7,-7>;
-  attr zoom = 1.5;
+  attr zoom = 2.0;
 }
 
 view class Application::Dataplotter
