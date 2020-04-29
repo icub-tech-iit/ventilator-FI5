@@ -224,7 +224,7 @@ void DeviceDriver_Deinitialize( void )
 }
 
 #include "_ApplicationApplicationVariantSTM32.h"
-#include "_ApplicationDataplotterSTM32.h"
+#include "_ApplicationDataplotter.h"
 #include <stdio.h>
 #include "ewmain.h"
 #include "stdint.h"
@@ -248,19 +248,19 @@ int iit_UpdateValues()
         tv+= 0.1;
         if(tv>=0.99) tv = 0;
         
-        ApplicationDataplotterSTM32_onDraw(&(h->DataplotterVTidal), tv);
+        ApplicationDataplotter_onDraw(&(h->DataplotterVTidal), tv);
 
         static float pr = 0;
         pr+= 0.1;
         if(pr>=0.99) pr = 0;
         
-        ApplicationDataplotterSTM32_onDraw(&(h->DataplotterPress), 40*pr);
+        ApplicationDataplotter_onDraw(&(h->DataplotterPress), 40*pr);
         
         static float fl = 0;
         fl+= 0.1;
         if(fl>=0.99) fl = 0;
         
-        ApplicationDataplotterSTM32_onDraw(&(h->DataplotterFlow), 40*(fl-0.5));
+        ApplicationDataplotter_onDraw(&(h->DataplotterFlow), 40*(fl-0.5));
         
 //        ViewsText_OnSetString(&(handleIIT->Menubar.ValueDisplayInspExp), "20.0");
         
