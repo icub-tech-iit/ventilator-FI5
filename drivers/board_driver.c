@@ -6,18 +6,11 @@
 #include "pwm.h"
 #include "zephyr.h"
 #include "mcp23017.h"
+#include "encoder.h"
+#include "analog.h"
+#include "access_once.h"
 
-#define BREADBOARD
-
-#ifdef DEBUG_HAL
-    #include "board_sim.h"
-#endif
-
-#if defined(__ARMCOMPILER_VERSION)
-#define ACCESS_ONCE(x) (x)
-#else
-#define ACCESS_ONCE(x) (*((volatile typeof(x) *)&(x)))
-#endif
+#include <string.h>
 
 /****************************************************************/
 /* Local definitions.                                           */
@@ -31,6 +24,7 @@
 #define PRESSURE_SENSOR_1_CHANNEL       (0x00)
 #define PRESSURE_SENSOR_2_CHANNEL       (0x01)
 #define PRESSURE_SENSOR_3_CHANNEL       (0x02)
+#define PRESSURE_SENSOR_4_CHANNEL       (0x03)
 
 #define FLOW_SENSOR_1_ADDRESS           (0x49)
 #define FLOW_SENSOR_2_ADDRESS           (0x49)
@@ -43,7 +37,7 @@
 /****************************************************************/
 /* Local type definitions.                                      */
 /****************************************************************/
-typedef struct 
+typedef struct
 {
     hsc_handle_t sensor;
     i2c_mux_handle_t* i2c_mux;
@@ -65,14 +59,21 @@ typedef struct
     pressure_sensor_t pressure_sensor1;
     pressure_sensor_t pressure_sensor2;
     pressure_sensor_t pressure_sensor3;
+    pressure_sensor_t pressure_sensor4;
     zephyr_handle_t flow_sensor1;
     zephyr_handle_t flow_sensor2;
     i2c_mux_handle_t i2c_mux;
     mcp23017_handle_t gpio_expander;
+    encoder_handle_t encoder;
+    analog_handle_t analog;
 
     // Actuator devices
     pwm_handle_t pwm_valve1;
     pwm_handle_t pwm_valve2;
+    pwm_handle_t pwm_buzzer;
+
+    // Board configuration
+    board_config_t config;
 } board_device_t;
 
 typedef struct
@@ -91,15 +92,19 @@ typedef struct
 enum
 {
     BOARD_STATE_IDLE = 0,
-    BOARD_STATE_CHANNEL1,
+    BOARD_STATE_CHANNEL0,
     BOARD_STATE_PRESSURE1,
-    BOARD_STATE_CHANNEL2,
+    BOARD_STATE_CHANNEL1,
     BOARD_STATE_PRESSURE2,
     BOARD_STATE_FLOW1,
-    BOARD_STATE_CHANNEL3,
+    BOARD_STATE_CHANNEL2,
     BOARD_STATE_PRESSURE3,
     BOARD_STATE_FLOW2,
+    BOARD_STATE_CHANNEL3,
+    BOARD_STATE_PRESSURE4,
+    BOARD_STATE_ANALOG,
     BOARD_STATE_GPIO,
+    BOARD_STATE_ENCODER,
     BOARD_STATE_COMPLETED
 };
 
@@ -112,13 +117,21 @@ static int i2c_mux_select(i2c_mux_handle_t* mux, int channel, i2c_mux_callback_t
 static void i2c_mux_select_completed(int status);
 static int i2c_mux_select_wait(void);
 
-static int board_read_pressure(pressure_sensor_t* sensor, 
+static int board_read_pressure(pressure_sensor_t* sensor,
                                int16_t* pressure,
                                int16_t* temperature);
 
 static int board_read_flow(zephyr_handle_t* sensor, uint16_t* flow);
 
 static int board_read_gpio_expander(mcp23017_handle_t* gpio_dev, uint16_t* value);
+
+static int board_read_encoder(encoder_handle_t* encoder_dev,
+                              int32_t* tick,
+                              uint32_t* button_mask);
+
+static int board_read_analog(analog_handle_t* analog_dev,
+                             uint16_t* o2,
+                             uint16_t* analog_input);
 
 static int board_pressure_data_received(void);
 
@@ -128,7 +141,21 @@ static void board_fsm_update(int status);
 
 static void board_read_completed_callback(int status);
 
+static int board_init_pressure_sensor(hsc_handle_t* sensor,
+                                      device_config_t* config);
+static int board_init_flow_sensor(zephyr_handle_t* sensor,
+                                  device_config_t* config,
+                                  int mux_channel);
+static int board_init_gpio_expander(mcp23017_handle_t* dev,
+                                    device_config_t* config);
+
+static int board_read_check(board_sensor_data_t* in_data);
+
+/****************************************************************/
+/* Exported functions declarations.                             */
+/****************************************************************/
 void i2c_xfer_completed(int retcode);
+void encoder_changed(bool a, bool b, bool button);
 
 /****************************************************************/
 /* Local data.                                                  */
@@ -137,8 +164,10 @@ static board_device_t board_dev;
 static board_fsm_t board_fsm;
 
 extern TIM_HandleTypeDef htim1;
-extern TIM_HandleTypeDef htim2;
+extern TIM_HandleTypeDef htim8;
+extern TIM_HandleTypeDef htim12;
 extern I2C_HandleTypeDef hi2c1;
+extern ADC_HandleTypeDef hadc3;
 
 static mcp23017_cfg_t gpio_cfg = {
     .direction = 0x00FF,
@@ -147,91 +176,97 @@ static mcp23017_cfg_t gpio_cfg = {
 
 static pwm_config_t pwm1_cfg = {
     .timer_frequency = 200000000,
-    .pwm_frequency = 10000,
+    .pwm_frequency = 100000,
+    .type = PWM_TYPE_NORMAL,
     .channel = 1,
+    .n_channel = 0,
     .input_voltage = 5000
 };
 
 static pwm_config_t pwm2_cfg = {
-    .timer_frequency = 100000000,
-    .pwm_frequency = 10000,
-    .channel = 1,
+    .timer_frequency = 200000000,
+    .pwm_frequency = 100000,
+    .type = PWM_TYPE_COMPLEMENTARY,
+    .channel = 2,
+    .n_channel = 0,
     .input_voltage = 5000
 };
 
-static i2c_xfer_cb_data_t i2c_xfer_cb_data = 
+static pwm_config_t pwm3_cfg = {
+    .timer_frequency = 25000000,
+    .pwm_frequency = 800,
+    .type = PWM_TYPE_DUAL,
+    .channel = 1,
+    .n_channel = 2,
+    .input_voltage = 5000
+};
+
+static i2c_xfer_cb_data_t i2c_xfer_cb_data =
 {
     .cb = 0,
     .args = 0,
     .index = 0
 };
 
-#if defined(__ARMCOMPILER_VERSION)
-static volatile int i2c_mux_semaphore = 0;
-static volatile int i2c_xfer_semaphore = 0;
-#else
-static int i2c_mux_semaphore = 0;
-static int i2c_xfer_semaphore = 0;
-#endif
+volatile static int i2c_mux_semaphore = 0;
+volatile static int i2c_xfer_semaphore = 0;
 
 /****************************************************************/
 /* Exported APIs.                                               */
 /****************************************************************/
-int board_init(void)
+int board_init(board_config_t* config)
 {
+    // Store a copy of the board configuration
+    memcpy(&board_dev.config, config, sizeof(board_config_t));
+
     // Initialize the I2C mux channel mapping
     board_dev.pressure_sensor1.i2c_mux = &board_dev.i2c_mux;
     board_dev.pressure_sensor2.i2c_mux = &board_dev.i2c_mux;
     board_dev.pressure_sensor3.i2c_mux = &board_dev.i2c_mux;
+    board_dev.pressure_sensor4.i2c_mux = &board_dev.i2c_mux;
 
     board_dev.pressure_sensor1.i2c_channel = PRESSURE_SENSOR_1_CHANNEL;
     board_dev.pressure_sensor2.i2c_channel = PRESSURE_SENSOR_2_CHANNEL;
     board_dev.pressure_sensor3.i2c_channel = PRESSURE_SENSOR_3_CHANNEL;
+    board_dev.pressure_sensor4.i2c_channel = PRESSURE_SENSOR_4_CHANNEL;
 
     // Initialize the I2C mux device handles
     i2c_mux_init(&board_dev.i2c_mux, i2c_xfer_async, I2C_MUX_ADDRESS);
 
-    // Initialize the pressure sensors handles
-    hsc_init(&board_dev.pressure_sensor1.sensor, i2c_xfer_async, PRESSURE_SENSOR_1_ADDRESS);
-    hsc_init(&board_dev.pressure_sensor2.sensor, i2c_xfer_async, PRESSURE_SENSOR_2_ADDRESS);
-    hsc_init(&board_dev.pressure_sensor3.sensor, i2c_xfer_async, PRESSURE_SENSOR_3_ADDRESS);
+    // Initialize the pressure sensors
+    board_init_pressure_sensor(&board_dev.pressure_sensor1.sensor, &config->pressure_sensor1);
+    board_init_pressure_sensor(&board_dev.pressure_sensor2.sensor, &config->pressure_sensor2);
+    board_init_pressure_sensor(&board_dev.pressure_sensor3.sensor, &config->pressure_sensor3);
+    board_init_pressure_sensor(&board_dev.pressure_sensor4.sensor, &config->pressure_sensor4);
 
-#ifdef BREADBOARD
-    // Initialize the sensor' properties.
-    hsc_config_device(&board_dev.pressure_sensor1.sensor, &HSCSANN100PA2A5);
-    hsc_config_device(&board_dev.pressure_sensor2.sensor, &HSCSANN100PA2A5);
-#else
-	hsc_config_device(&board_dev.pressure_sensor1.sensor, &HSCDANN150PG2A5);
-	hsc_config_device(&board_dev.pressure_sensor2.sensor, &HSCMAND160MD2A5);
-	hsc_config_device(&board_dev.pressure_sensor3.sensor, &HSCMAND160MD2A5);
-#endif
+    // Initialize the flow sensors
+    board_init_flow_sensor(&board_dev.flow_sensor1, &config->flow_sensor1, FLOW_SENSOR_1_CHANNEL);
+    board_init_flow_sensor(&board_dev.flow_sensor2, &config->flow_sensor2, FLOW_SENSOR_2_CHANNEL);
 
-    // Initialize the flow sensor
-    i2c_mux_select(&board_dev.i2c_mux, FLOW_SENSOR_1_CHANNEL, i2c_mux_select_completed);
-    i2c_mux_select_wait();
-    zephyr_init(&board_dev.flow_sensor1, i2c_xfer_async, FLOW_SENSOR_1_ADDRESS);
-
-#ifndef BREADBOARD
-    i2c_mux_select(&board_dev.i2c_mux, FLOW_SENSOR_2_CHANNEL, i2c_mux_select_completed);
-    i2c_mux_select_wait();
-    zephyr_init(&board_dev.flow_sensor2, i2c_xfer_async, FLOW_SENSOR_2_ADDRESS);
-#endif
     // Initialize the I2C GPIO expander
-    mcp23017_init(&board_dev.gpio_expander, i2c_xfer_async, GPIO_EXPANDER_ADDRESS);
+    board_init_gpio_expander(&board_dev.gpio_expander, &config->gpio_expander);
 
-    mcp23017_config_device(&board_dev.gpio_expander, &gpio_cfg);
+    // Initialize the encoder
+    encoder_init(&board_dev.encoder);
+
+    // Initialize the analogic acquisitions
+    analog_init(&board_dev.analog, &hadc3, DMA2_Stream0_IRQn);
+    analog_config(&board_dev.analog, 0x1F);
 
     // Initialize the PWM devices
     pwm_init(&board_dev.pwm_valve1, (void*)&htim1, &pwm1_cfg);
-    pwm_init(&board_dev.pwm_valve2, (void*)&htim2, &pwm2_cfg);
+    pwm_init(&board_dev.pwm_valve2, (void*)&htim8, &pwm2_cfg);
+    pwm_init(&board_dev.pwm_buzzer, (void*)&htim12, &pwm3_cfg);
 
     // Set to zero the PWM output voltage
     pwm_set(&board_dev.pwm_valve1, 0);
     pwm_set(&board_dev.pwm_valve2, 0);
+    pwm_set(&board_dev.pwm_buzzer, 0);
 
     // Start the PWM channels
     pwm_start(&board_dev.pwm_valve1);
     pwm_start(&board_dev.pwm_valve2);
+    pwm_start(&board_dev.pwm_buzzer);
 
     return RC_OK;
 }
@@ -248,7 +283,7 @@ int board_read_sensors(board_sensor_data_t* in_data)
     }
 
     // Wait for the operation to be completed
-    while(board_fsm.state != BOARD_STATE_IDLE) 
+    while(board_fsm.state != BOARD_STATE_IDLE)
     {
         HAL_Delay(1);
         // asm("wfi");
@@ -259,11 +294,21 @@ int board_read_sensors(board_sensor_data_t* in_data)
 
 int board_read_sensors_async(board_sensor_data_t* in_data, board_read_callback_t read_completed)
 {
+    int ret_code;
+
+    // Store the informations needed in the callback
     board_fsm.in_data = in_data;
     board_fsm.read_completed = read_completed;
 
+    // Check the input parameters
+    ret_code = board_read_check(in_data);
+    if(ret_code != RC_OK)
+        return ret_code;
+
+    // Start the sensor reading FSM
     board_fsm_start();
 
+    // The operation is started
     return RC_OK;
 }
 
@@ -276,14 +321,27 @@ int board_apply_actuation(board_actuation_data_t* out_data)
     {
         return RC_PWM_ERROR;
     }
-    
+
     ret_code = pwm_set(&board_dev.pwm_valve2, out_data->valve2);
     if(ret_code != 0)
     {
         return RC_PWM_ERROR;
     }
 
-    ret_code = mcp23017_write(&board_dev.gpio_expander, out_data->gpio, 0);
+    ret_code = pwm_set(&board_dev.pwm_buzzer, out_data->buzzer);
+    if(ret_code != 0)
+    {
+        return RC_PWM_ERROR;
+    }
+
+    if(board_dev.config.gpio_expander.type != GPIO_EXPANDER_TYPE_NONE)
+    {
+        ret_code = mcp23017_write(&board_dev.gpio_expander, out_data->gpio, 0);
+        if(ret_code != 0)
+        {
+            return RC_GPIO_ERROR;
+        }
+    }
 
     return RC_OK;
 }
@@ -326,21 +384,18 @@ static void i2c_xfer_sync_cb(int status, void *arg)
 
 static int i2c_xfer(i2c_xfer_list_t *xfers, int addr)
 {
-#if defined(__ARMCOMPILER_VERSION)
     volatile int retcode = RC_OK;
+
     ACCESS_ONCE(i2c_xfer_semaphore) = 0;
     i2c_xfer_async(xfers, addr,  i2c_xfer_sync_cb, (int*)&retcode);
-    while (!ACCESS_ONCE(i2c_xfer_semaphore));
+    while (!ACCESS_ONCE(i2c_xfer_semaphore))
+    {
+#ifdef DEBUG_HAL
+        HAL_Delay(1);
+#endif
+    }
 
-    return (ACCESS_ONCE(retcode) == 0) ? RC_OK : RC_BUS_ERROR;  
-#else
-    int retcode;   
-    ACCESS_ONCE(i2c_xfer_semaphore) = 0;
-    i2c_xfer_async(xfers, addr,  i2c_xfer_sync_cb, &retcode);
-    while (!ACCESS_ONCE(i2c_xfer_semaphore));
-
-    return (ACCESS_ONCE(retcode) == 0) ? RC_OK : RC_BUS_ERROR;  
-#endif    
+    return (ACCESS_ONCE(retcode) == 0) ? RC_OK : RC_BUS_ERROR;
 }
 
 static int i2c_xfer_async(i2c_xfer_list_t *xfers, int addr, i2c_xfer_cb_t cb, void* args)
@@ -363,23 +418,6 @@ static int i2c_xfer_async(i2c_xfer_list_t *xfers, int addr, i2c_xfer_cb_t cb, vo
     retcode = i2c_xfer_segment(xfers, addr, 0);
 
     return (retcode == 0) ? RC_OK : RC_BUS_ERROR;
-}
-
-void i2c_xfer_completed(int retcode)
-{
-    int last = 1;
-
-    i2c_xfer_cb_data.index++;
-    /* As long as we don't hit an error, and there are segments, keep on TXing */
-    if((retcode == 0) && (i2c_xfer_cb_data.index < i2c_xfer_cb_data.xfers.xfer_num))
-    {
-        retcode = i2c_xfer_segment(&i2c_xfer_cb_data.xfers, i2c_xfer_cb_data.addr, i2c_xfer_cb_data.index);
-        if (retcode == 0)
-            last = 0; /* segment successfully enqueued, this is not the last CB invokation */
-    }
-
-    if(i2c_xfer_cb_data.cb && last)
-        i2c_xfer_cb_data.cb(retcode, i2c_xfer_cb_data.args);
 }
 
 static int i2c_mux_select(i2c_mux_handle_t* mux, int channel, i2c_mux_callback_t callback)
@@ -415,6 +453,7 @@ static int i2c_mux_select_wait(void)
 
     ACCESS_ONCE(i2c_mux_semaphore) = 0;
 
+    // TODO: error checking on the mux I2C transaction
     return RC_OK;
 }
 
@@ -455,6 +494,39 @@ static int board_read_gpio_expander(mcp23017_handle_t* gpio_dev, uint16_t* value
     return (result == 0) ? RC_OK : RC_SENSOR_ERROR;
 }
 
+static int board_read_encoder(encoder_handle_t* encoder_dev,
+                              int32_t* tick,
+                              uint32_t* button_mask)
+{
+    int encoder_tick;
+    bool encoder_pressed;
+
+    encoder_get(encoder_dev, &encoder_tick, &encoder_pressed);
+
+    *tick = encoder_tick;
+
+    if(encoder_pressed)
+        *button_mask = *button_mask | BOARD_BUTTON_ENCODER;
+    else
+        *button_mask = *button_mask & ~BOARD_BUTTON_ENCODER;
+
+    return 0;
+}
+
+static int board_read_analog(analog_handle_t* analog_dev,
+                             uint16_t* o2,
+                             uint16_t* analog_input)
+{
+    uint16_t buffer[5] = {0};
+
+    analog_get_data(analog_dev, buffer);
+
+    *o2 = buffer[0];
+    memcpy(analog_input, &buffer[1], 4 * sizeof(uint16_t));
+
+    return 0;
+}
+
 static int board_pressure_data_received()
 {
     *board_fsm.pressure    = (uint16_t)(board_fsm.sensor_pressure * 1000.0f);
@@ -463,10 +535,9 @@ static int board_pressure_data_received()
     return 0;
 }
 
-
 static void board_fsm_start(void)
 {
-    board_fsm.state = BOARD_STATE_CHANNEL1;
+    board_fsm.state = BOARD_STATE_CHANNEL0;
     board_fsm.result = 0;
     board_fsm_update(0);
 }
@@ -499,7 +570,7 @@ static void board_fsm_update(int status)
     // new state.
     switch(board_fsm.state)
     {
-        case BOARD_STATE_CHANNEL2:
+        case BOARD_STATE_CHANNEL1:
             // Process the pressure sensor 1 data
             ret_code = board_pressure_data_received();
             break;
@@ -510,7 +581,12 @@ static void board_fsm_update(int status)
             break;
 
         case BOARD_STATE_FLOW2:
-            // Process the pressure sensor 2 data
+            // Process the pressure sensor 3 data
+            ret_code = board_pressure_data_received();
+            break;
+
+        case BOARD_STATE_ANALOG:
+            // Process the pressure sensor 4 data
             ret_code = board_pressure_data_received();
             break;
 
@@ -539,7 +615,7 @@ static void board_fsm_update(int status)
 
         switch(board_fsm.state)
         {
-            case BOARD_STATE_CHANNEL1:
+            case BOARD_STATE_CHANNEL0:
                 if((board_fsm.in_data->read_mask & (BOARD_PRESSURE_1 | BOARD_TEMPERATURE_1)) != 0)
                 {
                     ret_code = i2c_mux_select(&board_dev.i2c_mux, 0, board_fsm_update);
@@ -559,7 +635,7 @@ static void board_fsm_update(int status)
                 break;
 
 
-            case BOARD_STATE_CHANNEL2:
+            case BOARD_STATE_CHANNEL1:
                 if((board_fsm.in_data->read_mask & (BOARD_PRESSURE_2 | BOARD_TEMPERATURE_2 | BOARD_FLOW_1)) != 0)
                 {
                     ret_code = i2c_mux_select(&board_dev.i2c_mux, 1, board_fsm_update);
@@ -587,7 +663,7 @@ static void board_fsm_update(int status)
                 }
                 break;
 
-            case BOARD_STATE_CHANNEL3:
+            case BOARD_STATE_CHANNEL2:
                 if((board_fsm.in_data->read_mask & (BOARD_PRESSURE_3 | BOARD_TEMPERATURE_3 | BOARD_FLOW_2)) != 0)
                 {
                     ret_code = i2c_mux_select(&board_dev.i2c_mux, 2, board_fsm_update);
@@ -615,13 +691,56 @@ static void board_fsm_update(int status)
                 }
                 break;
 
-            case BOARD_STATE_GPIO:
+            case BOARD_STATE_CHANNEL3:
+                if((board_fsm.in_data->read_mask & (BOARD_PRESSURE_4 | BOARD_TEMPERATURE_4)) != 0)
+                {
+                    ret_code = i2c_mux_select(&board_dev.i2c_mux, 3, board_fsm_update);
+                    skip_state = 0;
+                }
+                break;
+
+            case BOARD_STATE_PRESSURE4:
                 // Trigger sensor 3 reading
+                if((board_fsm.in_data->read_mask & (BOARD_PRESSURE_4 | BOARD_TEMPERATURE_4)) != 0)
+                {
+                    ret_code = board_read_pressure(&board_dev.pressure_sensor4,
+                                                   &board_fsm.in_data->pressure4,
+                                                   &board_fsm.in_data->temperature4);
+                    skip_state = 0;
+                }
+                break;
+
+            case BOARD_STATE_ANALOG:
+                if((board_fsm.in_data->read_mask & BOARD_ANALOG) != 0)
+                {
+                    ret_code = board_read_analog(&board_dev.analog,
+                                                 &board_fsm.in_data->o2,
+                                                 board_fsm.in_data->analog_input);
+
+                    // There's nothing to wait here so keep skipping
+                    skip_state = 1;
+                }
+                break;
+
+            case BOARD_STATE_GPIO:
                 if((board_fsm.in_data->read_mask & BOARD_GPIO) != 0)
                 {
                     ret_code = board_read_gpio_expander(&board_dev.gpio_expander,
                                                 &board_fsm.in_data->gpio);
                     skip_state = 0;
+                }
+                break;
+
+            case BOARD_STATE_ENCODER:
+                if((board_fsm.in_data->read_mask & BOARD_ENCODER) != 0)
+                {
+                    // Read the encoder interface
+                    ret_code = board_read_encoder(&board_dev.encoder,
+                                                  &board_fsm.in_data->encoder,
+                                                  &board_fsm.in_data->buttons);
+
+                    // There's nothing to wait here so keep skipping
+                    skip_state = 1;
                 }
                 break;
 
@@ -655,4 +774,187 @@ static void board_fsm_update(int status)
 static void board_read_completed_callback(int status)
 {
     board_fsm.result = status;
+}
+
+
+static int board_init_pressure_sensor(hsc_handle_t* sensor,
+                                      device_config_t* config)
+{
+    int ret_code = RC_OK;
+    hsc_sensor_t* hsc_sensor_cfg = 0;
+
+    int result;
+
+    // Get the right configuration parameters
+    // related to the installed sensor.
+    // If no sensor is selected the function just
+    // returns OK while if an unknown sensor identifier
+    // is set a UNSUPPORTED_ERROR is raised.
+    switch(config->type)
+    {
+        case PRESSURE_SENSOR_TYPE_NONE:
+            break;
+
+        case PRESSURE_SENSOR_TYPE_HSCDANN150PG2A5:
+            hsc_sensor_cfg = &HSCDANN150PG2A5;
+            break;
+
+        case PRESSURE_SENSOR_TYPE_HSCMAND160MD2A5:
+            hsc_sensor_cfg = &HSCMAND160MD2A5;
+            break;
+
+        case PRESSURE_SENSOR_TYPE_HSCSANN100PA2A5:
+            hsc_sensor_cfg = &HSCSANN100PA2A5;
+            break;
+
+        default:
+            ret_code = RC_UNSUPPORTED_ERROR;
+            break;
+    }
+
+    // If a valid sensor is installed initialize it
+    if((ret_code == RC_OK) && (hsc_sensor_cfg))
+    {
+        result = hsc_init(sensor, i2c_xfer_async, config->address);
+        if(result != 0)
+            return RC_ERROR;
+
+        result = hsc_config_device(sensor, hsc_sensor_cfg);
+        if(result != 0)
+            return RC_ERROR;
+    }
+
+    return ret_code;
+}
+
+static int board_init_flow_sensor(zephyr_handle_t* sensor,
+                                  device_config_t* config,
+                                  int mux_channel)
+{
+    int ret_code = RC_OK;
+    int result;
+
+    if(config->type == FLOW_SENSOR_TYPE_ZEPHYR)
+    {
+        // Manually route the I2C mux to address the sensor
+        result = i2c_mux_select(&board_dev.i2c_mux, mux_channel, i2c_mux_select_completed);
+        if(result != 0)
+            return RC_ERROR;
+
+        // Wait for the mux to complete
+        i2c_mux_select_wait();
+
+        // Initialize the sensor
+        result = zephyr_init(sensor, i2c_xfer_async, config->address);
+        if(result != 0)
+            return RC_ERROR;
+    }
+
+    return ret_code;
+}
+
+static int board_init_gpio_expander(mcp23017_handle_t* dev,
+                                    device_config_t* config)
+{
+    int ret_code = RC_OK;
+    int result;
+
+    if(config->type == GPIO_EXPANDER_TYPE_MCP23017)
+    {
+        // Initialize the I2C GPIO expander
+        result = mcp23017_init(dev, i2c_xfer_async, config->address);
+        if(result != 0)
+            return RC_ERROR;
+
+        result = mcp23017_config_device(dev, &gpio_cfg);
+        if(result != 0)
+            return RC_ERROR;
+    }
+
+    return ret_code;
+}
+
+static int board_read_check(board_sensor_data_t* in_data)
+{
+    // Check the data pointer
+    if(!in_data)
+        return RC_ERROR;
+
+    uint32_t read_mask = in_data->read_mask;
+
+    // Pressure sensor 1
+    if(((read_mask & BOARD_PRESSURE_1) != 0) &&
+       (board_dev.config.pressure_sensor1.type == PRESSURE_SENSOR_TYPE_NONE))
+    {
+        return RC_NOT_INSTALLED_ERROR;
+    }
+
+    // Pressure sensor 2
+    if(((read_mask & BOARD_PRESSURE_2) != 0) &&
+       (board_dev.config.pressure_sensor2.type == PRESSURE_SENSOR_TYPE_NONE))
+    {
+        return RC_NOT_INSTALLED_ERROR;
+    }
+
+    // Pressure sensor 3
+    if(((read_mask & BOARD_PRESSURE_3) != 0) &&
+       (board_dev.config.pressure_sensor3.type == PRESSURE_SENSOR_TYPE_NONE))
+    {
+        return RC_NOT_INSTALLED_ERROR;
+    }
+
+    // Pressure sensor 4
+    if(((read_mask & BOARD_PRESSURE_4) != 0) &&
+       (board_dev.config.pressure_sensor4.type == PRESSURE_SENSOR_TYPE_NONE))
+    {
+        return RC_NOT_INSTALLED_ERROR;
+    }
+
+    // Flow sensor 1
+    if(((read_mask & BOARD_FLOW_1) != 0) &&
+       (board_dev.config.flow_sensor1.type == FLOW_SENSOR_TYPE_NONE))
+    {
+        return RC_NOT_INSTALLED_ERROR;
+    }
+
+    // Flow sensor 2
+    if(((read_mask & BOARD_FLOW_2) != 0) &&
+       (board_dev.config.flow_sensor2.type == FLOW_SENSOR_TYPE_NONE))
+    {
+        return RC_NOT_INSTALLED_ERROR;
+    }
+
+    // GPIO expander
+    if(((read_mask & BOARD_GPIO) != 0) &&
+       (board_dev.config.gpio_expander.type == GPIO_EXPANDER_TYPE_NONE))
+    {
+        return RC_NOT_INSTALLED_ERROR;
+    }
+
+    return RC_OK;
+}
+
+/****************************************************************/
+/* Exported functions definitions.                              */
+/****************************************************************/
+void i2c_xfer_completed(int retcode)
+{
+    int last = 1;
+
+    i2c_xfer_cb_data.index++;
+    /* As long as we don't hit an error, and there are segments, keep on TXing */
+    if((retcode == 0) && (i2c_xfer_cb_data.index < i2c_xfer_cb_data.xfers.xfer_num))
+    {
+        retcode = i2c_xfer_segment(&i2c_xfer_cb_data.xfers, i2c_xfer_cb_data.addr, i2c_xfer_cb_data.index);
+        if (retcode == 0)
+            last = 0; /* segment successfully enqueued, this is not the last CB invokation */
+    }
+
+    if(i2c_xfer_cb_data.cb && last)
+        i2c_xfer_cb_data.cb(retcode, i2c_xfer_cb_data.args);
+}
+
+void encoder_changed(bool a, bool b, bool button)
+{
+	encoder_decode(&board_dev.encoder, a, b, button);
 }

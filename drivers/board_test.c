@@ -22,6 +22,50 @@ static void test_board_read_callback(int status);
 static int board_sensor_read_completed = 0;
 static int board_sensor_read_status = 0;
 
+static board_config_t board_config = 
+{
+    .pressure_sensor1 = 
+    {
+        .type = PRESSURE_SENSOR_TYPE_HSCDANN150PG2A5,
+        .address = 0x28
+    },
+    .pressure_sensor2 = 
+    {
+        .type = PRESSURE_SENSOR_TYPE_HSCMAND160MD2A5,
+        .address = 0x28
+    },
+    .pressure_sensor3 = 
+    {
+        .type = PRESSURE_SENSOR_TYPE_HSCMAND160MD2A5,
+        .address = 0x28
+    },
+    .pressure_sensor4 = 
+    {
+        .type = PRESSURE_SENSOR_TYPE_HSCDANN150PG2A5,
+        .address = 0x28
+    },
+    .flow_sensor1 =
+    {
+        .type = FLOW_SENSOR_TYPE_ZEPHYR,
+        .address = 0x49
+    },
+    .flow_sensor2 =
+    {
+        .type = FLOW_SENSOR_TYPE_ZEPHYR,
+        .address = 0x49
+    },
+    .o2_sensor =
+    {
+        .type = O2_SENSOR_TYPE_NONE,
+        .address = 0x00
+    },
+    .gpio_expander =
+    {
+        .type = GPIO_EXPANDER_TYPE_MCP23017,
+        .address = 0x20
+    }
+};
+
 static int test_board_sim(void)
 {
     int result;
@@ -47,7 +91,7 @@ static int test_board_sim(void)
     }
 
     // Try to access a sensor
-    if(test_board_sim_read(1, 0x29, 0, 0, -ENODEV))
+    if(test_board_sim_read(1, 0x28, 0, 0, -ENODEV))
         return 1;
 
     // Write the mux mapping register
@@ -72,12 +116,12 @@ static int test_board_sim(void)
     }
 
     // Try to access a sensor
-    if(test_board_sim_read(1, 0x29, 0, 0, -EBADF))
+    if(test_board_sim_read(1, 0x28, 0, 0, -EBADF))
         return 1;
 
     // Try to access a sensor
     memset(buffer, 0x0, sizeof(buffer));
-    if(test_board_sim_read(1, 0x29, buffer, 4, 0))
+    if(test_board_sim_read(1, 0x28, buffer, 4, 0))
         return 1;
 
     uint8_t expected_sensor[] = { 0x10, 0x10, 0x10, 0x10, 0x00};
@@ -106,7 +150,7 @@ static int test_board_sim(void)
     }
 
     // Try to access a sensor
-    if(test_board_sim_read(1, 0x29, 0, 0, -EIO))
+    if(test_board_sim_read(1, 0x28, 0, 0, -EIO))
         return 1;
 
     printf("\nTEST CASE PASSED\n");
@@ -155,7 +199,7 @@ static int test_board_driver(void)
 
     // Call the board initialization
     printf("board_init() ");
-    result = board_init();
+    result = board_init(&board_config);
     if(result != RC_OK)
     {
         printf("FAILED [%d]\n", result);
@@ -350,13 +394,17 @@ static int test_board_dump_sensor_data(board_sensor_data_t* sensor_data)
     printf("  pressure1    --> %hd\n", sensor_data->pressure1);
     printf("  pressure2    --> %hd\n", sensor_data->pressure2);
     printf("  pressure3    --> %hd\n", sensor_data->pressure3);
+    printf("  pressure4    --> %hd\n", sensor_data->pressure4);
     printf("  flow1        --> %hu\n", sensor_data->flow1);
     printf("  flow2        --> %hu\n", sensor_data->flow2);
     printf("  oxigen       --> %hu\n", sensor_data->o2);
     printf("  temperature1 --> %hd\n", sensor_data->temperature1);
     printf("  temperature2 --> %hd\n", sensor_data->temperature2);
     printf("  temperature3 --> %hd\n", sensor_data->temperature3);
+    printf("  temperature4 --> %hd\n", sensor_data->temperature4);
     printf("  gpio         --> %hu\n", sensor_data->gpio);
+    printf("  encoder      --> %d\n", sensor_data->encoder);
+    printf("  buttons      --> %08x\n", sensor_data->buttons);
 
     return 0;
 }

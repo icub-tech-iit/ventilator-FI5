@@ -70,6 +70,11 @@ static struct pressure_sensor_data_t pressure_sensor_data[] =
         .pressure = 0.8f,
         .temperature = 50.0f,
         .raw_data = { 0x30, 0x30, 0x30, 0x30 }
+    },
+    {
+        .pressure = 0.9f,
+        .temperature = 40.0f,
+        .raw_data = { 0x25, 0x25, 0x25, 0x25 }
     }
 };
 
@@ -132,22 +137,28 @@ int board_sim_init(void)
     device.mux.data = (void*)(&mux_data[0]);
 
     // Pressure sensor 1
-    device.pressure1.address = 0x29;
+    device.pressure1.address = 0x28;
     device.pressure1.ops.write = pressure_write;
     device.pressure1.ops.read = pressure_read;
     device.pressure1.data = (void*)(&pressure_sensor_data[0]);
 
     // Pressure sensor 2
-    device.pressure2.address = 0x29;
+    device.pressure2.address = 0x28;
     device.pressure2.ops.write = pressure_write;
     device.pressure2.ops.read = pressure_read;
     device.pressure2.data = (void*)(&pressure_sensor_data[1]);
 
     // Pressure sensor 3
-    device.pressure3.address = 0x29;
+    device.pressure3.address = 0x28;
     device.pressure3.ops.write = pressure_write;
     device.pressure3.ops.read = pressure_read;
     device.pressure3.data = (void*)(&pressure_sensor_data[2]);
+
+    // Pressure sensor 4
+    device.pressure4.address = 0x28;
+    device.pressure4.ops.write = pressure_write;
+    device.pressure4.ops.read = pressure_read;
+    device.pressure4.data = (void*)(&pressure_sensor_data[3]);
 
     // Flow sensor 1
     device.flow1.address = 0x49;
@@ -162,7 +173,7 @@ int board_sim_init(void)
     device.flow2.data = (void*)(&flow_sensor_data[1]);
 
     // GPIO expander
-    device.gpio.address = 0x22; // Check pins A0, A1 and A2
+    device.gpio.address = 0x20; // Check pins A0, A1 and A2
     device.gpio.ops.write = gpio_exp_write;
     device.gpio.ops.read = gpio_exp_read;
     device.gpio.data = (void*)(&gpio_exp_data[0]);
@@ -174,9 +185,10 @@ int board_sim_init(void)
     connect_remote_device(get_mux_line(&device.mux, 0), &device.pressure1);
     connect_remote_device(get_mux_line(&device.mux, 1), &device.pressure2);
     connect_remote_device(get_mux_line(&device.mux, 2), &device.pressure3);
+    connect_remote_device(get_mux_line(&device.mux, 3), &device.pressure4);
 
-    connect_remote_device(get_mux_line(&device.mux, 0), &device.flow1);
-    connect_remote_device(get_mux_line(&device.mux, 1), &device.flow2);
+    connect_remote_device(get_mux_line(&device.mux, 1), &device.flow1);
+    connect_remote_device(get_mux_line(&device.mux, 2), &device.flow2);
 
     return 0;
 }
@@ -509,8 +521,8 @@ static int flow_write(struct remote_device_t* dev, void* data, int size)
 
             // Reset command
             case 0x2:
-                sensor_data->state = 0;
-                sensor_data->data_ptr = sensor_data->boot;
+                sensor_data->state = 1;
+                sensor_data->data_ptr = sensor_data->serial;
                 break;
 
             // Verify checksum command

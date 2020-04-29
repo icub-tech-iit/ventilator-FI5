@@ -4,10 +4,7 @@ WARNFLAGS = -Werror=implicit-function-declaration -Werror=implicit-int \
 
 CFLAGS = -g -O0
 
-all: board_test hsc_test zephyr_test mcp23017_test
-
-board_test: hsc.c zephyr.c board_driver.c board_test.c delay_mock.c i2c_mux.c pwm.c board_sim.c hal.c
-	gcc $(CFLAGS) -DDEBUG_HAL delay_mock.c hsc.c zephyr.c i2c_mux.c pwm.c board_driver.c board_sim.c hal.c board_test.c mcp23017.c -o board_test
+all: hsc_test zephyr_test mcp23017_test
 
 hsc_test:  hsc.c hsc_test.c test_utils.c
 	gcc $(CFLAGS) $(WARNFLAGS) hsc.c hsc_test.c test_utils.c -o hsc_test
@@ -30,12 +27,18 @@ board_sim: directories
 	gcc -O0 -g -DDEBUG_HAL -c pwm.c -o build/pwm.o
 	gcc -O0 -g -DDEBUG_HAL -c zephyr.c -o build/zephyr.o
 	gcc -O0 -g -DDEBUG_HAL -c mcp23017.c -o build/mcp23017.o
+	gcc -O0 -g -DDEBUG_HAL -c encoder.c -o build/encoder.o
+	gcc -O0 -g -DDEBUG_HAL -c button.c -o build/button.o
+	gcc -O0 -g -DDEBUG_HAL -c analog.c -o build/analog.o
 	gcc -O0 -g -DDEBUG_HAL -c board_driver.c -o build/board_driver.o
 	gcc -O0 -g -DDEBUG_HAL -c hal.c -o build/hal.o
 	gcc -O0 -g -DDEBUG_HAL -c delay_mock.c -o build/delay_mock.o
 	gcc -O0 -g -DDEBUG_HAL -c board_sim.c -o build/board_sim.o
 	gcc -O0 -g -DDEBUG_HAL -c board_test.c -o build/board_test.o
-	gcc build/hsc.o build/i2c_mux.o build/pwm.o build/zephyr.o build/mcp23017.o build/board_driver.o build/hal.o build/delay_mock.o build/board_sim.o build/board_test.o -o board_sim
+	gcc build/hsc.o build/i2c_mux.o build/pwm.o build/zephyr.o build/mcp23017.o \
+		build/encoder.o build/button.o build/analog.o build/board_driver.o \
+		build/hal.o build/delay_mock.o build/board_sim.o \
+		build/board_test.o -o board_sim
 
 clean:
 	rm -f board_test hsc_test zephyr_test mcp23017_test encoder_test

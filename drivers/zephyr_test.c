@@ -308,10 +308,14 @@ int main()
 	test(sn == mock_sn, "read SN 0x%x", sn);
 
 	/* check that for zephyr_read() API is working */
-	mock_flow_data[0] = 0x03;
-	mock_flow_data[1] = 0x21;
+	float flow = 15;
+	float full_scale = 50;
+	uint16_t code = 16384.0f * (0.1f + 0.8f * (flow/full_scale));
+	mock_flow_data[1] = code & 0xff;
+	mock_flow_data[0] = (code >> 8) & 0xff;
 	ret = mock_read(&zephyr_handle, &data);
-	TEST_RET_CB_COND(data == 0x321, "read data 0x%x", data);
+
+	TEST_RET_CB_COND((data > 14990) && (data < 15010), "read data %d", data);
 
 	/*
 	 * check whether zephyr_read() recognizes invalid data

@@ -53,6 +53,7 @@ struct ventilator_dev
     struct remote_device_t pressure1;
     struct remote_device_t pressure2;
     struct remote_device_t pressure3;
+    struct remote_device_t pressure4;
 
     struct remote_device_t flow1;
     struct remote_device_t flow2;

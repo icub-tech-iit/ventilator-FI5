@@ -10,7 +10,7 @@
     #if !defined(EIO)
     #define EIO 5
     #endif
-    
+
 #endif
 
 #define ZEPHYR_RESPONSE_ACK 0xCCA5
@@ -20,6 +20,21 @@
 
 static int zephyr_read_word(zephyr_handle_t *h, uint16_t *word);
 static int zephyr_write_cmd(zephyr_handle_t *h, uint8_t cmd);
+
+
+static int zephyr_calc_mslpm(int val)
+{
+	const int full_range = 50; /* SLPM */
+	int tmp = (float)full_range * ((float)val / 16384.0f - 0.1f) / 0.8f * 1000.0f;
+
+	if (tmp < 0)
+		tmp = 0;
+
+	if (tmp > (full_range * 1000))
+		tmp = full_range * 1000;
+	return tmp;
+}
+
 
 static uint16_t zephyr_unpack_word(uint8_t zephyr_word[2])
 {
@@ -55,7 +70,7 @@ static void zephyr_read_cb(int ret, void *arg)
 	if (tmp & 0xC000)
 		ret = -EIO;
 	else
-		*h->async_flow_ptr = tmp;
+		*h->async_flow_ptr = zephyr_calc_mslpm(tmp);
 
 exit:
 	h->async_read_cb(ret);

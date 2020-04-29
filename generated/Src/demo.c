@@ -1,17 +1,71 @@
 #include <stdio.h>
 #include "drivers/board_driver.h"
+#include "drivers/access_once.h"
+#include "drivers/encoder.h"
+#include "drivers/analog.h"
 #include "demo.h"
 
-int cb_status, ready_flag = 0;
-#define ACCESS_ONCE(x) (*((volatile typeof(x) *)&(x)))
+volatile int cb_status, ready_flag = 0;
+
+/*
+ * MUX0, inBr1: HSCDANN150PG2A5
+ * MUX1, inBr2: HSCMAND160MD2A5, flow
+ * MUX2, esBr:  HSCMAND160MD2A5, flow
+ * MUX3, mask:  HSCMAND160MD2A5
+ */
+
+static board_config_t board_config =
+{
+    .pressure_sensor1 =
+    {
+        .type = PRESSURE_SENSOR_TYPE_HSCDANN150PG2A5,
+        .address = 0x28
+    },
+    .pressure_sensor2 =
+    {
+        .type = PRESSURE_SENSOR_TYPE_HSCMAND160MD2A5,
+        .address = 0x28
+    },
+    .pressure_sensor3 =
+    {
+        .type = PRESSURE_SENSOR_TYPE_HSCMAND160MD2A5,
+        .address = 0x28
+    },
+    .pressure_sensor4 =
+    {
+        .type = PRESSURE_SENSOR_TYPE_HSCMAND160MD2A5,
+        .address = 0x28
+    },
+    .flow_sensor1 =
+    {
+        .type = FLOW_SENSOR_TYPE_ZEPHYR,
+        .address = 0x49
+    },
+    .flow_sensor2 =
+    {
+        .type = FLOW_SENSOR_TYPE_ZEPHYR,
+        .address = 0x49
+    },
+    .o2_sensor =
+    {
+        .type = O2_SENSOR_TYPE_NONE,
+        .address = 0x00
+    },
+    .gpio_expander =
+    {
+        .type = GPIO_EXPANDER_TYPE_MCP23017,
+        .address = 0x20
+    }
+};
 
 int demo_init(void)
 {
 	int ret;
 
-	printf("Cube init done\n");
-	ret = board_init();
-	printf("board driver init done, status %d\n", ret);
+	printf("Cube init done\r\n");
+	ret = board_init(&board_config);
+	printf("board driver init done, status %d\r\n", ret);
+
 	return ret;
 }
 
@@ -23,36 +77,61 @@ void async_cb(int status)
 
 void demo_loop(void)
 {
-	board_sensor_data_t in_data;
+	board_sensor_data_t in_data = {0};
 	int ret;
+	bool encoder_button = 0;
+	static int encoder_counter = 0;
 	static board_actuation_data_t out_data;
 	static int i = 0;
 
+	in_data.read_mask =
+        BOARD_PRESSURE_1 | BOARD_PRESSURE_2 |
+        BOARD_PRESSURE_3 | BOARD_PRESSURE_4 |
+		BOARD_FLOW_1 | BOARD_FLOW_2 |
+        BOARD_ENCODER | BOARD_ANALOG | BOARD_GPIO;
 
-	in_data.read_mask = BOARD_PRESSURE_1 | BOARD_PRESSURE_2 |
-		BOARD_FLOW_1 | BOARD_GPIO;
 #ifdef READ_SYNC
 	ret = board_read_sensors(&in_data);
-	printf("read sensor status %d\n", ret);
+	printf("read sensor status %d\r\n", ret);
 #else
 
 	ACCESS_ONCE(ready_flag) = 0;
 	ret = board_read_sensors_async(&in_data, async_cb);
-	while (!ACCESS_ONCE(ready_flag));
-	printf("read sensor status %d %d\n", ret, ACCESS_ONCE(cb_status));
+    if(ret == RC_OK)
+    {
+	    while (!ACCESS_ONCE(ready_flag));
+    }
+
+	printf("read sensor status %d %d\r\n", ret, ACCESS_ONCE(cb_status));
 #endif
 
-	printf("pressure %d %d %d\n",
-	       in_data.pressure1, in_data.pressure2, in_data.pressure3);
-	printf("temperature %d %d %d\n",
+	printf("pressure (mBar) %d %d %d %d\r\n",
+	       in_data.pressure1, in_data.pressure2,
+           in_data.pressure3, in_data.pressure4);
+	printf("temperature (C) %d %d %d\r\n",
 	       in_data.temperature1, in_data.temperature2, in_data.temperature3);
 
-	printf("flow %d %d\n", in_data.flow1, in_data.flow2);
-	printf("GPIO 0x%x\n", in_data.gpio);
+	printf("flow (mSLPM) %d %d\r\n", in_data.flow1, in_data.flow2);
+	printf("GPIO 0x%x\r\n", in_data.gpio);
+
+	encoder_counter += in_data.encoder;
+	encoder_button = !!(in_data.buttons & BOARD_BUTTON_ENCODER);
+
+	printf("Encoder %d(%d) %d\r\n", encoder_counter, (int)in_data.encoder, (int)encoder_button);
+
+	printf("O2: %u\r\n", in_data.o2);
+	printf("ADC: %u %u %u %u\r\n",
+	       in_data.analog_input[0],
+           in_data.analog_input[1],
+           in_data.analog_input[2],
+           in_data.analog_input[3]);
 
 	out_data.gpio = 1 << (i+8);
+	out_data.valve1 = 1000;
+	out_data.valve2 = 1500;
+	out_data.buzzer = 2000;
 	ret = board_apply_actuation(&out_data);
-	printf("actuation 0x%x ret %d\n\n", out_data.gpio, ret);
+	printf("actuation 0x%x ret %d\r\n\r\n", out_data.gpio, ret);
 	if (i == 7) {
 		i = 0;
 	} else {

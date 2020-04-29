@@ -9,9 +9,24 @@ static int get_i2c_bus_id(I2C_HandleTypeDef *hi2c);
 
 extern void i2c_xfer_completed(int retcode);
 
-TIM_HandleTypeDef htim1;
-TIM_HandleTypeDef htim2;
+static TIM_TypeDef tim1_dev  = { 0x0 };
+static TIM_TypeDef tim8_dev  = { 0x0 };
+static TIM_TypeDef tim12_dev = { 0x0 };
+
+TIM_HandleTypeDef htim1 = {
+    .Instance = &tim1_dev
+};
+
+TIM_HandleTypeDef htim8 = {
+    .Instance = &tim8_dev
+};
+
+TIM_HandleTypeDef htim12 = {
+    .Instance = &tim12_dev
+};
+
 I2C_HandleTypeDef hi2c1;
+ADC_HandleTypeDef hadc3;
 
 HAL_StatusTypeDef HAL_Init(void)
 {
@@ -22,6 +37,13 @@ HAL_StatusTypeDef HAL_Init(void)
     board_sim_bus_irq_handler(1, HAL_I2C_IRQHandler);
 
     return 0;
+}
+
+uint32_t HAL_GetTick(void)
+{
+    static uint32_t tick;
+    ++tick;
+    return tick;
 }
 
 void HAL_Delay(uint32_t delay)
@@ -98,6 +120,8 @@ HAL_StatusTypeDef HAL_I2C_Master_Transmit_IT(I2C_HandleTypeDef *hi2c,
     int busId;
     int result;
 
+    DevAddress = (DevAddress >> 1);
+
     // Convert the bus identifier
     busId = get_i2c_bus_id(hi2c);
 
@@ -120,6 +144,8 @@ HAL_StatusTypeDef HAL_I2C_Master_Receive_IT(I2C_HandleTypeDef *hi2c, uint16_t De
 {
     int busId;
     int result;
+
+    DevAddress = (DevAddress >> 1);
 
     // Convert the bus identifier
     busId = get_i2c_bus_id(hi2c);

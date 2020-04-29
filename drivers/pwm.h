@@ -5,11 +5,21 @@
 
 #include "hal.h"
 
+enum 
+{
+    PWM_TYPE_NONE = 0,
+    PWM_TYPE_NORMAL,
+    PWM_TYPE_COMPLEMENTARY,
+    PWM_TYPE_DUAL
+};
+
 typedef struct 
 {
     uint32_t timer_frequency;
     uint32_t pwm_frequency;
+    uint32_t type;
     uint32_t channel;
+    uint32_t n_channel;
     uint32_t input_voltage;
 } pwm_config_t;
 
