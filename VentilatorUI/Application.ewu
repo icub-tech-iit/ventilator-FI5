@@ -139,15 +139,22 @@ class Dataplotter : Core::Group
   $rect <840,260,1020,300>
   inherited method Init()
   {
+    var int32 pixPerUnitX = 1;
+    var int32 nSamples = 1;
     var int32 xSpaceDraw = XAxis.Point2.x - XAxis.Point1.x; // pixel
-    var int32 nSamples = DataProvider.DummyData.size / samplingStep;
+    $if $prototyper
+    nSamples = DataProvider.DummyData.size / samplingStep;
+    pixPerUnitX = xSpaceDraw / nSamples;
+    $else
+    nSamples = xSpaceDraw  /  pixPerUnitX;
+    $endif
     // depends on how much memory is available
     CoordList.MaxNoOfItems = nSamples;
 
     Graph.CoordOrigin.x = YAxis.Point1.x;
     Graph.CoordOrigin.y = XAxis.Point1.y;
 
-    Graph.PixelPerUnit.x = xSpaceDraw / nSamples;
+    Graph.PixelPerUnit.x = pixPerUnitX;
     Graph.PixelPerUnit.y = 1; 
   }
 
@@ -651,8 +658,10 @@ class Dataplotter : Core::Group
   {
     if (DataProvider == null)
         return;
-
-    var float currVal = DataProvider.GetSampleData( dataIndex );
+    var float currVal = 0.0;
+    $if $prototyper
+    currVal = DataProvider.GetSampleData( dataIndex );
+    $endif
     // draw
     this.onDraw( currVal );
     dataIndex = dataIndex + samplingStep;
@@ -820,25 +829,16 @@ class Dataplotter : Core::Group
 }
 
 // This is the root component of the entire GUI application.
-$rect <20,10,220,50>
+$rect <540,230,740,270>
 $output false
 class Application : Core::Root
 {
   $rect <500,0,700,40>
   inherited property Bounds = <0,0,480,272>;
-
-  $rect <520,70,720,110>
-  object Application::DataSource0 DataSource0;
-
-  $rect <520,150,720,190>
-  object Application::DataSource2 DataSource2;
-
-  $rect <520,110,720,150>
-  object Application::DataSource1 DataSource1;
 }
 
 // This is a font resource.
-$rect <230,130,430,170>
+$rect <230,50,430,90>
 $output false
 resource Resources::Font Font
 {
@@ -851,7 +851,7 @@ resource Resources::Font Font
   attr fontitalic Italic = false;
 }
 
-$rect <20,130,220,170>
+$rect <20,50,220,90>
 $variant WIN32
 vclass ApplicationVariantWin32 : Application::Application
 {
@@ -896,10 +896,19 @@ vclass ApplicationVariantWin32 : Application::Application
     preset minYAxis = 0.0;
     preset maxYAxis = 1.0;
   }
+
+  $rect <870,70,1070,110>
+  object Application::DataSource0 DataSource0;
+
+  $rect <870,150,1070,190>
+  object Application::DataSource2 DataSource2;
+
+  $rect <870,110,1070,150>
+  object Application::DataSource1 DataSource1;
 }
 
 // This is a font resource.
-$rect <790,130,990,170>
+$rect <790,50,990,90>
 $output false
 resource Resources::Font FontXS
 {
@@ -912,7 +921,7 @@ resource Resources::Font FontXS
   attr fontitalic Italic = false;
 }
 
-$rect <580,130,780,170>
+$rect <580,50,780,90>
 $variant STM32F746
 vclass ApplicationVariantSTM32 : Application::Application
 {
@@ -931,7 +940,7 @@ vclass ApplicationVariantSTM32 : Application::Application
     preset Bounds = <0,0,480,68>;
     preset ColorProp = #F9FF0AFF;
     preset NameProp = "Press. (cmH2O)";
-    preset DataProvider = DataSource0;
+    preset DataProvider = null;
     preset maxYAxis = 50.0;
   }
 
@@ -941,7 +950,7 @@ vclass ApplicationVariantSTM32 : Application::Application
     preset Bounds = <0,68,480,136>;
     preset ColorProp = #40FF0AFF;
     preset NameProp = "Flow (L/min)";
-    preset DataProvider = DataSource1;
+    preset DataProvider = null;
     preset XAxisHeight = 34;
     preset minYAxis = -50.0;
     preset maxYAxis = 50.0;
@@ -953,7 +962,7 @@ vclass ApplicationVariantSTM32 : Application::Application
     preset Bounds = <0,136,480,204>;
     preset ColorProp = #0AFFF5FF;
     preset NameProp = "Tidal Volume (L)";
-    preset DataProvider = DataSource2;
+    preset DataProvider = null;
     preset maxYAxis = 1.0;
   }
 }
@@ -1364,7 +1373,7 @@ class Menubar : Core::Group
 }
 
 // This is a font resource.
-$rect <790,170,990,210>
+$rect <790,90,990,130>
 $output false
 resource Resources::Font FontXXS
 {
@@ -1380,18 +1389,18 @@ resource Resources::Font FontXXS
 // Win32 Res(800x640)
 note group Note4
 {
-  attr Bounds = <0,90,520,260>;
+  attr Bounds = <0,10,520,180>;
 }
 
 // STM32 Res(480x272)
 note group Note5
 {
-  attr Bounds = <520,90,1040,260>;
+  attr Bounds = <520,10,1040,180>;
 }
 
 // Simple data storage class to provide dummy data - in a real oscilloscope an interface \
 // to provide real measured data should replace this data source.
-$rect <10,310,280,350>
+$rect <10,230,280,270>
 $output WIN32
 class DataSource
 {
@@ -7238,7 +7247,7 @@ class DataSource
   property int32 Speed = 1000;
 }
 
-$rect <240,410,510,450>
+$rect <240,330,510,370>
 $output WIN32
 class DataSource2 : Application::DataSource
 {
@@ -13075,7 +13084,7 @@ class DataSource2 : Application::DataSource
   }
 }
 
-$rect <240,360,510,400>
+$rect <240,280,510,320>
 $output WIN32
 class DataSource1 : Application::DataSource
 {
@@ -18912,7 +18921,7 @@ class DataSource1 : Application::DataSource
   }
 }
 
-$rect <240,310,510,350>
+$rect <240,230,510,270>
 $output WIN32
 class DataSource0 : Application::DataSource
 {
@@ -24752,18 +24761,18 @@ class DataSource0 : Application::DataSource
 // Data source
 note group Note6
 {
-  attr Bounds = <0,270,520,490>;
+  attr Bounds = <0,190,520,410>;
 }
 
-$rect <580,170,780,210>
+$rect <580,90,780,130>
 $variant STM32F746
 vclass DataplotterSTM32 : Application::Dataplotter;
 
-$rect <580,210,780,250>
+$rect <580,130,780,170>
 $variant STM32F746
 vclass MenubarSTM32 : Application::Menubar;
 
-$rect <20,170,220,210>
+$rect <20,90,220,130>
 $variant WIN32
 vclass DataplotterWin32 : Application::Dataplotter
 {
@@ -24873,15 +24882,22 @@ vclass DataplotterWin32 : Application::Dataplotter
   $rect <20,230,220,270>
   inherited method Init()
   {
+    var int32 pixPerUnitX = 1;
+    var int32 nSamples = 1;
     var int32 xSpaceDraw = XAxis.Point2.x - XAxis.Point1.x; // pixel
-    var int32 nSamples = DataProvider.DummyData.size / samplingStep;
+    $if $prototyper
+    nSamples = DataProvider.DummyData.size / samplingStep;
+    pixPerUnitX = xSpaceDraw / nSamples;
+    $else
+    nSamples = xSpaceDraw  /  pixPerUnitX;
+    $endif
     // depends on how much memory is available
     CoordList.MaxNoOfItems = nSamples;
 
     Graph.CoordOrigin.x = YAxis.Point1.x;
     Graph.CoordOrigin.y = XAxis.Point1.y;
 
-    Graph.PixelPerUnit.x = xSpaceDraw / nSamples;
+    Graph.PixelPerUnit.x = pixPerUnitX;
     Graph.PixelPerUnit.y = 1; 
   }
 
@@ -25011,9 +25027,48 @@ vclass DataplotterWin32 : Application::Dataplotter
     // Invoke UpdateViewState
     this.InvalidateViewState();
   }
+
+  $reorder Speed 2
+  $reorder OnSetSpeed 2
+  $reorder RefreshRate 2
+  $reorder OnSetRefreshRate 2
+  $reorder ScreenWiper 2
+  $reorder OnSetScreenWiper 2
+  $reorder BeamColor 2
+  $reorder BeamGlow 2
+  $reorder OnSetBeamGlow 2
+  $reorder Gain 2
+  $reorder OnSetGain 2
+  $reorder Image 2
+  $reorder Canvas 2
+  $reorder Clipping 2
+  $reorder BeamPosition 2
+  $reorder UpdateTimer 2
+  $reorder DrawBeamLine 2
+  $reorder UpdateSlot 2
+  $reorder GetSampleData 2
+  $reorder onDrawPrototype 2
+  $reorder CoordList 2
+  $reorder mean 2
+  $reorder max 2
+  $reorder sum 2
+  $reorder YAxis 2
+  $reorder XAxis 2
+  $reorder XAxisHeight 2
+  $reorder OnSetXAxisHeight 2
+  $reorder minYAxis 2
+  $reorder OnSetminYAxis 2
+  $reorder maxYAxis 2
+  $reorder OnSetmaxYAxis 2
+  $reorder MaxAxisValue 2
+  $reorder MinAxisValue 2
+  $reorder plotIndex 2
+  $reorder dataIndex 2
+  $reorder samplingStep 2
+  $reorder onDraw 2
 }
 
-$rect <20,210,220,250>
+$rect <20,130,220,170>
 $variant WIN32
 vclass MenubarWin32 : Application::Menubar
 {
@@ -25127,4 +25182,10 @@ vclass MenubarWin32 : Application::Menubar
     preset Bounds = <660,80,810,130>;
     preset Font = Resources::FontExtraLarge;
   }
+}
+
+// Base classes
+note group Note7
+{
+  attr Bounds = <520,190,1040,360>;
 }
