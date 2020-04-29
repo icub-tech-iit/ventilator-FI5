@@ -827,27 +827,6 @@ class Application : Core::Root
   $rect <500,0,700,40>
   inherited property Bounds = <0,0,480,272>;
 
-  // To do:
-  // 
-  // - The simplest way to compose the appearance of the application is to use the \
-  // 'Views' and 'Widgets' from the Gallery.
-  // 
-  // - To react to touch or keyboard events use the templates from the Gallery folder \
-  // 'Event Handlers'.
-  // 
-  // - To perform transitions (animations) use the templates from the Gallery folder \
-  // 'Effects'.
-  // 
-  // - To store values use the 'Variable', 'Array' and 'Property' templates available \
-  // in the Gallery folder 'Chora'.
-  // 
-  // - To implement behavior use the 'Method' and 'Slot Method' templates available \
-  // in the Gallery folder 'Chora'.
-  note legend Note1
-  {
-    attr Bounds = <0,290,780,490>;
-  }
-
   // This is a filled rectangle view.
   $rect <20,20,160,60>
   object Views::Rectangle Rectangle

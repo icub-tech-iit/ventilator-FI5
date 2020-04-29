@@ -50,7 +50,7 @@ unit Application
 // Mosaic Framework
 note group Note1
 {
-  attr Bounds = <20,20,260,290>;
+  attr Bounds = <20,20,260,400>;
 }
 
 // Profile Configuration
@@ -65,49 +65,10 @@ note group Note3
   attr Bounds = <520,20,760,130>;
 }
 
-// To do:
-// 
-// - Select the profile brick and choose the desired color format of your GUI application \
-// within the attribute 'PlatformPackage' (e.g. STM.STM32.RGBA8888, STM.STM32.RGB565, \
-// ...)
-// 
-// - Select the profile brick and set the attribute 'OutputDirectory' to the desired \
-// destination folder for the generated code (e.g. within your Build Environment \
-// '\Application\GeneratedCode').
-// 
-// - Open the unit 'Application'. You will find there the application component (the \
-// root component of your GUI). Implement there your desired GUI look and feel.
-// 
-// - To better structure your project you can add more units here. Use for this purpose \
-// the template 'Unit' from the Gallery folder 'Chora'. Afterwards you can open the \
-// unit and put there your own GUI components.
-// 
-// - If you plan to develop a multilingual GUI application, you can add more language \
-// members to the project. Use for this purpose the template 'Language' found in \
-// the Gallery folder 'Chora'.
-note legend Note4
-{
-  attr Bounds = <20,510,760,810>;
-}
-
 // Project Units
 note group Note5
 {
   attr Bounds = <270,140,760,290>;
-}
-
-// Welcome to Embedded Wizard!
-// 
-// This empty project is prepared to create a GUI application suitable for a STM32F746 \
-// Discovery board with a display size of 480x272 pixel (landscape mode).
-// 
-// In order to get your first Embedded Wizard generated UI application up and running \
-// on your STM32 target, we highly recommend to study the following document:
-// 
-// https://doc.embedded-wizard.de/getting-started-stm32f746-discovery
-note legend Note
-{
-  attr Bounds = <20,300,760,500>;
 }
 
 // This is a profile member for the project. This profile controls the code generation \

@@ -1,11 +1,12 @@
 $version 1.0
 
+attr active = Application::Application;
 attr callStackMonitor_Show = false;
 attr codeColSelect = false;
 attr codeFirstPos = <0,0>;
-attr codeInspector = Application::Dataplotter.UpdateViewState;
-attr codeSelEnd = <24,10>;
-attr codeSelStart = <24,10>;
+attr codeInspector = Application::Menubar.onRespRateChanged;
+attr codeSelEnd = <0,0>;
+attr codeSelStart = <0,0>;
 attr connectInspectors = false;
 attr debug_TrackUpdates = false;
 attr extractDoc_ClassOverview = true;
@@ -44,15 +45,10 @@ view unit Application
   attr zoom = 2.0;
 }
 
-view class Application::Dataplotter
+view class Application::Application
 {
-  attr codeColSelect = false;
-  attr codeFirstPos = <0,0>;
-  attr codeInspector = UpdateViewState;
-  attr codeSelEnd = <24,10>;
-  attr codeSelStart = <24,10>;
   attr enableGrid = true;
   attr grid = 10;
   attr scrollTo = <-7,-7>;
-  attr zoom = 1.75;
+  attr zoom = 2.0;
 }
