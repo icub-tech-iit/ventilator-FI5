@@ -335,7 +335,7 @@
             <v6WtE>0</v6WtE>
             <v6Rtti>0</v6Rtti>
             <VariousControls>
-              <MiscControls></MiscControls>
+              <MiscControls>-DEDL_DRIVER_CODE</MiscControls>
               <Define>USE_STM32HAL STM32HAL_BOARD_F7DISCO STM32HAL_DRIVER_V1280</Define>
               <Undefine></Undefine>
               <IncludePath>..\api;..\src\driver\stm32f7-v1280\inc;..\src\board\f7disco\v1280\inc</IncludePath>
