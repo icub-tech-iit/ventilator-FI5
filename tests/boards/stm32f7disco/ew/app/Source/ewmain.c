@@ -110,7 +110,7 @@ static XViewport*   Viewport;
 static XDisplayInfo DisplayInfo;
   
 #include "_ApplicationApplicationVariantSTM32.h"
-#include "_ApplicationDataplotterSTM32.h"
+#include "_ApplicationDataplotter.h"
   
 void * iit_ew_getSTM32handle(void)
 {
