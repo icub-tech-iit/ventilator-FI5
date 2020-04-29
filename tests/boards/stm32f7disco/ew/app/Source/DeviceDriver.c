@@ -261,21 +261,14 @@ int iit_UpdateValues()
         if(fl>=0.99) fl = 0;
         
         ApplicationDataplotter_onDraw(&(h->DataplotterFlow), 40*(fl-0.5));
+			
+			  static float asd = 1.0f;
+					
+				ApplicationMenubar_UpdateInspExp( &(h->Menubar), asd);
+				ApplicationMenubar_UpdatePIP( &(h->Menubar), asd+2.0);
+				ApplicationMenubar_UpdateTidalVolume( &(h->Menubar), asd+3.0);
+				ApplicationMenubar_UpdateRespRate( &(h->Menubar), asd+4.0);
         
-//        ViewsText_OnSetString(&(handleIIT->Menubar.ValueDisplayInspExp), "20.0");
-        
-
-
-//           // Update values coming from the knobs
-//        static char str[30] = {};
-//            snprintf(str, sizeof(str), "20.0");
-////            static unsigned short vv = 20;
-//                handleIIT->Menubar.ValueDisplayInspExp.String = (XString)str;
-//               handleIIT->Menubar.PIP = 20.0;
-////               handleIIT->Menubar.InspExp= 30.0;
-//               handleIIT->Menubar.TidalVolume = 40.0;
-
-
     }
     return ret;
 }
