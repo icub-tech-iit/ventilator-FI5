@@ -1139,6 +1139,18 @@
       <tvExp>0</tvExp>
       <tvExpOptDlg>0</tvExpOptDlg>
       <bDave2>0</bDave2>
+      <PathWithFileName>..\..\ew\PlatformPackage\RGB565\libewgfx-m7-r180-keil.lib</PathWithFileName>
+      <FilenameWithoutPath>libewgfx-m7-r180-keil.lib</FilenameWithoutPath>
+      <RteFlg>0</RteFlg>
+      <bShared>0</bShared>
+    </File>
+    <File>
+      <GroupNumber>16</GroupNumber>
+      <FileNumber>48</FileNumber>
+      <FileType>4</FileType>
+      <tvExp>0</tvExp>
+      <tvExpOptDlg>0</tvExpOptDlg>
+      <bDave2>0</bDave2>
       <PathWithFileName>..\..\ew\PlatformPackage\RGB565\libewgfx-m7-keil.lib</PathWithFileName>
       <FilenameWithoutPath>libewgfx-m7-keil.lib</FilenameWithoutPath>
       <RteFlg>0</RteFlg>
@@ -1146,7 +1158,7 @@
     </File>
     <File>
       <GroupNumber>16</GroupNumber>
-      <FileNumber>48</FileNumber>
+      <FileNumber>49</FileNumber>
       <FileType>1</FileType>
       <tvExp>0</tvExp>
       <tvExpOptDlg>0</tvExpOptDlg>
@@ -1158,7 +1170,7 @@
     </File>
     <File>
       <GroupNumber>16</GroupNumber>
-      <FileNumber>49</FileNumber>
+      <FileNumber>50</FileNumber>
       <FileType>4</FileType>
       <tvExp>0</tvExp>
       <tvExpOptDlg>0</tvExpOptDlg>
@@ -1178,7 +1190,7 @@
     <RteFlg>0</RteFlg>
     <File>
       <GroupNumber>17</GroupNumber>
-      <FileNumber>50</FileNumber>
+      <FileNumber>51</FileNumber>
       <FileType>1</FileType>
       <tvExp>0</tvExp>
       <tvExpOptDlg>0</tvExpOptDlg>
@@ -1190,7 +1202,7 @@
     </File>
     <File>
       <GroupNumber>17</GroupNumber>
-      <FileNumber>51</FileNumber>
+      <FileNumber>52</FileNumber>
       <FileType>8</FileType>
       <tvExp>0</tvExp>
       <tvExpOptDlg>0</tvExpOptDlg>
@@ -1210,25 +1222,13 @@
     <RteFlg>0</RteFlg>
     <File>
       <GroupNumber>18</GroupNumber>
-      <FileNumber>52</FileNumber>
-      <FileType>1</FileType>
-      <tvExp>0</tvExp>
-      <tvExpOptDlg>0</tvExpOptDlg>
-      <bDave2>0</bDave2>
-      <PathWithFileName>..\..\ew\app\GeneratedCode\Application.c</PathWithFileName>
-      <FilenameWithoutPath>Application.c</FilenameWithoutPath>
-      <RteFlg>0</RteFlg>
-      <bShared>0</bShared>
-    </File>
-    <File>
-      <GroupNumber>18</GroupNumber>
       <FileNumber>53</FileNumber>
       <FileType>1</FileType>
       <tvExp>0</tvExp>
       <tvExpOptDlg>0</tvExpOptDlg>
       <bDave2>0</bDave2>
-      <PathWithFileName>..\..\ew\app\GeneratedCode\Charts.c</PathWithFileName>
-      <FilenameWithoutPath>Charts.c</FilenameWithoutPath>
+      <PathWithFileName>..\..\ew\app\GeneratedCode\STM32F746\Application.c</PathWithFileName>
+      <FilenameWithoutPath>Application.c</FilenameWithoutPath>
       <RteFlg>0</RteFlg>
       <bShared>0</bShared>
     </File>
@@ -1239,8 +1239,8 @@
       <tvExp>0</tvExp>
       <tvExpOptDlg>0</tvExpOptDlg>
       <bDave2>0</bDave2>
-      <PathWithFileName>..\..\ew\app\GeneratedCode\Core.c</PathWithFileName>
-      <FilenameWithoutPath>Core.c</FilenameWithoutPath>
+      <PathWithFileName>..\..\ew\app\GeneratedCode\STM32F746\Charts.c</PathWithFileName>
+      <FilenameWithoutPath>Charts.c</FilenameWithoutPath>
       <RteFlg>0</RteFlg>
       <bShared>0</bShared>
     </File>
@@ -1251,8 +1251,8 @@
       <tvExp>0</tvExp>
       <tvExpOptDlg>0</tvExpOptDlg>
       <bDave2>0</bDave2>
-      <PathWithFileName>..\..\ew\app\GeneratedCode\Effects.c</PathWithFileName>
-      <FilenameWithoutPath>Effects.c</FilenameWithoutPath>
+      <PathWithFileName>..\..\ew\app\GeneratedCode\STM32F746\Core.c</PathWithFileName>
+      <FilenameWithoutPath>Core.c</FilenameWithoutPath>
       <RteFlg>0</RteFlg>
       <bShared>0</bShared>
     </File>
@@ -1263,8 +1263,8 @@
       <tvExp>0</tvExp>
       <tvExpOptDlg>0</tvExpOptDlg>
       <bDave2>0</bDave2>
-      <PathWithFileName>..\..\ew\app\GeneratedCode\Graphics.c</PathWithFileName>
-      <FilenameWithoutPath>Graphics.c</FilenameWithoutPath>
+      <PathWithFileName>..\..\ew\app\GeneratedCode\STM32F746\Effects.c</PathWithFileName>
+      <FilenameWithoutPath>Effects.c</FilenameWithoutPath>
       <RteFlg>0</RteFlg>
       <bShared>0</bShared>
     </File>
@@ -1275,8 +1275,8 @@
       <tvExp>0</tvExp>
       <tvExpOptDlg>0</tvExpOptDlg>
       <bDave2>0</bDave2>
-      <PathWithFileName>..\..\ew\app\GeneratedCode\Resources.c</PathWithFileName>
-      <FilenameWithoutPath>Resources.c</FilenameWithoutPath>
+      <PathWithFileName>..\..\ew\app\GeneratedCode\STM32F746\Graphics.c</PathWithFileName>
+      <FilenameWithoutPath>Graphics.c</FilenameWithoutPath>
       <RteFlg>0</RteFlg>
       <bShared>0</bShared>
     </File>
@@ -1287,8 +1287,8 @@
       <tvExp>0</tvExp>
       <tvExpOptDlg>0</tvExpOptDlg>
       <bDave2>0</bDave2>
-      <PathWithFileName>..\..\ew\app\GeneratedCode\Views.c</PathWithFileName>
-      <FilenameWithoutPath>Views.c</FilenameWithoutPath>
+      <PathWithFileName>..\..\ew\app\GeneratedCode\STM32F746\Resources.c</PathWithFileName>
+      <FilenameWithoutPath>Resources.c</FilenameWithoutPath>
       <RteFlg>0</RteFlg>
       <bShared>0</bShared>
     </File>
@@ -1299,7 +1299,31 @@
       <tvExp>0</tvExp>
       <tvExpOptDlg>0</tvExpOptDlg>
       <bDave2>0</bDave2>
-      <PathWithFileName>..\..\ew\app\GeneratedCode\WidgetSet.c</PathWithFileName>
+      <PathWithFileName>..\..\ew\app\GeneratedCode\STM32F746\Templates.c</PathWithFileName>
+      <FilenameWithoutPath>Templates.c</FilenameWithoutPath>
+      <RteFlg>0</RteFlg>
+      <bShared>0</bShared>
+    </File>
+    <File>
+      <GroupNumber>18</GroupNumber>
+      <FileNumber>60</FileNumber>
+      <FileType>1</FileType>
+      <tvExp>0</tvExp>
+      <tvExpOptDlg>0</tvExpOptDlg>
+      <bDave2>0</bDave2>
+      <PathWithFileName>..\..\ew\app\GeneratedCode\STM32F746\Views.c</PathWithFileName>
+      <FilenameWithoutPath>Views.c</FilenameWithoutPath>
+      <RteFlg>0</RteFlg>
+      <bShared>0</bShared>
+    </File>
+    <File>
+      <GroupNumber>18</GroupNumber>
+      <FileNumber>61</FileNumber>
+      <FileType>1</FileType>
+      <tvExp>0</tvExp>
+      <tvExpOptDlg>0</tvExpOptDlg>
+      <bDave2>0</bDave2>
+      <PathWithFileName>..\..\ew\app\GeneratedCode\STM32F746\WidgetSet.c</PathWithFileName>
       <FilenameWithoutPath>WidgetSet.c</FilenameWithoutPath>
       <RteFlg>0</RteFlg>
       <bShared>0</bShared>
@@ -1314,7 +1338,7 @@
     <RteFlg>0</RteFlg>
     <File>
       <GroupNumber>19</GroupNumber>
-      <FileNumber>60</FileNumber>
+      <FileNumber>62</FileNumber>
       <FileType>8</FileType>
       <tvExp>0</tvExp>
       <tvExpOptDlg>0</tvExpOptDlg>
@@ -1334,7 +1358,7 @@
     <RteFlg>0</RteFlg>
     <File>
       <GroupNumber>20</GroupNumber>
-      <FileNumber>61</FileNumber>
+      <FileNumber>63</FileNumber>
       <FileType>1</FileType>
       <tvExp>0</tvExp>
       <tvExpOptDlg>0</tvExpOptDlg>
@@ -1346,7 +1370,7 @@
     </File>
     <File>
       <GroupNumber>20</GroupNumber>
-      <FileNumber>62</FileNumber>
+      <FileNumber>64</FileNumber>
       <FileType>1</FileType>
       <tvExp>0</tvExp>
       <tvExpOptDlg>0</tvExpOptDlg>
@@ -1358,7 +1382,7 @@
     </File>
     <File>
       <GroupNumber>20</GroupNumber>
-      <FileNumber>63</FileNumber>
+      <FileNumber>65</FileNumber>
       <FileType>1</FileType>
       <tvExp>0</tvExp>
       <tvExpOptDlg>0</tvExpOptDlg>
@@ -1370,7 +1394,7 @@
     </File>
     <File>
       <GroupNumber>20</GroupNumber>
-      <FileNumber>64</FileNumber>
+      <FileNumber>66</FileNumber>
       <FileType>1</FileType>
       <tvExp>0</tvExp>
       <tvExpOptDlg>0</tvExpOptDlg>
@@ -1382,7 +1406,7 @@
     </File>
     <File>
       <GroupNumber>20</GroupNumber>
-      <FileNumber>65</FileNumber>
+      <FileNumber>67</FileNumber>
       <FileType>1</FileType>
       <tvExp>0</tvExp>
       <tvExpOptDlg>0</tvExpOptDlg>
@@ -1394,7 +1418,7 @@
     </File>
     <File>
       <GroupNumber>20</GroupNumber>
-      <FileNumber>66</FileNumber>
+      <FileNumber>68</FileNumber>
       <FileType>1</FileType>
       <tvExp>0</tvExp>
       <tvExpOptDlg>0</tvExpOptDlg>
@@ -1406,7 +1430,7 @@
     </File>
     <File>
       <GroupNumber>20</GroupNumber>
-      <FileNumber>67</FileNumber>
+      <FileNumber>69</FileNumber>
       <FileType>1</FileType>
       <tvExp>0</tvExp>
       <tvExpOptDlg>0</tvExpOptDlg>
