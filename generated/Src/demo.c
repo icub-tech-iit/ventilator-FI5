@@ -105,21 +105,25 @@ void demo_loop(void)
 	printf("read sensor status %d %d\r\n", ret, ACCESS_ONCE(cb_status));
 #endif
 
-	printf("pressure (mBar) %d %d %d %d\r\n",
-	       in_data.pressure1, in_data.pressure2,
-           in_data.pressure3, in_data.pressure4);
-	printf("temperature (C) %d %d %d\r\n",
-	       in_data.temperature1, in_data.temperature2, in_data.temperature3);
+	printf("pressure (mBar) %d %d %d %d (raw) 0x%x 0x%x 0x%x 0x%x\r\n",
+	       in_data.pressure1, in_data.pressure2, in_data.pressure3, in_data.pressure4,
+	       in_data.pressure1_raw, in_data.pressure2_raw, in_data.pressure3_raw, in_data.pressure4_raw);
+	printf("temperature (C) %d %d %d %d (raw) 0x%x 0x%x 0x%x 0x%x\r\n",
+	       in_data.temperature1, in_data.temperature2, in_data.temperature3, in_data.temperature4,
+	       in_data.temperature1_raw, in_data.temperature2_raw,
+	       in_data.temperature3_raw, in_data.temperature4_raw);
 
-	printf("flow (mSLPM) %d %d\r\n", in_data.flow1, in_data.flow2);
+	printf("flow (mSLPM) %d %d (raw) 0x%x 0x%x\r\n",
+	       in_data.flow1, in_data.flow2,
+	       in_data.flow1_raw, in_data.flow2_raw);
 	printf("GPIO 0x%x\r\n", in_data.gpio);
 
 	encoder_counter += in_data.encoder;
 	encoder_button = !!(in_data.buttons & BOARD_BUTTON_ENCODER);
-        button_state[0] = !!(in_data.buttons & BOARD_BUTTON_1);
-        button_state[1] = !!(in_data.buttons & BOARD_BUTTON_2);
-        button_state[2] = !!(in_data.buttons & BOARD_BUTTON_3);
-        button_state[3] = !!(in_data.buttons & BOARD_BUTTON_4);
+    button_state[0] = !!(in_data.buttons & BOARD_BUTTON_1);
+    button_state[1] = !!(in_data.buttons & BOARD_BUTTON_2);
+    button_state[2] = !!(in_data.buttons & BOARD_BUTTON_3);
+    button_state[3] = !!(in_data.buttons & BOARD_BUTTON_4);
 
 	printf("Encoder %d(%d) %d\r\n", encoder_counter, (int)in_data.encoder, (int)encoder_button);
 

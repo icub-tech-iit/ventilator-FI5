@@ -69,8 +69,12 @@ static void zephyr_read_cb(int ret, void *arg)
 	/* we expect regular sensor data; 2 MSBs has to be zero */
 	if (tmp & 0xC000)
 		ret = -EIO;
-	else
-		*h->async_flow_ptr = zephyr_calc_mslpm(tmp);
+	else {
+		if (h->async_raw_flow_ptr)
+			*h->async_raw_flow_ptr = tmp;
+		if (h->async_flow_ptr)
+			*h->async_flow_ptr = zephyr_calc_mslpm(tmp);
+	}
 
 exit:
 	h->async_read_cb(ret);
@@ -78,7 +82,7 @@ exit:
 
 
 /* read and provide the flow measured by the device */
-int zephyr_read(zephyr_handle_t *h, uint16_t *flow,
+int zephyr_read(zephyr_handle_t *h, uint16_t *flow, uint16_t *raw_flow,
 		void (*read_cb)(int status))
 {
 	if (!h->init_ok)
@@ -91,6 +95,7 @@ int zephyr_read(zephyr_handle_t *h, uint16_t *flow,
 
 	h->async_read_cb = read_cb;
 	h->async_flow_ptr = flow;
+	h->async_raw_flow_ptr = raw_flow;
 	return h->i2c_xfer(&xfers, h->addr, zephyr_read_cb, h);
 }
 

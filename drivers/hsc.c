@@ -127,8 +127,15 @@ static void hsc_read_cb(int ret, void *arg)
 	}
 
 	/* success */
-	*h->async_pressure_ptr = hsc_calc_pressure(h, hsc_pressure);
-	*h->async_temperature_ptr = hsc_calc_temperature(h, hsc_temperature);
+	if (h->async_raw_pressure_ptr)
+		*h->async_raw_pressure_ptr = hsc_pressure;
+	if (h->async_raw_temperature_ptr)
+		*h->async_raw_temperature_ptr = hsc_temperature;
+	if (h->async_pressure_ptr)
+		*h->async_pressure_ptr = hsc_calc_pressure(h, hsc_pressure);
+	if (h->async_temperature_ptr)
+		*h->async_temperature_ptr =
+			hsc_calc_temperature(h, hsc_temperature);
 
 exit:
 	if(h->async_read_cb)
@@ -139,6 +146,7 @@ exit:
 
 /* public API for triggering read */
 int hsc_read(hsc_handle_t *h, float *pressure_bar, float *temperature_c,
+	     uint16_t *pressure_raw, uint16_t *temperature_raw,
 	     void (*read_cb)(int status))
 {
 	i2c_xfer_list_t xfers = {
@@ -148,6 +156,9 @@ int hsc_read(hsc_handle_t *h, float *pressure_bar, float *temperature_c,
 
 	h->async_pressure_ptr = pressure_bar;
 	h->async_temperature_ptr = temperature_c;
+	h->async_raw_pressure_ptr = pressure_raw;
+	h->async_raw_temperature_ptr = temperature_raw;
+
 	h->async_read_cb = read_cb;
 
 	return h->i2c_xfer(&xfers, h->addr, hsc_read_cb, h);

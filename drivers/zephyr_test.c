@@ -263,12 +263,12 @@ void read_cb(int status)
 	cb_status = status;
 }
 
-int mock_read(zephyr_handle_t *h, uint16_t *data)
+int mock_read(zephyr_handle_t *h, uint16_t *data, uint16_t *raw_data)
 {
 	int ret;
 
 	cb_invoked = false;
-	ret = zephyr_read(h, data, read_cb);
+	ret = zephyr_read(h, data, raw_data, read_cb);
 	if (ret)
 		test_silent(!cb_invoked, "unexpected callback invokation!");
 	else
@@ -289,7 +289,7 @@ int main()
 	zephyr_handle_t zephyr_handle;
 	int ret;
 	uint32_t sn;
-	uint16_t data;
+	uint16_t data, raw_data;
 	int i;
 
 	zephyr_fsm_init();
@@ -313,17 +313,17 @@ int main()
 	uint16_t code = 16384.0f * (0.1f + 0.8f * (flow/full_scale));
 	mock_flow_data[1] = code & 0xff;
 	mock_flow_data[0] = (code >> 8) & 0xff;
-	ret = mock_read(&zephyr_handle, &data);
+	ret = mock_read(&zephyr_handle, &data, &raw_data);
 
 	TEST_RET_CB_COND((data > 14990) && (data < 15010), "read data %d", data);
-
+	test(raw_data == code, "read RAW data %x", raw_data);
 	/*
 	 * check whether zephyr_read() recognizes invalid data
 	 * (valid data always has 0 in first two MSBs
 	 */
 	mock_flow_data[0] = 0x83;
 	mock_flow_data[1] = 0x21;
-	ret = mock_read(&zephyr_handle, &data);
+	ret = mock_read(&zephyr_handle, &data, NULL);
 	TEST_RET_CBN("recognize invalid read data");
 	mock_flow_data[0] = 0x03;
 
@@ -395,7 +395,7 @@ int main()
 		/* clear coverage buffer */
 		zephyr_fsm_clear_xfer_done();
 
-		ret = mock_read(&zephyr_handle, &data);
+		ret = mock_read(&zephyr_handle, &data, NULL);
 		if (fsm_xfer_done[i])
 			TEST_RET_CBN("xfer failure check when reading %d", i);
 		else

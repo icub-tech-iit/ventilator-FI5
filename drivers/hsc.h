@@ -29,12 +29,17 @@ typedef struct {
 	/* buffers for async I2C xfers */
 	float *async_temperature_ptr;
 	float *async_pressure_ptr;
+	uint16_t *async_raw_temperature_ptr;
+	uint16_t *async_raw_pressure_ptr;
+
 	void (*async_read_cb)(int status);
 	uint8_t hsc_word[4];
 	i2c_xfer_t read_xfer;
 } hsc_handle_t;
 
-int hsc_read(hsc_handle_t *h, float *pressure_bar, float *temperature_c, void (*read_cb)(int status));
+int hsc_read(hsc_handle_t *h, float *pressure_bar, float *temperature_c,
+	     uint16_t *pressure_raw, uint16_t *temperature_raw,
+	     void (*read_cb)(int status));
 int hsc_config_device(hsc_handle_t *h, hsc_sensor_t *cfg);
 int hsc_init(hsc_handle_t *h,
 	     int(*i2c_xfer)(i2c_xfer_list_t *xfers, int addr,

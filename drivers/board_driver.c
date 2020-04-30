@@ -125,9 +125,12 @@ static int i2c_mux_select_wait(void);
 
 static int board_read_pressure(pressure_sensor_t* sensor,
                                int16_t* pressure,
-                               int16_t* temperature);
+                               int16_t* temperature,
+	                       uint16_t* pressure_raw,
+                               uint16_t* temperature_raw
+	);
 
-static int board_read_flow(zephyr_handle_t* sensor, uint16_t* flow);
+static int board_read_flow(zephyr_handle_t* sensor, uint16_t* flow, uint16_t *raw_flow);
 
 static int board_read_gpio_expander(mcp23017_handle_t* gpio_dev, uint16_t* value);
 
@@ -275,11 +278,11 @@ volatile static int i2c_xfer_semaphore = 0;
 int board_init(const board_config_t* config)
 {
     int ret_code;
-    
+
     if(NULL == config)
     {
         config = &s_board_config_default;
-    }   
+    }
 
     // Store a copy of the board configuration
     memcpy(&board_dev.config, config, sizeof(board_config_t));
@@ -296,7 +299,7 @@ int board_init(const board_config_t* config)
     ret_code = board_init_flow_sensors();
     if(ret_code != RC_OK)
         return ret_code;
-        
+
     // Initialize the I2C GPIO expander
     ret_code = board_init_gpio_expander(&board_dev.gpio_expander, &config->gpio_expander);
     if(ret_code != RC_OK)
@@ -511,7 +514,9 @@ static int i2c_mux_select_wait(void)
 
 static int board_read_pressure(pressure_sensor_t* sensor,
                                int16_t* pressure,
-                               int16_t* temperature)
+                               int16_t* temperature,
+                               uint16_t* pressure_raw,
+                               uint16_t* temperature_raw)
 {
     int result;
 
@@ -523,16 +528,18 @@ static int board_read_pressure(pressure_sensor_t* sensor,
     result = hsc_read(&sensor->sensor,
                       &board_fsm.sensor_pressure,
                       &board_fsm.sensor_temperature,
+		      pressure_raw,
+                      temperature_raw,
                       board_fsm_update);
 
     return (result == 0) ? RC_OK : RC_SENSOR_ERROR;
 }
 
-static int board_read_flow(zephyr_handle_t* sensor, uint16_t* flow)
+static int board_read_flow(zephyr_handle_t* sensor, uint16_t* flow, uint16_t *raw_flow)
 {
     int result;
 
-    result = zephyr_read(sensor, flow, board_fsm_update);
+    result = zephyr_read(sensor, flow, raw_flow, board_fsm_update);
 
     return (result == 0) ? RC_OK : RC_SENSOR_ERROR;
 }
@@ -701,7 +708,9 @@ static void board_fsm_update(int status)
                 {
                     ret_code = board_read_pressure(&board_dev.pressure_sensor1,
                                                 &board_fsm.in_data->pressure1,
-                                                &board_fsm.in_data->temperature1);
+						&board_fsm.in_data->temperature1,
+						&board_fsm.in_data->pressure1_raw,
+						&board_fsm.in_data->temperature1_raw);
                     skip_state = 0;
                 }
                 break;
@@ -721,7 +730,9 @@ static void board_fsm_update(int status)
                 {
                     ret_code = board_read_pressure(&board_dev.pressure_sensor2,
                                                 &board_fsm.in_data->pressure2,
-                                                &board_fsm.in_data->temperature2);
+						&board_fsm.in_data->temperature2,
+						&board_fsm.in_data->pressure2_raw,
+						&board_fsm.in_data->temperature2_raw);
                     skip_state = 0;
                 }
                 break;
@@ -730,7 +741,8 @@ static void board_fsm_update(int status)
                 if((board_fsm.in_data->read_mask & BOARD_FLOW_1) != 0)
                 {
                     ret_code = board_read_flow(&board_dev.flow_sensor1,
-                                               &board_fsm.in_data->flow1);
+                                               &board_fsm.in_data->flow1,
+					       &board_fsm.in_data->flow1_raw);
                     skip_state = 0;
                 }
                 break;
@@ -749,7 +761,9 @@ static void board_fsm_update(int status)
                 {
                     ret_code = board_read_pressure(&board_dev.pressure_sensor3,
                                                 &board_fsm.in_data->pressure3,
-                                                &board_fsm.in_data->temperature3);
+						&board_fsm.in_data->temperature3,
+						&board_fsm.in_data->pressure3_raw,
+                                                &board_fsm.in_data->temperature3_raw);
                     skip_state = 0;
                 }
                 break;
@@ -758,7 +772,8 @@ static void board_fsm_update(int status)
                 if((board_fsm.in_data->read_mask & BOARD_FLOW_2) != 0)
                 {
                     ret_code = board_read_flow(&board_dev.flow_sensor2,
-                                               &board_fsm.in_data->flow2);
+                                               &board_fsm.in_data->flow2,
+					       &board_fsm.in_data->flow2_raw);
                     skip_state = 0;
                 }
                 break;
@@ -777,7 +792,9 @@ static void board_fsm_update(int status)
                 {
                     ret_code = board_read_pressure(&board_dev.pressure_sensor4,
                                                    &board_fsm.in_data->pressure4,
-                                                   &board_fsm.in_data->temperature4);
+                                                   &board_fsm.in_data->temperature4,
+                                                   &board_fsm.in_data->pressure4_raw,
+                                                   &board_fsm.in_data->temperature4_raw);
                     skip_state = 0;
                 }
                 break;
@@ -815,7 +832,7 @@ static void board_fsm_update(int status)
                     skip_state = 1;
                 }
                 break;
-            
+
             case BOARD_STATE_BUTTONS:
                 // Read the buttons always
                 ret_code = board_read_buttons(&board_fsm.in_data->buttons);
@@ -997,15 +1014,15 @@ static int board_init_flow_sensors(void)
     int ret_code;
 
     // Initialize flow sensor 1
-    ret_code = board_init_flow_sensor(&board_dev.flow_sensor1, 
-                                      &board_dev.config.flow_sensor1, 
+    ret_code = board_init_flow_sensor(&board_dev.flow_sensor1,
+                                      &board_dev.config.flow_sensor1,
                                       FLOW_SENSOR_1_CHANNEL);
     if(ret_code != RC_OK)
         return ret_code;
 
     // Initialize flow sensor 2
-    ret_code = board_init_flow_sensor(&board_dev.flow_sensor2, 
-                                      &board_dev.config.flow_sensor2, 
+    ret_code = board_init_flow_sensor(&board_dev.flow_sensor2,
+                                      &board_dev.config.flow_sensor2,
                                       FLOW_SENSOR_2_CHANNEL);
     if(ret_code != RC_OK)
         return ret_code;

@@ -30,6 +30,7 @@ int main()
 	int mock_xfer_status;
 	int mock_xfer_cb_status = 0;
 	float p, t;
+	uint16_t raw_p, raw_t;
 	int ret;
 	uint8_t mock_xfer_data[4];
 	int cb_status;
@@ -41,12 +42,13 @@ int main()
 		cb_status = status;
 	}
 
-	int mock_read(hsc_handle_t *h, float *p, float *t)
+	int mock_read(hsc_handle_t *h, float *p, float *t,
+		      uint16_t *raw_p, uint16_t *raw_t)
 	{
 		int ret;
 
 		cb_invoked = false;
-		ret = hsc_read(h, p, t, read_cb);
+		ret = hsc_read(h, p, t, raw_p, raw_t, read_cb);
 		if (ret)
 			test_silent(!cb_invoked, "callback invoked when xfer fail");
 		else
@@ -95,24 +97,24 @@ int main()
 	mock_xfer_data[2] = 0;
 	mock_xfer_data[3] = 0;
 	mock_xfer_status = 0;
-	ret = mock_read(&hsc_handle, &p, &t);
+	ret = mock_read(&hsc_handle, &p, &t, NULL, NULL);
 	TEST_RET_CB("generic read");
 
 	/* test that a xfer failure is propagated */
 	mock_xfer_status = -1;
-	ret = mock_read(&hsc_handle, &p, &t);
+	ret = mock_read(&hsc_handle, &p, &t, NULL, NULL);
 	test(ret != 0, "xfer failure check");
 
 	/* test that a stale read code passes */
 	mock_xfer_data[0] = 0x86;
 	mock_xfer_status = 0;
-	ret = mock_read(&hsc_handle, &p, &t);
+	ret = mock_read(&hsc_handle, &p, &t, NULL, NULL);
 	TEST_RET_CB("normal stale read");
 
 	/* test that a stale read code /w wrong data fails */
 	mock_xfer_data[2] = 1;
 
-	ret = mock_read(&hsc_handle, &p, &t);
+	ret = mock_read(&hsc_handle, &p, &t, NULL, NULL);
 	TEST_RET_CBN("stale read /w wrong temp data");
 
 	/* test that a generic valid read passes */
@@ -121,7 +123,7 @@ int main()
 	mock_xfer_data[2] = 0;
 	mock_xfer_data[3] = 0;
 	mock_xfer_status = 0;
-	ret = mock_read(&hsc_handle, &p, &t);
+	ret = mock_read(&hsc_handle, &p, &t, NULL, NULL);
 	TEST_RET_CB("normal read");
 
 	/* test that a stale read code /w wrong data fails */
@@ -129,7 +131,7 @@ int main()
 	mock_xfer_data[1] = 0x67;
 
 	cb_invoked = false;
-	ret = mock_read(&hsc_handle, &p, &t);
+	ret = mock_read(&hsc_handle, &p, &t, NULL, NULL);
 	TEST_RET_CBN("stale read /w wrong pres data");
 
 	/* test that a too low pressure code fails */
@@ -138,7 +140,7 @@ int main()
 	mock_xfer_data[2] = 0;
 	mock_xfer_data[3] = 0;
 	mock_xfer_status = 0;
-	ret = mock_read(&hsc_handle, &p, &t);
+	ret = mock_read(&hsc_handle, &p, &t, NULL, NULL);
 	TEST_RET_CBN("pressure lower bound");
 
 	/* test that a too high pressure code fails */
@@ -147,7 +149,7 @@ int main()
 	mock_xfer_data[2] = 0;
 	mock_xfer_data[3] = 0;
 	mock_xfer_status = 0;
-	ret = mock_read(&hsc_handle, &p, &t);
+	ret = mock_read(&hsc_handle, &p, &t, NULL, NULL);
 	TEST_RET_CBN("pressure upper bound");
 
 	/* test temperature decoding */
@@ -156,8 +158,9 @@ int main()
 	mock_xfer_data[2] = 0xb6;
 	mock_xfer_data[3] = 0x00;
 	mock_xfer_status = 0;
-	ret = mock_read(&hsc_handle, &p, &t);
+	ret = mock_read(&hsc_handle, &p, &t, NULL, &raw_t);
 	TEST_RET_CB_COND((t > 92.0) && (t < 92.5), "temperature decode %f", t);
+	test(raw_t == (0xb6 << 3), "raw temperature read 0x%x", raw_t);
 
 	/*
 	 * test pressure reading; we only have an example from DS
@@ -169,8 +172,9 @@ int main()
 	mock_xfer_data[2] = 0x00;
 	mock_xfer_data[3] = 0x00;
 	mock_xfer_status = 0;
-	ret = mock_read(&hsc_handle, &p, &t);
+	ret = mock_read(&hsc_handle, &p, &t, &raw_p, NULL);
 	TEST_RET_CB_COND((p > -1.0) && (p < -0.995), "pressure decode %f", p);
+	test(raw_p == 0x0679, "raw pressure read 0x%x", raw_p);
 
 	printf("\nall test passed\n");
 }

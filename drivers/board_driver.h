@@ -31,7 +31,7 @@ extern "C" {
 #define BOARD_BUTTON_4          (0x0008)
 #define BOARD_BUTTON_NUMBER     (4)
 
-enum 
+enum
 {
     RC_OK = 0,
     RC_ERROR,
@@ -89,16 +89,26 @@ typedef struct
 typedef struct
 {
     int16_t pressure1;
+    uint16_t pressure1_raw;
     int16_t pressure2;
+    uint16_t pressure2_raw;
     int16_t pressure3;
+    uint16_t pressure3_raw;
     int16_t pressure4;
+    uint16_t pressure4_raw;
     uint16_t flow1;
+    uint16_t flow1_raw;
     uint16_t flow2;
+    uint16_t flow2_raw;
     uint16_t o2;
     int16_t temperature1;
+    uint16_t temperature1_raw;
     int16_t temperature2;
+    uint16_t temperature2_raw;
     int16_t temperature3;
+    uint16_t temperature3_raw;
     int16_t temperature4;
+    uint16_t temperature4_raw;
     uint16_t gpio;
     int32_t encoder;
     uint32_t buttons;

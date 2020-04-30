@@ -279,6 +279,8 @@ static int test_board_driver(void)
     test_sensor_data.read_mask = BOARD_PRESSURE_1;
     test_sensor_data.pressure1 = all_sensor_data.pressure1;
     test_sensor_data.temperature1 = all_sensor_data.temperature1;
+    test_sensor_data.pressure1_raw = all_sensor_data.pressure1_raw;
+    test_sensor_data.temperature1_raw = all_sensor_data.temperature1_raw;
     result = test_board_read_sensor(&sensor_data, &test_sensor_data);
     if(result != RC_OK)
     {
@@ -296,6 +298,7 @@ static int test_board_driver(void)
     sensor_data.read_mask = BOARD_FLOW_2;
     test_sensor_data.read_mask = BOARD_FLOW_2;
     test_sensor_data.flow2 = all_sensor_data.flow2;
+    test_sensor_data.flow2_raw = all_sensor_data.flow2_raw;
     result = test_board_read_sensor(&sensor_data, &test_sensor_data);
     if(result != RC_OK)
     {
@@ -392,16 +395,26 @@ static int test_board_buffer(void* buffer, void* expected, int size)
 static int test_board_dump_sensor_data(board_sensor_data_t* sensor_data)
 {
     printf("  pressure1    --> %hd\n", sensor_data->pressure1);
+    printf("  pressure1_raw    --> %hd\n", sensor_data->pressure1_raw);
     printf("  pressure2    --> %hd\n", sensor_data->pressure2);
+    printf("  pressure2_raw    --> %hd\n", sensor_data->pressure2_raw);
     printf("  pressure3    --> %hd\n", sensor_data->pressure3);
+    printf("  pressure3_raw    --> %hd\n", sensor_data->pressure3_raw);
     printf("  pressure4    --> %hd\n", sensor_data->pressure4);
+    printf("  pressure4_raw    --> %hd\n", sensor_data->pressure4_raw);
     printf("  flow1        --> %hu\n", sensor_data->flow1);
+    printf("  flow1_raw        --> %hu\n", sensor_data->flow1_raw);
     printf("  flow2        --> %hu\n", sensor_data->flow2);
+    printf("  flow2_raw        --> %hu\n", sensor_data->flow2_raw);
     printf("  oxigen       --> %hu\n", sensor_data->o2);
     printf("  temperature1 --> %hd\n", sensor_data->temperature1);
+    printf("  temperature1_raw --> %hd\n", sensor_data->temperature1_raw);
     printf("  temperature2 --> %hd\n", sensor_data->temperature2);
+    printf("  temperature2_raw --> %hd\n", sensor_data->temperature2_raw);
     printf("  temperature3 --> %hd\n", sensor_data->temperature3);
+    printf("  temperature3_raw --> %hd\n", sensor_data->temperature3_raw);
     printf("  temperature4 --> %hd\n", sensor_data->temperature4);
+    printf("  temperature4_raw --> %hd\n", sensor_data->temperature4_raw);
     printf("  gpio         --> %hu\n", sensor_data->gpio);
     printf("  encoder      --> %d\n", sensor_data->encoder);
     printf("  buttons      --> %08x\n", sensor_data->buttons);
