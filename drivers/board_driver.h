@@ -24,7 +24,12 @@ extern "C" {
 #define BOARD_ALL_SENSORS       (0x3FFF)
 #define BOARD_NO_SENSOR         (0x0000)
 
-#define BOARD_BUTTON_ENCODER    (0x0001)
+#define BOARD_BUTTON_ENCODER    (0x0010)
+#define BOARD_BUTTON_1          (0x0001)
+#define BOARD_BUTTON_2          (0x0002)
+#define BOARD_BUTTON_3          (0x0004)
+#define BOARD_BUTTON_4          (0x0008)
+#define BOARD_BUTTON_NUMBER     (4)
 
 enum 
 {

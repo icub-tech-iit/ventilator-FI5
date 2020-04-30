@@ -8,6 +8,8 @@
 #include "mcp23017.h"
 #include "encoder.h"
 #include "analog.h"
+#include "button.h"
+
 #include "access_once.h"
 
 #include <string.h>
@@ -72,6 +74,9 @@ typedef struct
     pwm_handle_t pwm_valve2;
     pwm_handle_t pwm_buzzer;
 
+    // Buttons
+    button_handle_t buttons[BOARD_BUTTON_NUMBER];
+
     // Board configuration
     board_config_t config;
 } board_device_t;
@@ -105,6 +110,7 @@ enum
     BOARD_STATE_ANALOG,
     BOARD_STATE_GPIO,
     BOARD_STATE_ENCODER,
+    BOARD_STATE_BUTTONS,
     BOARD_STATE_COMPLETED
 };
 
@@ -128,7 +134,7 @@ static int board_read_gpio_expander(mcp23017_handle_t* gpio_dev, uint16_t* value
 static int board_read_encoder(encoder_handle_t* encoder_dev,
                               int32_t* tick,
                               uint32_t* button_mask);
-
+static int board_read_buttons(uint32_t* button_mask);
 static int board_read_analog(analog_handle_t* analog_dev,
                              uint16_t* o2,
                              uint16_t* analog_input);
@@ -148,6 +154,12 @@ static int board_init_flow_sensor(zephyr_handle_t* sensor,
                                   int mux_channel);
 static int board_init_gpio_expander(mcp23017_handle_t* dev,
                                     device_config_t* config);
+
+static int board_init_pressure_sensors(void);
+static int board_init_flow_sensors(void);
+static int board_init_pwms(void);
+static int board_init_analog(void);
+static int board_init_buttons(void);
 
 static int board_read_check(board_sensor_data_t* in_data);
 
@@ -216,57 +228,46 @@ volatile static int i2c_xfer_semaphore = 0;
 /****************************************************************/
 int board_init(board_config_t* config)
 {
+    int ret_code;
+
     // Store a copy of the board configuration
     memcpy(&board_dev.config, config, sizeof(board_config_t));
-
-    // Initialize the I2C mux channel mapping
-    board_dev.pressure_sensor1.i2c_mux = &board_dev.i2c_mux;
-    board_dev.pressure_sensor2.i2c_mux = &board_dev.i2c_mux;
-    board_dev.pressure_sensor3.i2c_mux = &board_dev.i2c_mux;
-    board_dev.pressure_sensor4.i2c_mux = &board_dev.i2c_mux;
-
-    board_dev.pressure_sensor1.i2c_channel = PRESSURE_SENSOR_1_CHANNEL;
-    board_dev.pressure_sensor2.i2c_channel = PRESSURE_SENSOR_2_CHANNEL;
-    board_dev.pressure_sensor3.i2c_channel = PRESSURE_SENSOR_3_CHANNEL;
-    board_dev.pressure_sensor4.i2c_channel = PRESSURE_SENSOR_4_CHANNEL;
 
     // Initialize the I2C mux device handles
     i2c_mux_init(&board_dev.i2c_mux, i2c_xfer_async, I2C_MUX_ADDRESS);
 
     // Initialize the pressure sensors
-    board_init_pressure_sensor(&board_dev.pressure_sensor1.sensor, &config->pressure_sensor1);
-    board_init_pressure_sensor(&board_dev.pressure_sensor2.sensor, &config->pressure_sensor2);
-    board_init_pressure_sensor(&board_dev.pressure_sensor3.sensor, &config->pressure_sensor3);
-    board_init_pressure_sensor(&board_dev.pressure_sensor4.sensor, &config->pressure_sensor4);
+    ret_code = board_init_pressure_sensors();
+    if(ret_code != RC_OK)
+        return ret_code;
 
     // Initialize the flow sensors
-    board_init_flow_sensor(&board_dev.flow_sensor1, &config->flow_sensor1, FLOW_SENSOR_1_CHANNEL);
-    board_init_flow_sensor(&board_dev.flow_sensor2, &config->flow_sensor2, FLOW_SENSOR_2_CHANNEL);
-
+    ret_code = board_init_flow_sensors();
+    if(ret_code != RC_OK)
+        return ret_code;
+        
     // Initialize the I2C GPIO expander
-    board_init_gpio_expander(&board_dev.gpio_expander, &config->gpio_expander);
+    ret_code = board_init_gpio_expander(&board_dev.gpio_expander, &config->gpio_expander);
+    if(ret_code != RC_OK)
+        return ret_code;
 
     // Initialize the encoder
     encoder_init(&board_dev.encoder);
 
     // Initialize the analogic acquisitions
-    analog_init(&board_dev.analog, &hadc3, DMA2_Stream0_IRQn);
-    analog_config(&board_dev.analog, 0x1F);
+    ret_code = board_init_analog();
+    if(ret_code != RC_OK)
+        return ret_code;
 
     // Initialize the PWM devices
-    pwm_init(&board_dev.pwm_valve1, (void*)&htim1, &pwm1_cfg);
-    pwm_init(&board_dev.pwm_valve2, (void*)&htim8, &pwm2_cfg);
-    pwm_init(&board_dev.pwm_buzzer, (void*)&htim12, &pwm3_cfg);
+    ret_code = board_init_pwms();
+    if(ret_code != RC_OK)
+        return ret_code;
 
-    // Set to zero the PWM output voltage
-    pwm_set(&board_dev.pwm_valve1, 0);
-    pwm_set(&board_dev.pwm_valve2, 0);
-    pwm_set(&board_dev.pwm_buzzer, 0);
-
-    // Start the PWM channels
-    pwm_start(&board_dev.pwm_valve1);
-    pwm_start(&board_dev.pwm_valve2);
-    pwm_start(&board_dev.pwm_buzzer);
+    // Initialize buttons
+    ret_code = board_init_buttons();
+    if(ret_code != RC_OK)
+        return ret_code;
 
     return RC_OK;
 }
@@ -513,6 +514,26 @@ static int board_read_encoder(encoder_handle_t* encoder_dev,
     return 0;
 }
 
+static int board_read_buttons(uint32_t* button_mask)
+{
+    int i;
+
+    for(i = 0; i < BOARD_BUTTON_NUMBER; ++i)
+    {
+        bool pressed;
+        uint32_t button_bit = (0x1 << i);
+
+        button_out(&board_dev.buttons[i], &pressed);
+
+        if(pressed)
+            *button_mask = *button_mask | button_bit;
+        else
+            *button_mask = *button_mask & ~button_bit;
+    }
+
+    return 0;
+}
+
 static int board_read_analog(analog_handle_t* analog_dev,
                              uint16_t* o2,
                              uint16_t* analog_input)
@@ -521,8 +542,8 @@ static int board_read_analog(analog_handle_t* analog_dev,
 
     analog_get_data(analog_dev, buffer);
 
-    *o2 = buffer[0];
-    memcpy(analog_input, &buffer[1], 4 * sizeof(uint16_t));
+    *o2 = buffer[4];
+    memcpy(analog_input, &buffer[0], 4 * sizeof(uint16_t));
 
     return 0;
 }
@@ -711,7 +732,7 @@ static void board_fsm_update(int status)
                 break;
 
             case BOARD_STATE_ANALOG:
-                if((board_fsm.in_data->read_mask & BOARD_ANALOG) != 0)
+                if((board_fsm.in_data->read_mask & (BOARD_ANALOG | BOARD_O2)) != 0)
                 {
                     ret_code = board_read_analog(&board_dev.analog,
                                                  &board_fsm.in_data->o2,
@@ -742,6 +763,13 @@ static void board_fsm_update(int status)
                     // There's nothing to wait here so keep skipping
                     skip_state = 1;
                 }
+                break;
+            
+            case BOARD_STATE_BUTTONS:
+                // Read the buttons always
+                ret_code = board_read_buttons(&board_fsm.in_data->buttons);
+                // There's nothing to wait here so keep skipping
+                skip_state = 1;
                 break;
 
             case BOARD_STATE_COMPLETED:
@@ -874,6 +902,123 @@ static int board_init_gpio_expander(mcp23017_handle_t* dev,
     return ret_code;
 }
 
+static int board_init_pressure_sensors(void)
+{
+    int ret_code;
+
+    // Initialize the I2C mux channel mapping
+    board_dev.pressure_sensor1.i2c_mux = &board_dev.i2c_mux;
+    board_dev.pressure_sensor2.i2c_mux = &board_dev.i2c_mux;
+    board_dev.pressure_sensor3.i2c_mux = &board_dev.i2c_mux;
+    board_dev.pressure_sensor4.i2c_mux = &board_dev.i2c_mux;
+
+    board_dev.pressure_sensor1.i2c_channel = PRESSURE_SENSOR_1_CHANNEL;
+    board_dev.pressure_sensor2.i2c_channel = PRESSURE_SENSOR_2_CHANNEL;
+    board_dev.pressure_sensor3.i2c_channel = PRESSURE_SENSOR_3_CHANNEL;
+    board_dev.pressure_sensor4.i2c_channel = PRESSURE_SENSOR_4_CHANNEL;
+
+    // Initialize the pressure sensor 1
+    ret_code = board_init_pressure_sensor(&board_dev.pressure_sensor1.sensor, &board_dev.config.pressure_sensor1);
+    if(ret_code != RC_OK)
+        return ret_code;
+
+    // Initialize the pressure sensor 2
+    ret_code = board_init_pressure_sensor(&board_dev.pressure_sensor2.sensor, &board_dev.config.pressure_sensor2);
+    if(ret_code != RC_OK)
+        return ret_code;
+
+    // Initialize the pressure sensor 3
+    ret_code = board_init_pressure_sensor(&board_dev.pressure_sensor3.sensor, &board_dev.config.pressure_sensor3);
+    if(ret_code != RC_OK)
+        return ret_code;
+
+    // Initialize the pressure sensor 4
+    ret_code = board_init_pressure_sensor(&board_dev.pressure_sensor4.sensor, &board_dev.config.pressure_sensor4);
+    if(ret_code != RC_OK)
+        return ret_code;
+
+    // All done, no error
+    return RC_OK;
+}
+
+static int board_init_flow_sensors(void)
+{
+    int ret_code;
+
+    // Initialize flow sensor 1
+    ret_code = board_init_flow_sensor(&board_dev.flow_sensor1, 
+                                      &board_dev.config.flow_sensor1, 
+                                      FLOW_SENSOR_1_CHANNEL);
+    if(ret_code != RC_OK)
+        return ret_code;
+
+    // Initialize flow sensor 2
+    ret_code = board_init_flow_sensor(&board_dev.flow_sensor2, 
+                                      &board_dev.config.flow_sensor2, 
+                                      FLOW_SENSOR_2_CHANNEL);
+    if(ret_code != RC_OK)
+        return ret_code;
+
+    // All done, no error
+    return RC_OK;
+}
+
+static int board_init_pwms(void)
+{
+    // Initialize the PWM drivers
+    if((pwm_init(&board_dev.pwm_valve1, (void*)&htim1, &pwm1_cfg) != 0) ||
+       (pwm_init(&board_dev.pwm_valve2, (void*)&htim8, &pwm2_cfg) != 0) ||
+       (pwm_init(&board_dev.pwm_buzzer, (void*)&htim12, &pwm3_cfg) != 0))
+    {
+        return RC_PWM_ERROR;
+    }
+
+    // Set to zero the PWM output voltage
+    if((pwm_set(&board_dev.pwm_valve1, 0) != 0) ||
+       (pwm_set(&board_dev.pwm_valve2, 0) != 0) ||
+       (pwm_set(&board_dev.pwm_buzzer, 0) != 0))
+    {
+        return RC_PWM_ERROR;
+    }
+
+    // Start the PWM channels
+    if((pwm_start(&board_dev.pwm_valve1) != 0) ||
+       (pwm_start(&board_dev.pwm_valve2) != 0) ||
+       (pwm_start(&board_dev.pwm_buzzer) != 0))
+    {
+        return RC_PWM_ERROR;
+    }
+
+    return RC_OK;
+}
+
+static int board_init_analog(void)
+{
+    int result;
+
+    result = analog_init(&board_dev.analog, &hadc3, DMA2_Stream0_IRQn);
+    if(result != 0)
+        return RC_ERROR;
+
+    result = analog_config(&board_dev.analog, 0x1F);
+    if(result != 0)
+        return RC_ERROR;
+
+    return RC_OK;
+}
+
+static int board_init_buttons(void)
+{
+    int i;
+
+	for(i = 0; i < BOARD_BUTTON_NUMBER; i++)
+    {
+		button_init(&board_dev.buttons[i]);
+    }
+
+    return RC_OK;
+}
+
 static int board_read_check(board_sensor_data_t* in_data)
 {
     // Check the data pointer
@@ -957,4 +1102,9 @@ void i2c_xfer_completed(int retcode)
 void encoder_changed(bool a, bool b, bool button)
 {
 	encoder_decode(&board_dev.encoder, a, b, button);
+}
+
+void button_changed(int n, bool state)
+{
+	button_in(&board_dev.buttons[n-1], state);
 }

@@ -1,8 +1,7 @@
 #include <stdio.h>
+#include <stdbool.h>
 #include "drivers/board_driver.h"
 #include "drivers/access_once.h"
-#include "drivers/encoder.h"
-#include "drivers/analog.h"
 #include "demo.h"
 
 volatile int cb_status, ready_flag = 0;
@@ -79,6 +78,7 @@ void demo_loop(void)
 {
 	board_sensor_data_t in_data = {0};
 	int ret;
+	bool button_state[4];
 	bool encoder_button = 0;
 	static int encoder_counter = 0;
 	static board_actuation_data_t out_data;
@@ -116,6 +116,10 @@ void demo_loop(void)
 
 	encoder_counter += in_data.encoder;
 	encoder_button = !!(in_data.buttons & BOARD_BUTTON_ENCODER);
+        button_state[0] = !!(in_data.buttons & BOARD_BUTTON_1);
+        button_state[1] = !!(in_data.buttons & BOARD_BUTTON_2);
+        button_state[2] = !!(in_data.buttons & BOARD_BUTTON_3);
+        button_state[3] = !!(in_data.buttons & BOARD_BUTTON_4);
 
 	printf("Encoder %d(%d) %d\r\n", encoder_counter, (int)in_data.encoder, (int)encoder_button);
 
@@ -125,6 +129,12 @@ void demo_loop(void)
            in_data.analog_input[1],
            in_data.analog_input[2],
            in_data.analog_input[3]);
+
+	printf("Buttons %d %d %d %d\r\n",
+	       button_state[0],
+	       button_state[1],
+	       button_state[2],
+	       button_state[3]);
 
 	out_data.gpio = 1 << (i+8);
 	out_data.valve1 = 1000;
