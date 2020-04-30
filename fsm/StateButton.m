@@ -3,4 +3,4 @@ classdef StateButton < Simulink.IntEnumType
     Released(0)
     Pressed(1)
   end
-end 
+end
