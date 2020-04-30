@@ -14,6 +14,52 @@
 #include "vnt_bsp.h"
 
 
+static const board_config_t s_board_config_default =
+{
+    .pressure_sensor1 =
+    {
+        .type = PRESSURE_SENSOR_TYPE_HSCDANN150PG2A5,
+        .address = 0x28
+    },
+    .pressure_sensor2 =
+    {
+        .type = PRESSURE_SENSOR_TYPE_HSCMAND160MD2A5,
+        .address = 0x28
+    },
+    .pressure_sensor3 =
+    {
+        .type = PRESSURE_SENSOR_TYPE_HSCMAND160MD2A5,
+        .address = 0x28
+    },
+    .pressure_sensor4 =
+    {
+        .type = PRESSURE_SENSOR_TYPE_HSCMAND160MD2A5,
+        .address = 0x28
+    },
+    .flow_sensor1 =
+    {
+        .type = FLOW_SENSOR_TYPE_ZEPHYR,
+        .address = 0x49
+    },
+    .flow_sensor2 =
+    {
+        .type = FLOW_SENSOR_TYPE_ZEPHYR,
+        .address = 0x49
+    },
+    .o2_sensor =
+    {
+        .type = O2_SENSOR_TYPE_NONE,
+        .address = 0x00
+    },
+    .gpio_expander =
+    {
+        .type = GPIO_EXPANDER_TYPE_MCP23017,
+        .address = 0x20
+    }
+};
+
+const board_config_t * p_board_config_default = &s_board_config_default;
+
 
 static vnt::os::Timer *s_tmr {nullptr};
 constexpr vnt::core::relTime s_timeInit {10*vnt::core::time1millisec};
@@ -31,9 +77,14 @@ void s_wrapper(void *p)
 
 
 
-int board_init(board_config_t* config)
+int board_init(const board_config_t* config)
 {
     // init the timer we use to simulate the async reading
+    
+    if(NULL == config)
+    {
+        config = &s_board_config_default;
+    }    
 
     s_tmr = new vnt::os::Timer;
 

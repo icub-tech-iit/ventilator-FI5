@@ -153,7 +153,7 @@ static int board_init_flow_sensor(zephyr_handle_t* sensor,
                                   device_config_t* config,
                                   int mux_channel);
 static int board_init_gpio_expander(mcp23017_handle_t* dev,
-                                    device_config_t* config);
+                                    const device_config_t* config);
 
 static int board_init_pressure_sensors(void);
 static int board_init_flow_sensors(void);
@@ -168,6 +168,52 @@ static int board_read_check(board_sensor_data_t* in_data);
 /****************************************************************/
 void i2c_xfer_completed(int retcode);
 void encoder_changed(bool a, bool b, bool button);
+
+static const board_config_t s_board_config_default =
+{
+    .pressure_sensor1 =
+    {
+        .type = PRESSURE_SENSOR_TYPE_HSCDANN150PG2A5,
+        .address = 0x28
+    },
+    .pressure_sensor2 =
+    {
+        .type = PRESSURE_SENSOR_TYPE_HSCMAND160MD2A5,
+        .address = 0x28
+    },
+    .pressure_sensor3 =
+    {
+        .type = PRESSURE_SENSOR_TYPE_HSCMAND160MD2A5,
+        .address = 0x28
+    },
+    .pressure_sensor4 =
+    {
+        .type = PRESSURE_SENSOR_TYPE_HSCMAND160MD2A5,
+        .address = 0x28
+    },
+    .flow_sensor1 =
+    {
+        .type = FLOW_SENSOR_TYPE_ZEPHYR,
+        .address = 0x49
+    },
+    .flow_sensor2 =
+    {
+        .type = FLOW_SENSOR_TYPE_ZEPHYR,
+        .address = 0x49
+    },
+    .o2_sensor =
+    {
+        .type = O2_SENSOR_TYPE_NONE,
+        .address = 0x00
+    },
+    .gpio_expander =
+    {
+        .type = GPIO_EXPANDER_TYPE_MCP23017,
+        .address = 0x20
+    }
+};
+
+const board_config_t * p_board_config_default = &s_board_config_default;
 
 /****************************************************************/
 /* Local data.                                                  */
@@ -226,9 +272,14 @@ volatile static int i2c_xfer_semaphore = 0;
 /****************************************************************/
 /* Exported APIs.                                               */
 /****************************************************************/
-int board_init(board_config_t* config)
+int board_init(const board_config_t* config)
 {
     int ret_code;
+    
+    if(NULL == config)
+    {
+        config = &s_board_config_default;
+    }   
 
     // Store a copy of the board configuration
     memcpy(&board_dev.config, config, sizeof(board_config_t));
@@ -882,7 +933,7 @@ static int board_init_flow_sensor(zephyr_handle_t* sensor,
 }
 
 static int board_init_gpio_expander(mcp23017_handle_t* dev,
-                                    device_config_t* config)
+                                    const device_config_t* config)
 {
     int ret_code = RC_OK;
     int result;

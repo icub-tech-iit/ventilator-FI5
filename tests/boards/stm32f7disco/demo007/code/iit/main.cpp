@@ -99,6 +99,50 @@ void onOSerror(void *p)
 #include "ew_bsp_clock.h"
 #endif
 
+//static  board_config_t board_config =
+//{
+//    .pressure_sensor1 =
+//    {
+//        .type = PRESSURE_SENSOR_TYPE_HSCDANN150PG2A5,
+//        .address = 0x28
+//    },
+//    .pressure_sensor2 =
+//    {
+//        .type = PRESSURE_SENSOR_TYPE_HSCMAND160MD2A5,
+//        .address = 0x28
+//    },
+//    .pressure_sensor3 =
+//    {
+//        .type = PRESSURE_SENSOR_TYPE_HSCMAND160MD2A5,
+//        .address = 0x28
+//    },
+//    .pressure_sensor4 =
+//    {
+//        .type = PRESSURE_SENSOR_TYPE_HSCMAND160MD2A5,
+//        .address = 0x28
+//    },
+//    .flow_sensor1 =
+//    {
+//        .type = FLOW_SENSOR_TYPE_ZEPHYR,
+//        .address = 0x49
+//    },
+//    .flow_sensor2 =
+//    {
+//        .type = FLOW_SENSOR_TYPE_ZEPHYR,
+//        .address = 0x49
+//    },
+//    .o2_sensor =
+//    {
+//        .type = O2_SENSOR_TYPE_NONE,
+//        .address = 0x00
+//    },
+//    .gpio_expander =
+//    {
+//        .type = GPIO_EXPANDER_TYPE_MCP23017,
+//        .address = 0x20
+//    }
+//};
+
 void initSystem(vnt::os::Thread *t, void* initparam)
 {
     vnt::os::Thread * thr0 = vnt::os::theScheduler::getInstance().scheduledtask();  
@@ -118,7 +162,7 @@ void initSystem(vnt::os::Thread *t, void* initparam)
     // start the tHMI thread [at exit of tINIT thread]
     app::tHMI::start();
 
-    board_init(nullptr);  
+    board_init(p_board_config_default);  
 
 #if defined(APP_HMI_disable)
 #else

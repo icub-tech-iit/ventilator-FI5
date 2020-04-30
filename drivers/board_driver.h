@@ -116,7 +116,9 @@ typedef struct
 
 typedef void (*board_read_callback_t)(int);
 
-int board_init(board_config_t* config);
+extern const board_config_t * p_board_config_default;
+
+int board_init(const board_config_t* config);
 int board_read_sensors(board_sensor_data_t* in_data);
 int board_read_sensors_async(board_sensor_data_t* in_data, board_read_callback_t read_completed);
 int board_apply_actuation(board_actuation_data_t* out_data);
