@@ -739,6 +739,11 @@
               <FilePath>..\..\ew\PlatformPackage\RGB565\ewextgfx.c</FilePath>
             </File>
             <File>
+              <FileName>libewgfx-m7-r180-keil.lib</FileName>
+              <FileType>4</FileType>
+              <FilePath>..\..\ew\PlatformPackage\RGB565\libewgfx-m7-r180-keil.lib</FilePath>
+            </File>
+            <File>
               <FileName>libewgfx-m7-keil.lib</FileName>
               <FileType>4</FileType>
               <FilePath>..\..\ew\PlatformPackage\RGB565\libewgfx-m7-keil.lib</FilePath>
@@ -1805,6 +1810,11 @@
               <FileName>ewextgfx.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\..\ew\PlatformPackage\RGB565\ewextgfx.c</FilePath>
+            </File>
+            <File>
+              <FileName>libewgfx-m7-r180-keil.lib</FileName>
+              <FileType>4</FileType>
+              <FilePath>..\..\ew\PlatformPackage\RGB565\libewgfx-m7-r180-keil.lib</FilePath>
             </File>
             <File>
               <FileName>libewgfx-m7-keil.lib</FileName>
