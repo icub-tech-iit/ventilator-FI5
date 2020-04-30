@@ -30,7 +30,8 @@ void s_wrapper(void *p)
 }
 
 
-int board_init(void)
+
+int board_init(board_config_t* config)
 {
     // init the timer we use to simulate the async reading
 

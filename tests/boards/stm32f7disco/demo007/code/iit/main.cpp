@@ -118,7 +118,7 @@ void initSystem(vnt::os::Thread *t, void* initparam)
     // start the tHMI thread [at exit of tINIT thread]
     app::tHMI::start();
 
-    board_init();  
+    board_init(nullptr);  
 
 #if defined(APP_HMI_disable)
 #else
