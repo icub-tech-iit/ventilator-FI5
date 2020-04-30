@@ -656,7 +656,6 @@ class Dataplotter : Core::Group
   $rect <830,210,1030,250>
   slot onDrawPrototype
   {
-
     if (DataProvider == null)
         return;
     var float currVal = 0.0;
@@ -803,7 +802,7 @@ class Dataplotter : Core::Group
     }
 
     // NOTE: if you increase the pixelPerUnit you have a zoomed in effect, if you decrease it, you have a zoom out
-    var float hOffset = Graph.Bounds.w / Graph.PixelPerUnit.x;
+    var float hOffset = (XAxis.Point2.x -XAxis.Point1.x)  / Graph.PixelPerUnit.x;
     var float YScaleFactor = (float(XAxis.Point2.y) - float(YAxis.Point1.y)) / maxYAxis;
     var float valY = currVal * YScaleFactor;
 

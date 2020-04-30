@@ -802,7 +802,7 @@ class Dataplotter : Core::Group
     }
 
     // NOTE: if you increase the pixelPerUnit you have a zoomed in effect, if you decrease it, you have a zoom out
-    var float hOffset = Graph.Bounds.w / Graph.PixelPerUnit.x;
+    var float hOffset = (XAxis.Point2.x -XAxis.Point1.x)  / Graph.PixelPerUnit.x;
     var float YScaleFactor = (float(XAxis.Point2.y) - float(YAxis.Point1.y)) / maxYAxis;
     var float valY = currVal * YScaleFactor;
 
@@ -25003,7 +25003,7 @@ vclass DataplotterWin32 : Application::Dataplotter
     }
 
     // NOTE: if you increase the pixelPerUnit you have a zoomed in effect, if you decrease it, you have a zoom out
-    var float hOffset = Graph.Bounds.w / Graph.PixelPerUnit.x;
+    var float hOffset = (XAxis.Point2.x -XAxis.Point1.x)  / Graph.PixelPerUnit.x;
     var float YScaleFactor = (float(XAxis.Point2.y) - float(YAxis.Point1.y)) / maxYAxis;
     var float valY = currVal * YScaleFactor;
 

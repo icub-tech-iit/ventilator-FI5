@@ -1,12 +1,12 @@
 $version 1.0
 
-attr active = Application::Dataplotter;
+attr active = Application::DataplotterWin32;
 attr callStackMonitor_Show = false;
 attr codeColSelect = false;
 attr codeFirstPos = <0,0>;
-attr codeInspector = Application::Dataplotter.onDrawPrototype;
-attr codeSelEnd = <0,0>;
-attr codeSelStart = <0,0>;
+attr codeInspector = Application::DataplotterWin32.onDraw;
+attr codeSelEnd = <77,13>;
+attr codeSelStart = <77,13>;
 attr connectInspectors = false;
 attr debug_TrackUpdates = false;
 attr extractDoc_ClassOverview = true;
@@ -19,7 +19,7 @@ attr extractDoc_Variants = false;
 attr generateClut_ReservedColors = 0;
 attr heapMonitor_Show = false;
 attr language = Default;
-attr profile = WIN32;
+attr profile = STM32F746;
 attr profilerMonitor_Show = false;
 attr search_CaseSensitive = false;
 attr search_IgnoreDescription = false;
@@ -42,20 +42,7 @@ view unit Application
   attr enableGrid = true;
   attr grid = 10;
   attr scrollTo = <-7,-7>;
-  attr zoom = 2.0;
-}
-
-view class Application::Dataplotter
-{
-  attr codeColSelect = false;
-  attr codeFirstPos = <0,0>;
-  attr codeInspector = Init;
-  attr codeSelEnd = <21,1>;
-  attr codeSelStart = <21,1>;
-  attr enableGrid = true;
-  attr grid = 10;
-  attr scrollTo = <-7,-7>;
-  attr zoom = 2.0;
+  attr zoom = 1.0;
 }
 
 view vclass Application::DataplotterWin32
