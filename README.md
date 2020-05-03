@@ -1,5 +1,5 @@
-Ventilator
-==========
+Ventilator FI5
+==============
 
 This repository is organized based upon the following multiple parallel (i.e. orphan in Git jargon) branches:
 - 🔘 [`master`](../../tree/master) contains the core design.
@@ -8,14 +8,16 @@ This repository is organized based upon the following multiple parallel (i.e. or
 - 🔘 [`ele`](../../tree/ele) contains electronics schematics.
 - 🔘 [`code`](../../tree/code) contains code.
 
-### Ventilator type - WIP
-The Ventilator is inspired by the MVM (Mechanical Ventilator Milano) design from [Galbiati et al. 2020](https://arxiv.org/abs/2003.10405)
+### Ventilator FI5
+The Ventilator is inspired by the MVM (Mechanical Ventilator Milano) design from [Galbiati et al. 2020](https://arxiv.org/abs/2003.10405).
 
 <p align="center">
-  <img src="./assets/mvm-diagram.png"/>
+  <a href=".design/covid_ventilator_scheme.pdf">
+  <img src="./assets/fi5-diagram.png"/>
+  </a>  
 </p>
 
-### Project objective - WIP
+### Project objective
 To build a [Rapidly manufactured ventilator system](https://www.gov.uk/government/publications/coronavirus-covid-19-ventilator-supply-specification/rapidly-manufactured-ventilator-system-specification) to be used only in extreme emergency situation under strict control of a doctor    
 
 ### 🔽 How to clone locally specific branches
