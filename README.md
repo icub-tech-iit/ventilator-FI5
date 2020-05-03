@@ -12,7 +12,7 @@ This repository is organized based upon the following multiple parallel (i.e. or
 The Ventilator is inspired by the MVM (Mechanical Ventilator Milano) design from [Galbiati et al. 2020](https://arxiv.org/abs/2003.10405).
 
 <p align="center">
-  <a href=".design/covid_ventilator_scheme.pdf">
+  <a href="./design/covid_ventilator_scheme.pdf">
   <img src="./assets/fi5-diagram.png"/>
   </a>  
 </p>
