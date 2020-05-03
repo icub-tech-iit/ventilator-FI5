@@ -9,7 +9,7 @@ This repository is organized based upon the following multiple parallel (i.e. or
 - 🔘 [`code`](../../tree/code) contains code.
 
 ### Ventilator FI5
-The Ventilator is inspired by the MVM (Mechanical Ventilator Milano) design from [Galbiati et al. 2020](https://arxiv.org/abs/2003.10405).
+The FI5 Ventilator is inspired by the MVM design from [Galbiati et al. 2020](https://arxiv.org/abs/2003.10405).
 
 <p align="center">
   <a href="./design/covid_ventilator_scheme.pdf">
@@ -22,7 +22,7 @@ To build a [Rapidly manufactured ventilator system](https://www.gov.uk/governmen
 
 ### 🔽 How to clone locally specific branches
 ```sh
-$ git clone https://github.com/icub-tech-iit/ventilator.git --branch <branch-name>
+$ git clone https://github.com/icub-tech-iit/ventilator-fi5.git --branch <branch-name>
 ```
 
 ### 👥 Contributors
