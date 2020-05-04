@@ -1188,7 +1188,7 @@ class Menubar : Core::Group
   object Views::Text Text3
   {
     preset Bounds = <395,0,485,20>;
-    preset String = "Tidal Volume(L)";
+    preset String = "Tidal Volume(ml)";
     preset Font = Resources::DefaultFont;
     preset Color = #CDCDCDFF;
   }
@@ -1253,14 +1253,14 @@ class Menubar : Core::Group
     }
   }
 
-  $rect <440,250,640,290>
-  property float TidalVolume = 0;
+  $rect <460,250,660,290>
+  property int32 TidalVolume = 0;
 
   // This method is intended to be called by the device to notify the GUI application \
   // about an alternation of its setting or state value.
   $rect <240,250,440,290>
   $output true
-  method void UpdateTidalVolume( arg float aNewValue )
+  method void UpdateTidalVolume( arg int32 aNewValue )
   {
     // Only if the reported value does differ from the one stored currently in the property.
     if ( aNewValue != pure TidalVolume )
@@ -1330,7 +1330,7 @@ class Menubar : Core::Group
   $rect <870,250,1070,290>
   slot onTidalVolumeChanged
   {
-    ValueDisplayTidalVolume.String = string(TidalVolume,0,2);
+    ValueDisplayTidalVolume.String = TidalVolume;
   }
 
   $rect <20,20,160,60>
@@ -1363,8 +1363,8 @@ class Menubar : Core::Group
   $rect <20,20,160,60>
   object Views::Text ValueDisplayTidalVolume
   {
-    preset Bounds = <397,23,491,63>;
-    preset String = "0.00";
+    preset Bounds = <393,23,487,63>;
+    preset String = "0000";
     preset Font = Resources::FontLarge;
     preset Color = #CDCDCDFF;
   }
@@ -25151,7 +25151,7 @@ vclass MenubarWin32 : Application::Menubar
   inherited object Text3
   {
     preset Bounds = <650,5,810,55>;
-    preset String = "Tidal Vol\n(L)";
+    preset String = "Tidal Vol\n(ml)";
     preset Font = Resources::FontMedium;
   }
 

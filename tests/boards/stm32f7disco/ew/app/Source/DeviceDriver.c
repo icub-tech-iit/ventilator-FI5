@@ -266,7 +266,7 @@ int iit_UpdateValues()
 					
 				ApplicationMenubar_UpdateInspExp( &(h->Menubar), asd);
 				ApplicationMenubar_UpdatePIP( &(h->Menubar), asd+2.0);
-				ApplicationMenubar_UpdateTidalVolume( &(h->Menubar), asd+3.0);
+				ApplicationMenubar_UpdateTidalVolume( &(h->Menubar), (asd+3.0)*1000);
 				ApplicationMenubar_UpdateRespRate( &(h->Menubar), asd+4.0);
         
     }
