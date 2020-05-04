@@ -1112,6 +1112,7 @@ class Menubar : Core::Group
   object WidgetSet::PushButton SettingsButton
   {
     preset Bounds = <0,0,80,34>;
+    preset OnActivate = onSettingsButton;
     preset Label = "Settings";
     preset Appearance = WidgetSet::PushButton_Small;
   }
@@ -1367,6 +1368,23 @@ class Menubar : Core::Group
     preset String = "0000";
     preset Font = Resources::FontLarge;
     preset Color = #CDCDCDFF;
+  }
+
+  $rect <240,390,440,430>
+  slot onSettingsButton
+  {
+
+    PresentDialog( SettingsDialog, null, null, null, null, null, null, null, null, false );
+
+    sender; /* the method is called from the sender object */
+  }
+
+  $rect <20,20,160,60>
+  object Application::SettingsDialog SettingsDialog
+  {
+    preset Bounds = <0,0,480,68>;
+    preset Enabled = true;
+    preset Visible = false;
   }
 
   $reorder Rectangle 94
@@ -25188,4 +25206,229 @@ vclass MenubarWin32 : Application::Menubar
 note group Note7
 {
   attr Bounds = <520,190,1040,360>;
+}
+
+$rect <770,230,970,270>
+$output false
+class SettingsDialog : Core::Group
+{
+  $rect <10,230,210,270>
+  inherited property Bounds = <0,204,480,272>;
+
+  $rect <10,380,210,420>
+  inherited method UpdateLayout()
+  {
+    // Always invoke the inherited method.
+    super( aSize );
+
+    /*
+
+      HINT:
+
+      This method exists for sophisticated layout calculation. Please note, that in 
+      most cases it is completely sufficient to use the views property 'Layout' to
+      determine how the view should behave when the component is resized.
+
+    */
+
+    /*
+
+      TO DO:
+
+      Put here the code to calculate new position and size of enclosed views. The
+      current (new) size of the component itself is passed in the parameter aSize.
+      For example:
+
+        SomeView.Bounds = rect( 10, 10, aSize.x - 20, aSize.y - 20 );
+
+    */
+  }
+
+  $rect <10,330,210,370>
+  inherited method UpdateViewState()
+  {
+    // Always invoke the inherited method.
+    super( aState );
+
+    /*
+
+      HINT 1:
+
+      This method is invoked automatically when the state set of the component has
+      been changed. The new state set can be found in the parameter aState.
+      Following are the important states:
+
+        Enabled   --> The component can react to user inputs.
+
+        Selected  --> The component is selected in context of its owner.
+
+        Focused   --> The component is selected in context of its owner and 
+                      the owner can react to keyboard events. In this manner the
+                      component is also able to react to keyboard events.
+
+        Modal     --> The component is modal. All events are redirected to this
+                      component.
+
+      To determine whether a state is currently active or not you have to test
+      the aState parameter. For example to test the 'Selected' state:
+
+        if ( aState.contains( Core::ViewState[ Selected ]))
+        {
+          ... yes, this component is currently selected.
+        }
+
+    */
+
+    /*
+
+      HINT 2:
+
+      Alternatively you can request this method invocation by executing explicitly
+      following code:
+
+
+        InvalidateViewState();
+
+    */
+      
+    /*
+
+      TO DO 1:
+
+      Put here the code to ensure that the visual aspect of the component does
+      reflect its current state. For example, depending on its 'Enabled' state
+      a component may appear with full colors or pale if it is disabled:
+
+        if ( aState.contains( Core::ViewState[ Enabled ]))
+        {
+          SomeBackgroundView.Opacity = 255;
+          SomeTextView.Color         = #000000FF;
+        }
+        else
+        {
+          SomeBackgroundView.Opacity = 128;
+          SomeTextView.Color         = #00000080;
+        }
+
+
+      TO DO 2:
+
+      You can evaluate here also the state of any other member in your component.
+      For example in a push-button component, the button should appear highlighted
+      as long as the user holds the finger within a touch area of the button:
+
+        if ( SomeTouchHandler.Down && SomeTouchHandler.Inside )
+          HighlightedBackground.Visible = true;
+        else
+          HighlightedBackground.Visible = false;
+
+      The touch handler itself only requests the update method to be called. Use
+      for this purpose 'InvalidateViewState()' method.
+
+
+      TO DO 3:
+
+      You can calculate here also the position/size of views accordingly to the
+      state of any other member in your component. For example in a slider you
+      can calculate the position of the slider knob from some properties like
+      'SliderValue' and 'SliderRange':
+
+        SliderKnob.Bounds.origin.x = ( SliderValue * Bounds.w ) / SliderRange;
+
+      Changing the 'SliderValue' or 'SliderRange' property should only request
+      the update method to be called. Use for this purpose 'InvalidateViewState()'
+      method.
+
+    */
+  }
+
+  $rect <20,20,160,60>
+  object Views::Rectangle Rectangle
+  {
+    preset Bounds = <0,0,480,68>;
+    preset Color = #000000FF;
+  }
+
+  $rect <20,20,160,60>
+  object Views::Text Text
+  {
+    preset Bounds = <73,13,413,53>;
+    preset String = "This is the settings dialog";
+    preset Font = Resources::FontLarge;
+  }
+
+  $rect <20,20,160,60>
+  object WidgetSet::PushButton ExitButton
+  {
+    preset Bounds = <455,3,475,23>;
+    preset OnActivate = onExitButton;
+    preset Label = "Caption";
+    preset Appearance = Application::PushButtonConfig;
+  }
+
+  $rect <10,280,210,320>
+  slot onExitButton
+  {
+    this.Owner.DismissDialog(this, null, null, null, null, null, false );
+    sender; /* the method is called from the sender object */
+  }
+}
+
+// This object contains configuration information for a push button widget.
+$rect <530,370,820,410>
+$output false
+autoobject WidgetSet::PushButtonConfig PushButtonConfig
+{
+  preset FaceLayout = Core::Layout[AlignToBottom, AlignToLeft, AlignToRight, AlignToTop];
+  preset FaceFrameActive = 1;
+  preset FaceFrameFocused = 0;
+  preset FaceFrameDefault = 0;
+  preset FaceActive = Application::ExitIcon;
+  preset FaceFocused = Application::ExitIcon;
+  preset FaceDefault = Application::ExitIcon;
+}
+
+// Assets
+note group Note2
+{
+  attr Bounds = <1050,10,1280,200>;
+}
+
+// This is a bitmap resource used in the application.
+$rect <1060,50,1270,90>
+$output false
+resource Resources::Bitmap ButtonFace
+{
+  attr bitmapfile FileName = .\Res\ButtonFace.png;
+  attr framesize FrameSize = <60,60>;
+  attr framedelay FrameDelay;
+  attr bitmapformat Format = Native;
+  attr bitmapdithering Dithering = Auto;
+  attr bitmapmode Mode = Default;
+}
+
+// This is a bitmap resource used in the application.
+$rect <1060,100,1270,140>
+$output false
+resource Resources::Bitmap ActionIcons
+{
+  attr bitmapfile FileName = .\Res\ActionButtonIcons.png;
+  attr framesize FrameSize = <60,60>;
+  attr framedelay FrameDelay;
+  attr bitmapformat Format = Native;
+  attr bitmapdithering Dithering = Auto;
+  attr bitmapmode Mode = Default;
+}
+
+// This is a bitmap resource used in the application.
+$rect <1060,150,1270,190>
+$output false
+resource Resources::Bitmap ExitIcon
+{
+  attr bitmapfile FileName = .\Res\ExitButton.png;
+  attr framesize FrameSize = <60,60>;
+  attr framedelay FrameDelay;
+  attr bitmapformat Format = Native;
+  attr bitmapdithering Dithering = Auto;
+  attr bitmapmode Mode = Default;
 }

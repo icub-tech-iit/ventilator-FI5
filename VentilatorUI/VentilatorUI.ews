@@ -1,12 +1,12 @@
 $version 1.0
 
-attr active = Application::Menubar;
+attr active = Application::SettingsDialog;
 attr callStackMonitor_Show = false;
 attr codeColSelect = false;
 attr codeFirstPos = <0,0>;
-attr codeInspector = Application::Menubar.onTidalVolumeChanged;
-attr codeSelEnd = <44,0>;
-attr codeSelStart = <44,0>;
+attr codeInspector = Application::SettingsDialog.onExitButton;
+attr codeSelEnd = <0,0>;
+attr codeSelStart = <0,0>;
 attr connectInspectors = false;
 attr debug_TrackUpdates = false;
 attr extractDoc_ClassOverview = true;
@@ -41,17 +41,17 @@ view unit Application
 {
   attr enableGrid = true;
   attr grid = 10;
-  attr scrollTo = <-7,-7>;
+  attr scrollTo = <497,-7>;
   attr zoom = 1.0;
 }
 
-view vclass Application::DataplotterWin32
+view class Application::SettingsDialog
 {
   attr codeColSelect = false;
   attr codeFirstPos = <0,0>;
-  attr codeInspector = onDraw;
-  attr codeSelEnd = <77,13>;
-  attr codeSelStart = <77,13>;
+  attr codeInspector = onExitButton;
+  attr codeSelEnd = <18,0>;
+  attr codeSelStart = <18,0>;
   attr enableGrid = true;
   attr grid = 10;
   attr scrollTo = <-7,-7>;
@@ -62,17 +62,9 @@ view class Application::Menubar
 {
   attr codeColSelect = false;
   attr codeFirstPos = <0,0>;
-  attr codeInspector = onTidalVolumeChanged;
-  attr codeSelEnd = <55,0>;
-  attr codeSelStart = <55,0>;
-  attr enableGrid = true;
-  attr grid = 10;
-  attr scrollTo = <313,-7>;
-  attr zoom = 1.0;
-}
-
-view vclass Application::MenubarWin32
-{
+  attr codeInspector = onSettingsButton;
+  attr codeSelEnd = <87,1>;
+  attr codeSelStart = <15,1>;
   attr enableGrid = true;
   attr grid = 10;
   attr scrollTo = <-7,-7>;
