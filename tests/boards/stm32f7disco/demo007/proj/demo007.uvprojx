@@ -335,7 +335,7 @@
             <v6WtE>0</v6WtE>
             <v6Rtti>0</v6Rtti>
             <VariousControls>
-              <MiscControls> -Wno-deprecated-register -DEW_SURFACE_ROTATION=0 -DEW_FRAME_BUFFER_COLOR_FORMAT=EW_FRAME_BUFFER_COLOR_FORMAT_RGB565</MiscControls>
+              <MiscControls> -Wno-deprecated-register -DEW_SURFACE_ROTATION=180 -DEW_FRAME_BUFFER_COLOR_FORMAT=EW_FRAME_BUFFER_COLOR_FORMAT_RGB565</MiscControls>
               <Define>USE_STM32HAL STM32HAL_BOARD_F7DISCO USE_STM32746G_DISCO EW_USE_EXTERNAL_FLASH=1 EW_BITMAP_PIXEL_SECTION_NAME=.SectionEwResource EW_FONT_PIXEL_SECTION_NAME=.SectionEwResource</Define>
               <Undefine></Undefine>
               <IncludePath>..\..\stm32hal\api;..\code\iit;..\code\matlab-removed;..\..\stm32f7-bsp\STM32746G-Discovery;..\..\osal\api;..\..\vnt\core;..\..\vnt\os;..\..\vnt\bsp;..\..\vnt\app;..\..\vnt\measure;..\code\controller\controller\controller_ert_rtw;..\code\controller\R2020a\simulink\include;..\..\vnt\tools;..\..\ew\TargetSpecific;..\..\ew\TargetSpecific\Drivers;..\..\ew\app\Source;..\..\ew\app\GeneratedCode;..\..\ew\PlatformPackage\RGB565;..\..\ew\PlatformPackage\RTE;..\..\ew\app\GeneratedCode\STM32F746;..\..\..\..\..\drivers</IncludePath>
