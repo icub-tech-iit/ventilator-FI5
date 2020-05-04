@@ -1,6 +1,7 @@
 classdef MapIndex < Simulink.IntEnumType
   enumeration
     Standard(1)
-    Test(2)
+    VCV(2)
+    Test(3)
   end
 end 
