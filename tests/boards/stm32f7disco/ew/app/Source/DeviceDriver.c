@@ -228,6 +228,44 @@ void DeviceDriver_Deinitialize( void )
 #include <stdio.h>
 #include "ewmain.h"
 #include "stdint.h"
+
+#define LATEST_CONTROL
+
+
+#if defined(LATEST_CONTROL)
+
+#include "app_tCTRLc.h"
+
+int iit_UpdateValues()
+{    
+    int ret = 0;
+    
+    GraphicValues_t gv = {0};
+    
+    if(0 == getvalues(&gv))
+    {
+        return ret;
+    }
+    
+    volatile ApplicationApplicationVariantSTM32 h = (ApplicationApplicationVariantSTM32)iit_ew_getSTM32handle();
+    if(h)
+    {
+        ret = 1;
+        
+        ApplicationDataplotter_onDraw(&(h->DataplotterPress), gv.plot1.val);       
+        ApplicationDataplotter_onDraw(&(h->DataplotterFlow), gv.plot2.val);              
+        ApplicationDataplotter_onDraw(&(h->DataplotterVTidal), gv.plot3.val);
+       
+		ApplicationMenubar_UpdateRespRate( &(h->Menubar), gv.val1);
+        ApplicationMenubar_UpdatePIP( &(h->Menubar), gv.val2);
+        ApplicationMenubar_UpdateInspExp( &(h->Menubar), gv.val3);
+        ApplicationMenubar_UpdateTidalVolume( &(h->Menubar), gv.val4);                
+    }
+    return ret;
+}
+
+#else
+
 int iit_UpdateValues()
 {    
     int ret = 0;
@@ -272,6 +310,8 @@ int iit_UpdateValues()
     }
     return ret;
 }
+
+#endif
 
 /*******************************************************************************
 * FUNCTION:
