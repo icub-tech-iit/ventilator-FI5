@@ -463,7 +463,9 @@ HAL_StatusTypeDef HAL_ADC_DeInit(ADC_HandleTypeDef* hadc)
   /* Return function status */
   return tmp_hal_status;
 }
-
+#if defined(EDL_DRIVER_CODE)
+#warning iit-icub-tech-ext: removed __weak HAL_ADC_MspInit()
+#else
 /**
   * @brief  Initializes the ADC MSP.
   * @param  hadc pointer to a ADC_HandleTypeDef structure that contains
@@ -478,7 +480,10 @@ __weak void HAL_ADC_MspInit(ADC_HandleTypeDef* hadc)
             the HAL_ADC_MspInit could be implemented in the user file
    */ 
 }
-
+#endif
+#if defined(EDL_DRIVER_CODE)
+#warning iit-icub-tech-ext: removed __weak HAL_ADC_MspDeInit()
+#else
 /**
   * @brief  DeInitializes the ADC MSP.
   * @param  hadc pointer to a ADC_HandleTypeDef structure that contains
@@ -493,6 +498,7 @@ __weak void HAL_ADC_MspDeInit(ADC_HandleTypeDef* hadc)
             the HAL_ADC_MspDeInit could be implemented in the user file
    */ 
 }
+#endif
 
 #if (USE_HAL_ADC_REGISTER_CALLBACKS == 1)
 /**

@@ -215,6 +215,9 @@ HAL_StatusTypeDef HAL_CRC_DeInit(CRC_HandleTypeDef *hcrc)
   return HAL_OK;
 }
 
+#if defined(EDL_DRIVER_CODE)
+#warning iit-icub-tech-ext: removed __weak HAL_CRC_MspInit()
+#else
 /**
   * @brief  Initializes the CRC MSP.
   * @param  hcrc CRC handle
@@ -229,7 +232,11 @@ __weak void HAL_CRC_MspInit(CRC_HandleTypeDef *hcrc)
             the HAL_CRC_MspInit can be implemented in the user file
    */
 }
+#endif
 
+#if defined(EDL_DRIVER_CODE)
+#warning iit-icub-tech-ext: removed __weak HAL_CRC_MspDeInit()
+#else
 /**
   * @brief  DeInitialize the CRC MSP.
   * @param  hcrc CRC handle
@@ -244,6 +251,7 @@ __weak void HAL_CRC_MspDeInit(CRC_HandleTypeDef *hcrc)
             the HAL_CRC_MspDeInit can be implemented in the user file
    */
 }
+#endif
 
 /**
   * @}

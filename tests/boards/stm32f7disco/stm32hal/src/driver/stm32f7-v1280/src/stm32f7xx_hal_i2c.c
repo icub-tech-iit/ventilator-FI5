@@ -615,6 +615,9 @@ HAL_StatusTypeDef HAL_I2C_DeInit(I2C_HandleTypeDef *hi2c)
   return HAL_OK;
 }
 
+#if defined(EDL_DRIVER_CODE)
+#warning iit-icub-tech-ext: removed __weak HAL_I2C_MspInit()
+#else
 /**
   * @brief Initialize the I2C MSP.
   * @param  hi2c Pointer to a I2C_HandleTypeDef structure that contains
@@ -630,7 +633,12 @@ __weak void HAL_I2C_MspInit(I2C_HandleTypeDef *hi2c)
             the HAL_I2C_MspInit could be implemented in the user file
    */
 }
+#endif
 
+
+#if defined(EDL_DRIVER_CODE)
+#warning iit-icub-tech-ext: removed __weak HAL_I2C_MspDeInit()
+#else
 /**
   * @brief DeInitialize the I2C MSP.
   * @param  hi2c Pointer to a I2C_HandleTypeDef structure that contains
@@ -646,6 +654,7 @@ __weak void HAL_I2C_MspDeInit(I2C_HandleTypeDef *hi2c)
             the HAL_I2C_MspDeInit could be implemented in the user file
    */
 }
+#endif
 
 #if (USE_HAL_I2C_REGISTER_CALLBACKS == 1)
 /**
@@ -4362,6 +4371,9 @@ void HAL_I2C_ER_IRQHandler(I2C_HandleTypeDef *hi2c)
   *                the configuration information for the specified I2C.
   * @retval None
   */
+#if defined(EDL_DRIVER_CODE)
+#warning iit-icub-tech-ext: removed __weak HAL_I2C_MasterTxCpltCallback()
+#else
 __weak void HAL_I2C_MasterTxCpltCallback(I2C_HandleTypeDef *hi2c)
 {
   /* Prevent unused argument(s) compilation warning */
@@ -4371,6 +4383,7 @@ __weak void HAL_I2C_MasterTxCpltCallback(I2C_HandleTypeDef *hi2c)
             the HAL_I2C_MasterTxCpltCallback could be implemented in the user file
    */
 }
+#endif
 
 /**
   * @brief  Master Rx Transfer completed callback.
@@ -4378,6 +4391,10 @@ __weak void HAL_I2C_MasterTxCpltCallback(I2C_HandleTypeDef *hi2c)
   *                the configuration information for the specified I2C.
   * @retval None
   */
+#if defined(EDL_DRIVER_CODE)
+#warning iit-icub-tech-ext: removed __weak HAL_I2C_MasterRxCpltCallback() 
+#else
+#warning iit-icub-tech-ext: you have a __weak HAL_I2C_MasterRxCpltCallback() 
 __weak void HAL_I2C_MasterRxCpltCallback(I2C_HandleTypeDef *hi2c)
 {
   /* Prevent unused argument(s) compilation warning */
@@ -4387,6 +4404,7 @@ __weak void HAL_I2C_MasterRxCpltCallback(I2C_HandleTypeDef *hi2c)
             the HAL_I2C_MasterRxCpltCallback could be implemented in the user file
    */
 }
+#endif
 
 /** @brief  Slave Tx Transfer completed callback.
   * @param  hi2c Pointer to a I2C_HandleTypeDef structure that contains
@@ -4493,6 +4511,9 @@ __weak void HAL_I2C_MemRxCpltCallback(I2C_HandleTypeDef *hi2c)
   *                the configuration information for the specified I2C.
   * @retval None
   */
+#if defined(EDL_DRIVER_CODE)
+#warning iit-icub-tech-ext: removed __weak HAL_I2C_ErrorCallback()
+#else
 __weak void HAL_I2C_ErrorCallback(I2C_HandleTypeDef *hi2c)
 {
   /* Prevent unused argument(s) compilation warning */
@@ -4502,6 +4523,7 @@ __weak void HAL_I2C_ErrorCallback(I2C_HandleTypeDef *hi2c)
             the HAL_I2C_ErrorCallback could be implemented in the user file
    */
 }
+#endif
 
 /**
   * @brief  I2C abort callback.

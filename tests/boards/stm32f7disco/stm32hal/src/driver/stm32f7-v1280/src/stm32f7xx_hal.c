@@ -194,12 +194,17 @@ HAL_StatusTypeDef HAL_DeInit(void)
   * @brief  Initialize the MSP.
   * @retval None
   */
+#if defined(EDL_DRIVER_CODE)
+// iit-icub-tech-ext  
+#warning iit-icub-tech-ext: removed __weak void HAL_MspInit()
+#else    
 __weak void HAL_MspInit(void)
 {
   /* NOTE : This function should not be modified, when the callback is needed,
             the HAL_MspInit could be implemented in the user file
    */
 }
+#endif
 
 /**
   * @brief  DeInitializes the MSP.

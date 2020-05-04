@@ -49,7 +49,7 @@ extern void stm32hal_board_init(void);
         //#include "../src/board/f7disco/v1280/inc/dma.h"
         //#include "../src/board/f7disco/v1280/inc/gpio.h"
         //#include "../src/board/f7disco/v1280/inc/i2c.h"
-        //#include "../src/board/f7disco/v1280/inc/main.h"
+        #include "../src/board/f7disco/v1280/inc/main.h"
         //#include "../src/board/f7disco/v1280/inc/usb_otg.h"
         //#include "../src/board/f7disco/v1280/inc/usart.h"
 

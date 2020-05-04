@@ -169,7 +169,8 @@ static int board_read_check(board_sensor_data_t* in_data);
 /****************************************************************/
 /* Exported functions declarations.                             */
 /****************************************************************/
-void i2c_xfer_completed(int retcode);
+// marco.accame: i remove it because it is already declared in board_driver.h 
+// void i2c_xfer_completed(int retcode);
 void encoder_changed(bool a, bool b, bool button);
 
 static const board_config_t s_board_config_default =
@@ -231,10 +232,10 @@ extern I2C_HandleTypeDef hi2c1;
 extern ADC_HandleTypeDef hadc3;
 
 static mcp23017_cfg_t gpio_cfg = {
-    .direction = 0x00FF,
+    .direction = 0x00FF,  // 1b is input. 0b is output. lsb is mounted connector.
     .pup = 0x00FF
 };
-
+#warning here is config of outputs. in mv. 
 static pwm_config_t pwm1_cfg = {
     .timer_frequency = 200000000,
     .pwm_frequency = 100000,
@@ -1152,7 +1153,8 @@ static int board_read_check(board_sensor_data_t* in_data)
 /****************************************************************/
 void i2c_xfer_completed(int retcode)
 {
-    int last = 1;
+    volatile int last = 1;
+    last = last;
 
     i2c_xfer_cb_data.index++;
     /* As long as we don't hit an error, and there are segments, keep on TXing */

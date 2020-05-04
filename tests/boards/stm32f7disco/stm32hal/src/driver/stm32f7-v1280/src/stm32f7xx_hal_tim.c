@@ -348,6 +348,9 @@ HAL_StatusTypeDef HAL_TIM_Base_DeInit(TIM_HandleTypeDef *htim)
   return HAL_OK;
 }
 
+#if defined(EDL_DRIVER_CODE)
+#warning iit-icub-tech-ext: removed __weak HAL_TIM_base_MspInit()
+#else
 /**
   * @brief  Initializes the TIM Base MSP.
   * @param  htim TIM Base handle
@@ -362,7 +365,11 @@ __weak void HAL_TIM_Base_MspInit(TIM_HandleTypeDef *htim)
             the HAL_TIM_Base_MspInit could be implemented in the user file
    */
 }
+#endif
 
+#if defined(EDL_DRIVER_CODE)
+#warning iit-icub-tech-ext: removed __weak HAL_TIM_Base_MspDeInit()
+#else
 /**
   * @brief  DeInitializes TIM Base MSP.
   * @param  htim TIM Base handle
@@ -377,7 +384,7 @@ __weak void HAL_TIM_Base_MspDeInit(TIM_HandleTypeDef *htim)
             the HAL_TIM_Base_MspDeInit could be implemented in the user file
    */
 }
-
+#endif
 
 /**
   * @brief  Starts the TIM Base generation.
