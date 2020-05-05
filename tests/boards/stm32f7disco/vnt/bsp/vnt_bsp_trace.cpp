@@ -30,7 +30,7 @@
 
 namespace vnt { namespace bsp { namespace trace {
     
-    bool _enabled {false};
+    bool _enabled {true};
     
     bool isenabled()
     {
