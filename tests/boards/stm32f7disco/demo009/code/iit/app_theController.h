@@ -17,6 +17,8 @@
 
 #include "vnt_core.h"
 
+#include "vnt_bsp_trace.h"
+
 #include "board_driver.h"
 
 #include <array>
@@ -66,6 +68,52 @@ namespace app {
     class theController
     {
     public:
+ 
+#if 0
+        inputs.S1_Pi = 0.F;         // S1 Pressure [code] (float)
+    inputs.S2_Qi = 0.F;         // S2 Flow Rate [code] (float)
+    inputs.S3_i[0] = 0.F;       // S3 Pressure [code] (float)
+    inputs.S3_i[1] = 0.F;       // S3 Temperature [code] (float)
+    inputs.S4_Pi = 0.F;         // S4 Pressure [code] (float)
+    inputs.S5_Qi = 0.F;         // S5 Flow Rate [code] (float)
+    inputs.S7_Pi = 0.F;         // S7 Pressure [code] (float)
+#endif    
+        struct Inp
+        {
+            float S1pressure {0};       // inputs.S1_Pi = 0.F;         // S1 Pressure [code] (float)
+            float S2flowrate {0};       // inputs.S2_Qi = 0.F;         // S2 Flow Rate [code] (float)
+            float S3pressure {0};       // inputs.S3_i[0] = 0.F;       // S3 Pressure [code] (float)
+            float S3temperature {0};    // inputs.S3_i[1] = 0.F;       // S3 Temperature [code] (float)
+            float S4pressure {0};       // inputs.S4_Pi = 0.F;         // S4 Pressure [code] (float)
+            float S5flowrate {0};       // inputs.S5_Qi = 0.F;         // S5 Flow Rate [code] (float)
+            float S7pressure {0};       // inputs.S7_Pi = 0.F;         // S7 Pressure [code] (float)
+                  
+            Inp() = default;
+            
+            void load(const board_sensor_data_t &sd)
+            {
+                S1pressure = sd.pressure2_raw;       // S1 Pressure [code] (float)
+                S2flowrate = sd.flow1_raw;           // S2 Flow Rate [code] (float)
+                S3pressure = sd.pressure4_raw;       // S3 Pressure [code] (float)
+                S3temperature = sd.temperature4_raw;    // S3 Temperature [code] (float)
+                S4pressure = sd.pressure3_raw;       // S4 Pressure [code] (float)
+                S5flowrate = sd.flow2_raw;           // S5 Flow Rate [code] (float)
+                S7pressure = sd.pressure1_raw;       // S7 Pressure [code] (float)
+            }
+    
+            void print() const
+            {
+                vnt::bsp::trace::puts(std::string("Inp:") +
+                                " .S1pressure = " + std::to_string(S1pressure) +
+                                " .S2flowrate = " + std::to_string(S2flowrate) +
+                                " .S3pressure = " + std::to_string(S3pressure) +
+                                " .S3temperature = " + std::to_string(S3temperature) +
+                                " .S4pressure = " + std::to_string(S4pressure) +
+                                " .S5flowrate = " + std::to_string(S5flowrate) +
+                                " .S7pressure = " + std::to_string(S7pressure) 
+                );
+            }
+        };
         
         struct Out
         {
@@ -83,6 +131,24 @@ namespace app {
             float estTidalVolume {0};   // outputs.signals[7];         // Tidal Volume estimates [L] (float)
             float assistedVentilTrigger {0}; //outputs.signals[8];         // Assisted Ventilation Trigger [-] (float)            
             Out() = default;
+            void print() const
+            {
+                vnt::bsp::trace::puts(std::string("Out:") +
+                                " .CPvalvePerc = " + std::to_string(CPvalvePerc) +
+                                " .CFBvalveON = " + std::to_string(CFBvalveON) +
+                                " .targetFlowRate = " + std::to_string(targetFlowRate) +
+                                " .targetPressure = " + std::to_string(targetPressure) +
+                                " .filtS1pressure = " + std::to_string(filtS1pressure) +
+                                " .S2flowrate = " + std::to_string(S2flowrate) +
+                                " .filtS3pressure = " + std::to_string(filtS3pressure) +
+                                " .S3temperature = " + std::to_string(S3temperature) +
+                                " .filtS4pressure = " + std::to_string(filtS4pressure) +   
+                                " .S5flowrate = " + std::to_string(S5flowrate) +    
+                                " .filtS7pressure = " + std::to_string(filtS7pressure) +    
+                                " .estTidalVolume = " + std::to_string(estTidalVolume) +    
+                                " .assistedVentilTrigger = " + std::to_string(assistedVentilTrigger)
+                );
+            }
         };
         
         struct Config
@@ -100,14 +166,17 @@ namespace app {
         
         bool set(Mode mode);
 
-        bool set(const Input &inp);
+        //bool set(const Input &inp);
+        
         bool set(const board_sensor_data_t &sd);
     
         bool tick();
 
-        const Output& get() const; 
+        //const Output& get() const; 
         
         const Out& getOut() const;
+        
+        const Inp& getInp() const;
 
     public:
         ~theController();

@@ -78,7 +78,33 @@ static void matlab_mode(int m)
     controller_Obj.setBlockParameters(&p); 
 }
 
-static void matlab_feed(const app::Input &inp)
+//static void matlab_feed(const app::Input &inp)
+//{
+////    controllerModelClass::ExtU_controller_T inputs;
+////    inputs.enable = true;
+////    inputs.IV_Vdot_fbk = 0.F;
+////    inputs.IV_P_fbk = (float)inp[0]; // assign the IV_P_fbk as input of the controller 
+////    inputs.params[0] = 0.F;
+////    inputs.params[1] = 160.F;
+////    controller_Obj.setExternalInputs(&inputs);   
+
+//    controllerModelClass::ExtU_controller_T inputs;
+//    inputs.enable = true;
+//    inputs.S1_Pi = inp[0];         // S1 Pressure [code] (float)
+//    inputs.S2_Qi = inp[1];         // S2 Flow Rate [code] (float)
+//    inputs.S3_i[0] = inp[2];       // S3 Pressure [code] (float)
+//    inputs.S3_i[1] = inp[3];       // S3 Temperature [code] (float)
+//    inputs.S4_Pi = inp[4];         // S4 Pressure [code] (float)
+//    inputs.S5_Qi = inp[5];         // S5 Flow Rate [code] (float)
+//    inputs.S7_Pi = inp[6];         // S7 Pressure [code] (float)
+//    inputs.params[0] = 50.F;    // Zephyr FS [SLPM] (float)
+//    inputs.params[1] = 160.F;   // HSC LP FS [mbar] (float)
+//    inputs.params[2] = 10000.F; // HSC HP FS [mbar] (float)
+//    controller_Obj.setExternalInputs(&inputs);   
+//}
+
+
+static void matlab_feed(const app::theController::Inp &inp)
 {
 //    controllerModelClass::ExtU_controller_T inputs;
 //    inputs.enable = true;
@@ -90,13 +116,13 @@ static void matlab_feed(const app::Input &inp)
 
     controllerModelClass::ExtU_controller_T inputs;
     inputs.enable = true;
-    inputs.S1_Pi = inp[0];         // S1 Pressure [code] (float)
-    inputs.S2_Qi = inp[1];         // S2 Flow Rate [code] (float)
-    inputs.S3_i[0] = inp[2];       // S3 Pressure [code] (float)
-    inputs.S3_i[1] = inp[3];       // S3 Temperature [code] (float)
-    inputs.S4_Pi = inp[4];         // S4 Pressure [code] (float)
-    inputs.S5_Qi = inp[5];         // S5 Flow Rate [code] (float)
-    inputs.S7_Pi = inp[6];         // S7 Pressure [code] (float)
+    inputs.S1_Pi = inp.S1pressure;         // S1 Pressure [code] (float)
+    inputs.S2_Qi = inp.S2flowrate;         // S2 Flow Rate [code] (float)
+    inputs.S3_i[0] = inp.S3pressure;       // S3 Pressure [code] (float)
+    inputs.S3_i[1] = inp.S3temperature;       // S3 Temperature [code] (float)
+    inputs.S4_Pi = inp.S4pressure;         // S4 Pressure [code] (float)
+    inputs.S5_Qi = inp.S5flowrate;         // S5 Flow Rate [code] (float)
+    inputs.S7_Pi = inp.S7pressure;         // S7 Pressure [code] (float)
     inputs.params[0] = 50.F;    // Zephyr FS [SLPM] (float)
     inputs.params[1] = 160.F;   // HSC LP FS [mbar] (float)
     inputs.params[2] = 10000.F; // HSC HP FS [mbar] (float)
@@ -108,29 +134,29 @@ static void matlab_tick()
     controller_Obj.step();
 }
 
-static void matlab_get(app::Output &out)
-{
-//    const controllerModelClass::ExtY_controller_T& outputs = controller_Obj.getExternalOutputs();
-//    out[0] = outputs.IV_dc;
-//    out[1] = outputs.IV_P_ref;
-//    out[2] = outputs.signals[1];
-//    out[3] = outputs.signals[2]; // P_hsc_filt(i)       
+//static void matlab_get(app::Output &out)
+//{
+////    const controllerModelClass::ExtY_controller_T& outputs = controller_Obj.getExternalOutputs();
+////    out[0] = outputs.IV_dc;
+////    out[1] = outputs.IV_P_ref;
+////    out[2] = outputs.signals[1];
+////    out[3] = outputs.signals[2]; // P_hsc_filt(i)       
 
-    const controllerModelClass::ExtY_controller_T& outputs = controller_Obj.getExternalOutputs();
-    out[0] = outputs.IV_dc;              // CP valve DC command [%] (float)
-    out[1] = outputs.OV_cmd;             // CFB valve ON/OFF command [-] (boolean)
-    out[2] = outputs.Q_ref;              // Target Flow Rate [L/min] (float)
-    out[3] = outputs.P_ref;              // Target Pressure [cmH2O] (float)
-    out[4] = outputs.signals[0];         // S1 Filtered Pressure [cmH2O] (float)
-    out[5] = outputs.signals[1];         // S2 Flow Rate [L/min] (float)
-    out[6] = outputs.signals[2];         // S3 Filtered Pressure [cmH2O] (float)
-    out[7] = outputs.signals[3];         // S3 Temperature [°C] (float)
-    out[8] = outputs.signals[4];         // S4 Filtered Pressure [cmH2O] (float)
-    out[9] = outputs.signals[5];         // S5 Flow Rate [L/min] (float)
-    out[10] = outputs.signals[6];         // S7 Filtered Pressure [cmH2O] (float)
-    out[11] = outputs.signals[7];         // Tidal Volume estimates [L] (float)
-    out[12] = outputs.signals[8];         // Assisted Ventilation Trigger [-] (float)   
-}
+//    const controllerModelClass::ExtY_controller_T& outputs = controller_Obj.getExternalOutputs();
+//    out[0] = outputs.IV_dc;              // CP valve DC command [%] (float)
+//    out[1] = outputs.OV_cmd;             // CFB valve ON/OFF command [-] (boolean)
+//    out[2] = outputs.Q_ref;              // Target Flow Rate [L/min] (float)
+//    out[3] = outputs.P_ref;              // Target Pressure [cmH2O] (float)
+//    out[4] = outputs.signals[0];         // S1 Filtered Pressure [cmH2O] (float)
+//    out[5] = outputs.signals[1];         // S2 Flow Rate [L/min] (float)
+//    out[6] = outputs.signals[2];         // S3 Filtered Pressure [cmH2O] (float)
+//    out[7] = outputs.signals[3];         // S3 Temperature [°C] (float)
+//    out[8] = outputs.signals[4];         // S4 Filtered Pressure [cmH2O] (float)
+//    out[9] = outputs.signals[5];         // S5 Flow Rate [L/min] (float)
+//    out[10] = outputs.signals[6];         // S7 Filtered Pressure [cmH2O] (float)
+//    out[11] = outputs.signals[7];         // Tidal Volume estimates [L] (float)
+//    out[12] = outputs.signals[8];         // Assisted Ventilation Trigger [-] (float)   
+//}
 
 
 static void matlab_get(app::theController::Out &out)
@@ -164,11 +190,13 @@ struct app::theController::Impl
     size_t _counter {0};
 
     Config _config {};
-    Input _input {0};
-    Output _output {0};
+//    Input _input {0};
+//    Output _output {0};
     
     theController::Out _out {};
-    
+    theController::Inp _inp {};  
+        
+        
     Impl()
     { 
          
@@ -185,18 +213,18 @@ struct app::theController::Impl
         return true;       
     }
 
-    bool set(const Input &inp)
-    {
-        _input = inp;
-        matlab_feed(_input);
-        
-        return true;
-    }
+//    bool set(const Input &inp)
+//    {
+//        _input = inp;
+//        matlab_feed(_input);
+//        
+//        return true;
+//    }
     
     bool set(const board_sensor_data_t &sd)
     {
-       fillCTRLinput(sd, _input);
-       matlab_feed(_input);
+       _inp.load(sd);
+       matlab_feed(_inp);
        return true; 
     }
     
@@ -209,23 +237,26 @@ struct app::theController::Impl
     bool tick()
     {
         matlab_tick();
-        matlab_get(_output);
         matlab_get(_out);
                 
         _counter++;
         return true;
     }
 
-    const Output& get() const
-    {
-       return _output; 
-    }    
+//    const Output& get() const
+//    {
+//       return _output; 
+//    }    
 
     const Out& getout() const
     {
        return _out; 
     }    
-                      
+
+    const Inp& getinp() const
+    {
+       return _inp; 
+    }       
 };
 
 
@@ -257,15 +288,16 @@ namespace app {
         return pImpl->init(cfg);
     } 
     
-    bool theController::set(const Input &inp)
-    {
-        return pImpl->set(inp);
-    }
+//    bool theController::set(const Input &inp)
+//    {
+//        return pImpl->set(inp);
+//    }
     
     bool theController::set(const board_sensor_data_t &sd)
     {
         return pImpl->set(sd);
     }
+
     
     bool theController::set(Mode mode)
     {
@@ -277,15 +309,21 @@ namespace app {
         return pImpl->tick();
     }
 
-    const Output& theController::get() const
-    {
-        return pImpl->get();
-    }
+//    const Output& theController::get() const
+//    {
+//        return pImpl->get();
+//    }
     
     const theController::Out& theController::getOut() const
     {
         return pImpl->getout();
     }
+
+    const theController::Inp& theController::getInp() const
+    {
+        return pImpl->getinp();
+    }    
+
     
 
 } // namespace app {

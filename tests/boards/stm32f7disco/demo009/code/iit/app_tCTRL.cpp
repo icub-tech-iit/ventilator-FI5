@@ -73,6 +73,19 @@ namespace app { namespace tCTRL {
 // - the code which specialises the thread CTRL
 //   i can put includes in here. it is not canonical but it more clear to show the actual dependencies
 
+struct printOptions
+{
+    uint32_t printDIVIDER {10};
+    bool enableBRDdriver {true};
+    bool enableCTRLinput {true};
+    bool enableCTRLoutput {true};    
+    constexpr printOptions(uint32_t dv, bool eBd, bool eCi, bool eCo) : printDIVIDER(dv), enableBRDdriver(eBd), enableCTRLinput(eCi), enableCTRLoutput(eCo) {}
+    
+    printOptions() = default;    
+};
+
+constexpr printOptions _printOPT {10, true, true, true};
+
 
 //#define TEST_CP_WAVEFORM
 
@@ -128,6 +141,50 @@ app::theController::Out latestCTRLout {0};
 vnt::os::Timer *timerTICK = nullptr;
     
 osal_mutex_t *mtx =  nullptr;
+
+
+void print(const board_sensor_data_t &sns)
+{
+    
+    char gpio[16] = {0};
+    snprintf(gpio, sizeof(gpio), "0x%x", sns.gpio);
+    char btns[16] = {0};
+    snprintf(btns, sizeof(btns), "0x%x", sns.buttons);
+    char rmsk[16] = {0};
+    snprintf(rmsk, sizeof(rmsk), "0x%x", sns.read_mask);
+    vnt::bsp::trace::puts(std::string("SNSdata:") +
+                    " .pressure1 = " + std::to_string(sns.pressure1) +
+                    " .pressure1_raw = " + std::to_string(sns.pressure1_raw) +
+                    " .pressure2 = " + std::to_string(sns.pressure2) +
+                    " .pressure2_raw = " + std::to_string(sns.pressure2_raw) +
+                    " .pressure3 = " + std::to_string(sns.pressure3) +
+                    " .pressure3_raw = " + std::to_string(sns.pressure3_raw) +
+                    " .pressure4 = " + std::to_string(sns.pressure4) +
+                    " .pressure4_raw = " + std::to_string(sns.pressure4_raw) +
+                    " .flow1 = " + std::to_string(sns.flow1) +
+                    " .flow1_raw = " + std::to_string(sns.flow1_raw) +
+                    " .flow2 = " + std::to_string(sns.flow2) +
+                    " .flow2_raw = " + std::to_string(sns.flow2_raw) +    
+                    " .o2 = " + std::to_string(sns.o2) +
+                    " .temperature1 = " + std::to_string(sns.temperature1) +
+                    " .temperature1_raw = " + std::to_string(sns.temperature1_raw) +
+                    " .temperature2 = " + std::to_string(sns.temperature2) +
+                    " .temperature2_raw = " + std::to_string(sns.temperature2_raw) +
+                    " .temperature3 = " + std::to_string(sns.temperature3) +
+                    " .temperature3_raw = " + std::to_string(sns.temperature3_raw) +    
+                    " .temperature4 = " + std::to_string(sns.temperature4) +
+                    " .temperature4_raw = " + std::to_string(sns.temperature4_raw) +    
+                    " .gpio = " + gpio +
+                    " .encoder = " + std::to_string(sns.encoder) +
+                    " .buttons = " + btns +
+                    " .analog_input[0] = " + std::to_string(sns.analog_input[0]) +
+                    " .analog_input[1] = " + std::to_string(sns.analog_input[1]) +
+                    " .analog_input[2] = " + std::to_string(sns.analog_input[2]) +
+                    " .analog_input[3] = " + std::to_string(sns.analog_input[3]) +
+                    " .read_mask = " + rmsk
+    );  
+    
+}
 
 void startup(vnt::os::Thread *t, void *param)
 {
@@ -195,6 +252,7 @@ void onevent(vnt::os::Thread *t, vnt::os::EventMask eventmask, void *param)
 
     if(true == vnt::core::binary::mask::check(eventmask, vnt::core::tointegral(EVT::dataready)))
     {
+        static uint32_t _tick = 0;
         
         times[2] = vnt::core::now();
                 
@@ -222,7 +280,25 @@ void onevent(vnt::os::Thread *t, vnt::os::EventMask eventmask, void *param)
         outdata.valve1 = static_cast<uint32_t>(5000.0*out.CPvalvePerc);
         outdata.valve2 = (true == out.CFBvalveON) ? (5000) : (0);
         outdata.gpio = 0;
-#endif        
+#endif   
+
+
+        if(0 == (_tick % _printOPT.printDIVIDER))
+        {
+            if(_printOPT.enableBRDdriver)
+            {
+                print(allinput);
+            }
+            if(_printOPT.enableCTRLinput)
+            {
+                const app::theController::Inp &inp = app::theController::getInstance().getInp();
+                inp.print();
+            }
+            if(_printOPT.enableCTRLoutput)
+            {
+                out.print();
+            }           
+        }
         
         int r = board_apply_actuation(&outdata);
         
@@ -231,7 +307,8 @@ void onevent(vnt::os::Thread *t, vnt::os::EventMask eventmask, void *param)
         std::memmove(&latestSNSdata, &allinput, sizeof(latestSNSdata));
         std::memmove(&latestCTRLout, &out, sizeof(latestCTRLout));
         osal_mutex_release(mtx);
-        
+      
+        _tick++;        
     }  
 
 
