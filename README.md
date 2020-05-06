@@ -41,5 +41,13 @@ $ git clone https://github.com/icub-tech-iit/ventilator-fi5.git --branch <branch
 | [<img src="https://github.com/fbiggi.png" width="40">](https://github.com/fbiggi) | Filippo Biggi | [@fbiggi](https://github.com/fbiggi) | [<img src="https://github.com/Gandoo.png" width="40">](https://github.com/Gandoo) | Davide Gandini | [@Gandoo](https://github.com/Gandoo) |
 | [<img src="https://github.com/emilianob80.png" width="40">](https://github.com/emilianob80) | Emiliano Barbieri | [@emilianob80](https://github.com/emilianob80) | [<img src="https://github.com/randaz81.png" width="40">](https://github.com/randaz81) | Marco Randazzo | [@randaz81](https://github.com/randaz81) |
 | [<img src="https://github.com/gpghiroldi.png" width="40">](https://github.com/gpghiroldi) | Gian Pietro Ghiroldi | [@gpghiroldi](https://github.com/gpghiroldi) | [<img src="https://github.com/marcoreds81.png" width="40">](https://github.com/marcoreds81) | Marco Rossi | [@marcoreds81](https://github.com/marcoreds81) |
+| [<img src="https://github.com/fiorisi.png" width="40">](https://github.com/fiorisi) | Luca Fiorio | [@fiorisi](https://github.com/fiorisi) | [<img src="https://github.com/marcellosavoldi.png" width="40">](https://github.com/marcellosavoldi) | Marcello Savoldi | [@marcellosavoldi](https://github.com/marcellosavoldi) |
+| [<img src="https://github.com/Miche19.png" width="40">](https://github.com/Miche19) | Simone Michelini | [@Miche19](https://github.com/Miche19) | [<img src="https://github.com/traversaro.png" width="40">](https://github.com/traversaro) | Silvio Traversaro | [@traversaro](https://github.com/traversaro) |
+| [<img src="https://github.com/Andreamenini68.png" width="40">](https://github.com/Andreamenini68) | Andrea Menini | [@Andreamenini68](https://github.com/Andreamenini68) | [<img src="https://github.com/zapparella.png" width="40">](https://github.com/zapparella) | Salvatore Zapparella | [@zapparella](https://github.com/zapparella) |
+| [<img src="https://github.com/silviacriscenzo.png" width="40">](https://github.com/silviacriscenzo) | Silvia Criscenzo | [@silviacriscenzo](https://github.com/silviacriscenzo) | [<img src="https://github.com/miggia.png" width="40">](https://github.com/miggia) | Alberto Parmiggiani | [@miggia](https://github.com/miggia) |
+| [<img src="https://github.com/silviacriscenzo.png" width="40">](https://github.com/silviacriscenzo) | Silvia Criscenzo | [@silviacriscenzo](https://github.com/silviacriscenzo) | [<img src="https://github.com/miggia.png" width="40">](https://github.com/miggia) | Alberto Parmiggiani | [@miggia](https://github.com/miggia) |
+| | Luca Rivano | | | Matteo Laffranchi | |
+| | Silvia Scarpetta | | | Marco Freddolini | |
+| | Roberto Puddu | | | Marco Pinaffo | |
+| | Carlo Tacchino | | | Marco Ghidini | |
 | | Simone Codeluppi | | | Alberto Mingotti | |
-| | Marco Ghidini | | |   | |
