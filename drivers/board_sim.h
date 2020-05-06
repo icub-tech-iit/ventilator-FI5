@@ -1,6 +1,10 @@
 #ifndef _IIT_BOARD_SIM_H_
 #define _IIT_BOARD_SIM_H_
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 #include <stdint.h>
 
 // Forward declarations
@@ -69,5 +73,9 @@ int board_sim_bus_write(int busId, int address, void* data, int size);
 int board_sim_bus_irq(int busId);
 int board_sim_bus_poll(int busId);
 int board_sim_bus_irq_handler(int busId, void (*handler)(int status));
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif // _IIT_BOARD_SIM_H_

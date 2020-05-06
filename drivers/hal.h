@@ -1,6 +1,10 @@
 #ifndef __HAL_H__
 #define __HAL_H__
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 #ifdef DEBUG_HAL
     #include <stdint.h>
 
@@ -151,6 +155,10 @@
 #include "stm32f7xx_hal_i2c.h"
 #endif
 
+#endif
+
+#ifdef __cplusplus
+}
 #endif
 
 #endif // __HAL_H__

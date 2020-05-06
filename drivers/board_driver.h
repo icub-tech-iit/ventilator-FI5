@@ -6,6 +6,8 @@ extern "C" {
 #endif
 
 #include <stdint.h>
+#include <stdbool.h>
+
 
 #define BOARD_PRESSURE_1        (0x0001)
 #define BOARD_PRESSURE_2        (0x0002)
@@ -141,6 +143,9 @@ int board_read_sensors(board_sensor_data_t* in_data);
 int board_read_sensors_async(board_sensor_data_t* in_data, board_read_callback_t read_completed);
 int board_apply_actuation(board_actuation_data_t* out_data);
 void i2c_xfer_completed(int retcode);
+
+void encoder_changed(bool a, bool b, bool button);
+void button_changed(int id, bool state);
 
 #ifdef __cplusplus
 }

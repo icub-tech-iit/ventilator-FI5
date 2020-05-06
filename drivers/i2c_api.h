@@ -1,6 +1,10 @@
 #ifndef __I2C_API_H__
 #define __I2C_API_H__
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 #include <stdint.h>
 
 typedef struct {
@@ -15,5 +19,9 @@ typedef struct {
 } i2c_xfer_list_t;
 
 typedef void (*i2c_xfer_cb_t)(int status, void *arg);
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif

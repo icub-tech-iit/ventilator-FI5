@@ -1,6 +1,10 @@
 #ifndef __I2C_MUX_H__
 #define __I2C_MUX_H__
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 #include <stdint.h>
 
 #include "i2c_api.h"
@@ -27,5 +31,9 @@ int i2c_mux_init(i2c_mux_handle_t* dev,
 
 int i2c_mux_channel_select(i2c_mux_handle_t* dev, int channel, i2c_mux_callback_t callback);
 int i2c_mux_reset(i2c_mux_handle_t* dev);
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif // __I2C_MUX_H__

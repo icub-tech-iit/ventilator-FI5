@@ -1,6 +1,10 @@
 #ifndef __DELAY_H__
 #define __DELAY_H__
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 #ifdef DEBUG_HAL
 /* MOCK */
 void mdelay(int ms);
@@ -11,6 +15,10 @@ void mdelay(int ms);
 #include "stm32f7xx_hal.h"
 #endif
 #define mdelay(ms) HAL_Delay(ms)
+#endif
+
+#ifdef __cplusplus
+}
 #endif
 
 #endif

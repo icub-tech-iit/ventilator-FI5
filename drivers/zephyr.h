@@ -1,6 +1,10 @@
 #ifndef __ZEPHYR_H__
 #define __ZEPHYR_H__
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 #include <stdbool.h>
 #include <stdint.h>
 #include "i2c_api.h"
@@ -26,5 +30,9 @@ int zephyr_read(zephyr_handle_t *h, uint16_t *flow, uint16_t *raw_flow,
 int zephyr_init(zephyr_handle_t *h,
 		int(*i2c_xfer)(i2c_xfer_list_t *xfers, int addr,
 			       i2c_xfer_cb_t i2c_xfer_cb, void *arg), int addr);
+                   
+#ifdef __cplusplus
+}
+#endif                   
 
 #endif

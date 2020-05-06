@@ -1,6 +1,10 @@
 #ifndef __MCP23017_H__
 #define __MCP23017_H__
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 #include <stdint.h>
 #include "i2c_api.h"
 
@@ -30,4 +34,9 @@ int mcp23017_config_device(mcp23017_handle_t *h, mcp23017_cfg_t *cfg);
 int mcp23017_init(mcp23017_handle_t *h,
 	     int(*i2c_xfer)(i2c_xfer_list_t *xfers, int addr,
 			     i2c_xfer_cb_t i2c_xfer_cb, void *arg), int addr);
+                 
+#ifdef __cplusplus
+}
+#endif
+                 
 #endif

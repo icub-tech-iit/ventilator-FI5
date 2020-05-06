@@ -1,6 +1,10 @@
 #ifndef __PWM_H__
 #define __PWM_H__
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 #include <stdint.h>
 
 #include "hal.h"
@@ -33,5 +37,8 @@ int pwm_start(pwm_handle_t* dev);
 int pwm_stop(pwm_handle_t* dev);
 int pwm_set(pwm_handle_t* dev, uint32_t target_mV);
 
+#ifdef __cplusplus
+}
+#endif
 
 #endif // __PWM_H__

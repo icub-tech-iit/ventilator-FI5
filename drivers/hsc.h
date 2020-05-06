@@ -1,6 +1,10 @@
 #ifndef __HSC_H__
 #define __HSC_H__
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 #include <stdbool.h>
 #include "i2c_api.h"
 
@@ -44,4 +48,9 @@ int hsc_config_device(hsc_handle_t *h, hsc_sensor_t *cfg);
 int hsc_init(hsc_handle_t *h,
 	     int(*i2c_xfer)(i2c_xfer_list_t *xfers, int addr,
 			     i2c_xfer_cb_t i2c_xfer_cb, void *arg), int addr);
+                 
+#ifdef __cplusplus
+}
+#endif                 
+                 
 #endif
