@@ -75,19 +75,20 @@ namespace app { namespace tCTRL {
 
 struct printOptions
 {
+    bool enabled {false};
     uint32_t printDIVIDER {10};
     bool enableBRDdriver {true};
     bool enableCTRLinput {true};
     bool enableCTRLoutput {true};    
-    constexpr printOptions(uint32_t dv, bool eBd, bool eCi, bool eCo) : printDIVIDER(dv), enableBRDdriver(eBd), enableCTRLinput(eCi), enableCTRLoutput(eCo) {}
+    constexpr printOptions(bool en, uint32_t dv, bool eBd, bool eCi, bool eCo) : enabled(en), printDIVIDER(dv), enableBRDdriver(eBd), enableCTRLinput(eCi), enableCTRLoutput(eCo) {}
     
     printOptions() = default;    
 };
 
-constexpr printOptions _printOPT {10, true, true, true};
+constexpr printOptions _printOPT {true, 100, true, false, false};
 
 
-//#define TEST_CP_WAVEFORM
+#define TEST_CP_WAVEFORM
 
 #include "vnt_bsp.h"
 #include "vnt_bsp_trace.h"
@@ -112,7 +113,7 @@ namespace app { namespace tCTRL {
 struct PercWaveform
 {
     uint32_t _t {0};
-    float _step {0.1};
+    float _step {1.0};
     
     float tick()
     {
@@ -181,6 +182,29 @@ void print(const board_sensor_data_t &sns)
                     " .analog_input[1] = " + std::to_string(sns.analog_input[1]) +
                     " .analog_input[2] = " + std::to_string(sns.analog_input[2]) +
                     " .analog_input[3] = " + std::to_string(sns.analog_input[3]) +
+                    " .read_mask = " + rmsk
+    );  
+    
+}
+
+void print_inputs(const board_sensor_data_t &sns)
+{
+    
+    char gpio[16] = {0};
+    snprintf(gpio, sizeof(gpio), "0x%x", sns.gpio);
+    char btns[16] = {0};
+    snprintf(btns, sizeof(btns), "0x%x", sns.buttons);
+    char rmsk[16] = {0};
+    snprintf(rmsk, sizeof(rmsk), "0x%x", sns.read_mask);
+    vnt::bsp::trace::puts(std::string("SNSdata:") +
+
+                    " .gpio = " + gpio +
+                    " .enc = " + std::to_string(sns.encoder) +
+                    " .btns = " + btns +
+                    " .ai[0] = " + std::to_string(sns.analog_input[0]) +
+                    " .ai[1] = " + std::to_string(sns.analog_input[1]) +
+                    " .ai[2] = " + std::to_string(sns.analog_input[2]) +
+                    " .ai[3] = " + std::to_string(sns.analog_input[3]) +
                     " .read_mask = " + rmsk
     );  
     
@@ -268,13 +292,25 @@ void onevent(vnt::os::Thread *t, vnt::os::EventMask eventmask, void *param)
         // apply the output.
         // must transform out into fileds of outdata;
 
-#if defined(TEST_CP_WAVEFORM)        
+#if defined(TEST_CP_WAVEFORM)   
+        static bool v2on = true;         
         float cp = percwave.tick();
         bool cfbON = true;
         outdata.buzzer = 5000; // magic number found inside boar_driver.c which is max value.
-        outdata.valve1 = static_cast<uint32_t>(5000.0*cp);
-        outdata.valve2 = (true == cfbON) ? (5000) : (0);
-        outdata.gpio = 0        
+        outdata.valve1 = static_cast<uint32_t>(5000.0*cp/100.0);
+//        outdata.valve2 = (true == cfbON) ? (5000) : (0);        
+//        outdata.valve2 = (true == cfbON) ? (2000) : (5000);
+
+//        if(cp == 100.0)
+//        {
+//            v2on = !v2on;
+//        }
+        // 2500 is open
+        // 0 is closed
+        outdata.valve2 = (true == v2on) ? 2500 : 0;
+
+        outdata.gpio = 0;   
+//        vnt::bsp::trace::puts(std::to_string(cp) + " v1 = " + std::to_string(outdata.valve1) + " v2 = " + std::to_string(outdata.valve2));
 #else                
         outdata.buzzer = 5000; // magic number found inside boar_driver.c which is max value.
         outdata.valve1 = static_cast<uint32_t>(5000.0*out.CPvalvePerc);
@@ -283,11 +319,12 @@ void onevent(vnt::os::Thread *t, vnt::os::EventMask eventmask, void *param)
 #endif   
 
 
-        if(0 == (_tick % _printOPT.printDIVIDER))
+        if((_printOPT.enabled) && (0 == (_tick % _printOPT.printDIVIDER)))
         {
             if(_printOPT.enableBRDdriver)
             {
-                print(allinput);
+                //print(allinput);
+                print_inputs(allinput);
             }
             if(_printOPT.enableCTRLinput)
             {
@@ -342,15 +379,27 @@ uint8_t getvalues(GraphicValues_t *gv)
     val4: tidal volume
     #endif
     
-    gv->plot1.val = app::tCTRL::latestSNSdata.pressure1;
-    gv->plot2.val = app::tCTRL::latestSNSdata.flow1;
-    gv->plot3.val = app::tCTRL::latestSNSdata.flow2;
-    gv->val1 = 0;
-    gv->val2 = -1;
-    gv->val3 = -2;
-    gv->val4 = -3;
+    constexpr float fac = 10;
+    
+//    gv->plot1.val = app::tCTRL::latestCTRLout.filtS7pressure;
+    gv->plot1.val = app::tCTRL::latestCTRLout.filtS1pressure;
+    gv->plot2.val = app::tCTRL::latestCTRLout.S2flowrate/3;
+    gv->plot3.val = app::tCTRL::latestCTRLout.filtS7pressure/1000;
+
+//    float v = app::tCTRL::latestCTRLout.S2flowrate;
+    
+//    gv->val1 = app::tCTRL::latestCTRLout.S2flowrate/fac;
+//    gv->val2 = app::tCTRL::latestSNSdata.flow2/fac;
+//    gv->val3 = app::tCTRL::latestCTRLout.S5flowrate/fac;
+//    gv->val4 = app::tCTRL::latestSNSdata.flow1/fac;
 
     osal_mutex_release(app::tCTRL::mtx);
+    
+//    static float max = -100000;
+//    static float min = +100000;
+//    if(v>max) max = v;
+//    if(v<min) min = v;
+//    gv->plot3.val = (v / 500) - 0.5;
     
     return 1;
 }
