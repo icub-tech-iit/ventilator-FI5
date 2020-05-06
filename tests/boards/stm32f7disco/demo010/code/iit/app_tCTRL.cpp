@@ -404,7 +404,7 @@ void onevent(vnt::os::Thread *t, vnt::os::EventMask eventmask, void *param)
         }
 #else
         outdata.buzzer = 5000; // magic number found inside boar_driver.c which is max value.
-        outdata.valve1 = static_cast<uint32_t>(5000.0*out.CPvalvePerc);
+        outdata.valve1 = static_cast<uint32_t>(5000.0*out.CPvalvePerc/100.0);
         outdata.valve2 = (true == out.CFBvalveON) ? (2500) : (500);
         outdata.gpio = 0;        
 #endif   
