@@ -29,7 +29,14 @@ extern "C" {
 #define BOARD_BUTTON_2          (0x0002)
 #define BOARD_BUTTON_3          (0x0004)
 #define BOARD_BUTTON_4          (0x0008)
-#define BOARD_BUTTON_NUMBER     (4)
+#define BOARD_BUTTON_ALARM      (0x0010)
+#define BOARD_BUTTON_NUMBER     (5)
+
+#define BOARD_LED_1             (0x00000001)
+#define BOARD_LED_2             (0x00000002)
+#define BOARD_LED_3             (0x00000004)
+#define BOARD_LED_4             (0x00000008)
+#define BOARD_LED_ALARM         (0x00010000)
 
 enum
 {
@@ -38,6 +45,7 @@ enum
     RC_SENSOR_ERROR,
     RC_BUS_ERROR,
     RC_PWM_ERROR,
+    RC_BUZZER_ERROR,
     RC_GPIO_ERROR,
     RC_NOT_INSTALLED_ERROR,
     RC_UNSUPPORTED_ERROR
@@ -109,7 +117,7 @@ typedef struct
     uint16_t temperature3_raw;
     int16_t temperature4;
     uint16_t temperature4_raw;
-    uint16_t gpio;
+    uint32_t gpio;
     int32_t encoder;
     uint32_t buttons;
     uint16_t analog_input[4];
@@ -121,7 +129,7 @@ typedef struct
     uint32_t valve1;
     uint32_t valve2;
     uint32_t buzzer;
-    uint16_t gpio;
+    uint32_t gpio;
 } board_actuation_data_t;
 
 typedef void (*board_read_callback_t)(int);

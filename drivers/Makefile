@@ -30,14 +30,16 @@ board_sim: directories
 	gcc -O0 -g -DDEBUG_HAL -c encoder.c -o build/encoder.o
 	gcc -O0 -g -DDEBUG_HAL -c button.c -o build/button.o
 	gcc -O0 -g -DDEBUG_HAL -c analog.c -o build/analog.o
+	gcc -O0 -g -DDEBUG_HAL -c buzzer.c -o build/buzzer.o
 	gcc -O0 -g -DDEBUG_HAL -c board_driver.c -o build/board_driver.o
 	gcc -O0 -g -DDEBUG_HAL -c hal.c -o build/hal.o
 	gcc -O0 -g -DDEBUG_HAL -c delay_mock.c -o build/delay_mock.o
 	gcc -O0 -g -DDEBUG_HAL -c board_sim.c -o build/board_sim.o
 	gcc -O0 -g -DDEBUG_HAL -c board_test.c -o build/board_test.o
 	gcc build/hsc.o build/i2c_mux.o build/pwm.o build/zephyr.o build/mcp23017.o \
-		build/encoder.o build/button.o build/analog.o build/board_driver.o \
-		build/hal.o build/delay_mock.o build/board_sim.o \
+		build/encoder.o build/button.o build/analog.o build/buzzer.o \
+		build/board_driver.o build/hal.o \
+		build/delay_mock.o build/board_sim.o \
 		build/board_test.o -o board_sim
 
 clean:

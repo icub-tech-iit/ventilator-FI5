@@ -9,6 +9,7 @@
 #include "encoder.h"
 #include "analog.h"
 #include "button.h"
+#include "buzzer.h"
 
 #include "access_once.h"
 
@@ -72,7 +73,6 @@ typedef struct
     // Actuator devices
     pwm_handle_t pwm_valve1;
     pwm_handle_t pwm_valve2;
-    pwm_handle_t pwm_buzzer;
 
     // Buttons
     button_handle_t buttons[BOARD_BUTTON_NUMBER];
@@ -92,6 +92,8 @@ typedef struct
     int16_t* temperature;
     float sensor_pressure;
     float sensor_temperature;
+
+    uint16_t gpio_value;
 } board_fsm_t;
 
 enum
@@ -108,9 +110,10 @@ enum
     BOARD_STATE_CHANNEL3,
     BOARD_STATE_PRESSURE4,
     BOARD_STATE_ANALOG,
-    BOARD_STATE_GPIO,
+    BOARD_STATE_GPIO_EXPANDER,
     BOARD_STATE_ENCODER,
     BOARD_STATE_BUTTONS,
+    BOARD_STATE_GPIO,
     BOARD_STATE_COMPLETED
 };
 
@@ -133,6 +136,7 @@ static int board_read_pressure(pressure_sensor_t* sensor,
 static int board_read_flow(zephyr_handle_t* sensor, uint16_t* flow, uint16_t *raw_flow);
 
 static int board_read_gpio_expander(mcp23017_handle_t* gpio_dev, uint16_t* value);
+static int board_read_gpio(uint32_t* value);
 
 static int board_read_encoder(encoder_handle_t* encoder_dev,
                               int32_t* tick,
@@ -143,6 +147,7 @@ static int board_read_analog(analog_handle_t* analog_dev,
                              uint16_t* analog_input);
 
 static int board_pressure_data_received(void);
+static int board_gpio_data_received(void);
 
 static void board_fsm_start(void);
 static void board_fsm_clear(int ret_code);
@@ -150,6 +155,7 @@ static void board_fsm_update(int status);
 
 static void board_read_completed_callback(int status);
 
+static int board_init_all(void);
 static int board_init_pressure_sensor(hsc_handle_t* sensor,
                                       device_config_t* config);
 static int board_init_flow_sensor(zephyr_handle_t* sensor,
@@ -163,6 +169,8 @@ static int board_init_flow_sensors(void);
 static int board_init_pwms(void);
 static int board_init_analog(void);
 static int board_init_buttons(void);
+
+static void board_buzzer_ret_code(int ret_code);
 
 static int board_read_check(board_sensor_data_t* in_data);
 
@@ -227,13 +235,12 @@ static board_fsm_t board_fsm;
 
 extern TIM_HandleTypeDef htim1;
 extern TIM_HandleTypeDef htim8;
-extern TIM_HandleTypeDef htim12;
 extern I2C_HandleTypeDef hi2c1;
 extern ADC_HandleTypeDef hadc3;
 
 static mcp23017_cfg_t gpio_cfg = {
-    .direction = 0x00FF,  // 1b is input. 0b is output. lsb is mounted connector.
-    .pup = 0x00FF
+    .direction = 0xFFF0,  // 1b is input. 0b is output. lsb is mounted connector.
+    .pup = 0xFFF0
 };
 #warning here is config of outputs. in mv. 
 static pwm_config_t pwm1_cfg = {
@@ -254,15 +261,6 @@ static pwm_config_t pwm2_cfg = {
     .input_voltage = 5000
 };
 
-static pwm_config_t pwm3_cfg = {
-    .timer_frequency = 25000000,
-    .pwm_frequency = 800,
-    .type = PWM_TYPE_DUAL,
-    .channel = 1,
-    .n_channel = 2,
-    .input_voltage = 5000
-};
-
 static i2c_xfer_cb_data_t i2c_xfer_cb_data =
 {
     .cb = 0,
@@ -278,53 +276,26 @@ volatile static int i2c_xfer_semaphore = 0;
 /****************************************************************/
 int board_init(const board_config_t* config)
 {
-    int ret_code;
+    int ret_code = RC_OK;
 
     if(NULL == config)
     {
         config = &s_board_config_default;
     }
 
+    // Initialize the buzzer and enable it
+    buzzer_init();
+
     // Store a copy of the board configuration
     memcpy(&board_dev.config, config, sizeof(board_config_t));
 
-    // Initialize the I2C mux device handles
-    i2c_mux_init(&board_dev.i2c_mux, i2c_xfer_async, I2C_MUX_ADDRESS);
+    // Initialize the HW
+    ret_code = board_init_all();
 
-    // Initialize the pressure sensors
-    ret_code = board_init_pressure_sensors();
-    if(ret_code != RC_OK)
-        return ret_code;
+    // Check the return code and play the buzzer
+    board_buzzer_ret_code(ret_code);
 
-    // Initialize the flow sensors
-    ret_code = board_init_flow_sensors();
-    if(ret_code != RC_OK)
-        return ret_code;
-
-    // Initialize the I2C GPIO expander
-    ret_code = board_init_gpio_expander(&board_dev.gpio_expander, &config->gpio_expander);
-    if(ret_code != RC_OK)
-        return ret_code;
-
-    // Initialize the encoder
-    encoder_init(&board_dev.encoder);
-
-    // Initialize the analogic acquisitions
-    ret_code = board_init_analog();
-    if(ret_code != RC_OK)
-        return ret_code;
-
-    // Initialize the PWM devices
-    ret_code = board_init_pwms();
-    if(ret_code != RC_OK)
-        return ret_code;
-
-    // Initialize buttons
-    ret_code = board_init_buttons();
-    if(ret_code != RC_OK)
-        return ret_code;
-
-    return RC_OK;
+    return ret_code;
 }
 
 int board_read_sensors(board_sensor_data_t* in_data)
@@ -372,24 +343,36 @@ int board_apply_actuation(board_actuation_data_t* out_data)
 {
     int ret_code;
 
+    // Set the valve 1 PWM duty cycle
     ret_code = pwm_set(&board_dev.pwm_valve1, out_data->valve1);
     if(ret_code != 0)
     {
         return RC_PWM_ERROR;
     }
 
+    // Set the valve 2 PWM duty cycle
     ret_code = pwm_set(&board_dev.pwm_valve2, out_data->valve2);
     if(ret_code != 0)
     {
         return RC_PWM_ERROR;
     }
 
-    ret_code = pwm_set(&board_dev.pwm_buzzer, out_data->buzzer);
-    if(ret_code != 0)
+    // Enable or disable the buzzer
+    if(out_data->buzzer)
     {
-        return RC_PWM_ERROR;
+        ret_code = buzzer_on();
+    }
+    else
+    {
+        ret_code = buzzer_off();
     }
 
+    if(ret_code != 0)
+    {
+        return RC_BUZZER_ERROR;
+    }
+
+    // Write the GPIO on the expander
     if(board_dev.config.gpio_expander.type != GPIO_EXPANDER_TYPE_NONE)
     {
         ret_code = mcp23017_write(&board_dev.gpio_expander, out_data->gpio, 0);
@@ -398,6 +381,9 @@ int board_apply_actuation(board_actuation_data_t* out_data)
             return RC_GPIO_ERROR;
         }
     }
+
+    // Write the local GPIOs
+    HAL_GPIO_WritePin(GPIOC, GPIO_PIN_6, (out_data->gpio & BOARD_LED_ALARM) ? GPIO_PIN_RESET : GPIO_PIN_SET);
 
     return RC_OK;
 }
@@ -554,6 +540,18 @@ static int board_read_gpio_expander(mcp23017_handle_t* gpio_dev, uint16_t* value
     return (result == 0) ? RC_OK : RC_SENSOR_ERROR;
 }
 
+static int board_read_gpio(uint32_t* value)
+{
+    GPIO_PinState pin = HAL_GPIO_ReadPin(GPIOC, GPIO_PIN_6);
+    
+    if(pin == GPIO_PIN_SET)
+        *value |= BOARD_LED_ALARM;
+    else
+        *value &= ~BOARD_LED_ALARM;
+    
+    return RC_OK;
+}
+
 static int board_read_encoder(encoder_handle_t* encoder_dev,
                               int32_t* tick,
                               uint32_t* button_mask)
@@ -615,6 +613,12 @@ static int board_pressure_data_received()
     return 0;
 }
 
+static int board_gpio_data_received()
+{
+    board_fsm.in_data->gpio |= ((uint32_t)(board_fsm.gpio_value) & 0x0000FFFF);
+    return 0;
+}
+
 static void board_fsm_start(void)
 {
     board_fsm.state = BOARD_STATE_CHANNEL0;
@@ -668,6 +672,11 @@ static void board_fsm_update(int status)
         case BOARD_STATE_ANALOG:
             // Process the pressure sensor 4 data
             ret_code = board_pressure_data_received();
+            break;
+
+        case BOARD_STATE_ENCODER:
+            // Process the data of the I2C GPIO expander 16 pins
+            ret_code = board_gpio_data_received();
             break;
 
         default:
@@ -812,11 +821,11 @@ static void board_fsm_update(int status)
                 }
                 break;
 
-            case BOARD_STATE_GPIO:
+            case BOARD_STATE_GPIO_EXPANDER:
                 if((board_fsm.in_data->read_mask & BOARD_GPIO) != 0)
                 {
                     ret_code = board_read_gpio_expander(&board_dev.gpio_expander,
-                                                &board_fsm.in_data->gpio);
+                                                        &board_fsm.gpio_value);
                     skip_state = 0;
                 }
                 break;
@@ -837,6 +846,13 @@ static void board_fsm_update(int status)
             case BOARD_STATE_BUTTONS:
                 // Read the buttons always
                 ret_code = board_read_buttons(&board_fsm.in_data->buttons);
+                // There's nothing to wait here so keep skipping
+                skip_state = 1;
+                break;
+
+            case BOARD_STATE_GPIO:
+                // Read the local GPIO pins always
+                ret_code = board_read_gpio(&board_fsm.in_data->gpio);
                 // There's nothing to wait here so keep skipping
                 skip_state = 1;
                 break;
@@ -873,6 +889,49 @@ static void board_read_completed_callback(int status)
     board_fsm.result = status;
 }
 
+static int board_init_all(void)
+{
+    int ret_code;
+
+    // Initialize the I2C mux device handles
+    i2c_mux_init(&board_dev.i2c_mux, i2c_xfer_async, I2C_MUX_ADDRESS);
+
+    // Initialize the pressure sensors
+    ret_code = board_init_pressure_sensors();
+    if(ret_code != RC_OK)
+        return ret_code;
+
+    // Initialize the flow sensors
+    ret_code = board_init_flow_sensors();
+    if(ret_code != RC_OK)
+        return ret_code;
+
+    // Initialize the I2C GPIO expander
+    ret_code = board_init_gpio_expander(&board_dev.gpio_expander,
+                                        &board_dev.config.gpio_expander);
+    if(ret_code != RC_OK)
+        return ret_code;
+
+    // Initialize the encoder
+    encoder_init(&board_dev.encoder);
+
+    // Initialize the analogic acquisitions
+    ret_code = board_init_analog();
+    if(ret_code != RC_OK)
+        return ret_code;
+
+    // Initialize the PWM devices
+    ret_code = board_init_pwms();
+    if(ret_code != RC_OK)
+        return ret_code;
+
+    // Initialize buttons
+    ret_code = board_init_buttons();
+    if(ret_code != RC_OK)
+        return ret_code;
+
+    return RC_OK;
+}
 
 static int board_init_pressure_sensor(hsc_handle_t* sensor,
                                       device_config_t* config)
@@ -1036,24 +1095,21 @@ static int board_init_pwms(void)
 {
     // Initialize the PWM drivers
     if((pwm_init(&board_dev.pwm_valve1, (void*)&htim1, &pwm1_cfg) != 0) ||
-       (pwm_init(&board_dev.pwm_valve2, (void*)&htim8, &pwm2_cfg) != 0) ||
-       (pwm_init(&board_dev.pwm_buzzer, (void*)&htim12, &pwm3_cfg) != 0))
+       (pwm_init(&board_dev.pwm_valve2, (void*)&htim8, &pwm2_cfg) != 0))
     {
         return RC_PWM_ERROR;
     }
 
     // Set to zero the PWM output voltage
     if((pwm_set(&board_dev.pwm_valve1, 0) != 0) ||
-       (pwm_set(&board_dev.pwm_valve2, 0) != 0) ||
-       (pwm_set(&board_dev.pwm_buzzer, 0) != 0))
+       (pwm_set(&board_dev.pwm_valve2, 0) != 0))
     {
         return RC_PWM_ERROR;
     }
 
     // Start the PWM channels
     if((pwm_start(&board_dev.pwm_valve1) != 0) ||
-       (pwm_start(&board_dev.pwm_valve2) != 0) ||
-       (pwm_start(&board_dev.pwm_buzzer) != 0))
+       (pwm_start(&board_dev.pwm_valve2) != 0))
     {
         return RC_PWM_ERROR;
     }
@@ -1086,6 +1142,27 @@ static int board_init_buttons(void)
     }
 
     return RC_OK;
+}
+
+static void board_buzzer_ret_code(int ret_code)
+{
+    // Check the return code and play the buzzer
+    if(ret_code == RC_OK)
+    {
+        buzzer_on();
+        HAL_Delay(200);
+        buzzer_off();
+    }
+    else
+    {
+        for(int i = 0; i < 3; ++i)
+        {
+            buzzer_on();
+            HAL_Delay(500);
+            buzzer_off();
+            HAL_Delay(500);
+        }
+    }
 }
 
 static int board_read_check(board_sensor_data_t* in_data)

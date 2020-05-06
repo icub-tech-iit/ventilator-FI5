@@ -78,11 +78,13 @@ void demo_loop(void)
 {
 	board_sensor_data_t in_data = {0};
 	int ret;
-	bool button_state[4];
+	bool button_state[5];
 	bool encoder_button = 0;
 	static int encoder_counter = 0;
 	static board_actuation_data_t out_data;
 	static int i = 0;
+
+    static int alarm_led = 0;
 
 	in_data.read_mask =
         BOARD_PRESSURE_1 | BOARD_PRESSURE_2 |
@@ -116,7 +118,7 @@ void demo_loop(void)
 	printf("flow (mSLPM) %d %d (raw) 0x%x 0x%x\r\n",
 	       in_data.flow1, in_data.flow2,
 	       in_data.flow1_raw, in_data.flow2_raw);
-	printf("GPIO 0x%x\r\n", in_data.gpio);
+	printf("GPIO 0x%08x\r\n", (unsigned int)in_data.gpio);
 
 	encoder_counter += in_data.encoder;
 	encoder_button = !!(in_data.buttons & BOARD_BUTTON_ENCODER);
@@ -124,6 +126,7 @@ void demo_loop(void)
     button_state[1] = !!(in_data.buttons & BOARD_BUTTON_2);
     button_state[2] = !!(in_data.buttons & BOARD_BUTTON_3);
     button_state[3] = !!(in_data.buttons & BOARD_BUTTON_4);
+    button_state[4] = !!(in_data.buttons & BOARD_BUTTON_ALARM);
 
 	printf("Encoder %d(%d) %d\r\n", encoder_counter, (int)in_data.encoder, (int)encoder_button);
 
@@ -140,17 +143,27 @@ void demo_loop(void)
 	       button_state[2],
 	       button_state[3]);
 
-	out_data.gpio = 1 << (i+8);
+	printf("Alarm reset clear %d\r\n", button_state[4] ? 1: 0);
+
+	out_data.gpio = 1 << (i);
+
+    if(alarm_led < 2)
+    {
+        out_data.gpio |= BOARD_LED_ALARM;
+    }
+
 	out_data.valve1 = 1000;
 	out_data.valve2 = 1500;
-	out_data.buzzer = 2000;
+	out_data.buzzer = 0;
 	ret = board_apply_actuation(&out_data);
-	printf("actuation 0x%x ret %d\r\n\r\n", out_data.gpio, ret);
-	if (i == 7) {
+	printf("actuation 0x%08x ret %d\r\n\r\n", (unsigned int)out_data.gpio, ret);
+	if (i == 3) {
 		i = 0;
 	} else {
 		i++;
 	}
+
+	alarm_led = (alarm_led + 1) % 4;
 
 	HAL_Delay(500);
 }

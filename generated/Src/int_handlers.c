@@ -42,6 +42,10 @@ void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin)
 	case GPIO_PIN_6:
 		button_changed(4, GPIO_PIN_RESET == HAL_GPIO_ReadPin(GPIOG, GPIO_PIN_6));
 		break;
+
+	case GPIO_PIN_3:
+		button_changed(5, GPIO_PIN_RESET == HAL_GPIO_ReadPin(GPIOI, GPIO_PIN_3));
+		break;
 	}
 }
 
