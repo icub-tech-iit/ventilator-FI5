@@ -8,8 +8,6 @@
 #include "stm32f7xx_hal.h"
 #endif
 
-extern void encoder_changed(bool a, bool b, bool button);
-extern void button_changed(int id, bool state);
 
 void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin)
 {
