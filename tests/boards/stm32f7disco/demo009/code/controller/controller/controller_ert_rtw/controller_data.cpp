@@ -7,9 +7,9 @@
 //
 // Code generated for Simulink model 'controller'.
 //
-// Model version                  : 1.444
+// Model version                  : 1.448
 // Simulink Coder version         : 9.3 (R2020a) 18-Nov-2019
-// C/C++ source code generated on : Sat May  2 11:21:40 2020
+// C/C++ source code generated on : Tue May  5 16:02:29 2020
 //
 // Target selection: ert.tlc
 // Embedded hardware selection: Intel->x86-64 (Windows64)
@@ -371,7 +371,7 @@ controllerModelClass::P_controller_T controllerModelClass::controller_P = {
   // Computed Parameter: Gain1_Gain_h
   //  Referenced by: '<S14>/Gain1'
 
-  1.25F,
+  2.5F,
 
   // Computed Parameter: Gain_Gain_p
   //  Referenced by: '<S15>/Gain'
@@ -386,7 +386,7 @@ controllerModelClass::P_controller_T controllerModelClass::controller_P = {
   // Computed Parameter: Gain1_Gain_n
   //  Referenced by: '<S15>/Gain1'
 
-  1.25F,
+  2.5F,
 
   // Computed Parameter: cmH2O_Gain
   //  Referenced by: '<S1>/cmH2O'
@@ -438,17 +438,17 @@ controllerModelClass::P_controller_T controllerModelClass::controller_P = {
 
   0.0F,
 
-  // Computed Parameter: Gain_Gain_n
+  // Computed Parameter: Gain_Gain_m1
   //  Referenced by: '<S13>/Gain'
 
   6.10351563E-5F,
 
-  // Computed Parameter: Bias_Bias_f
+  // Computed Parameter: Bias_Bias_p
   //  Referenced by: '<S13>/Bias'
 
   -0.1F,
 
-  // Computed Parameter: Gain1_Gain_l
+  // Computed Parameter: Gain1_Gain_c
   //  Referenced by: '<S13>/Gain1'
 
   1.25F,

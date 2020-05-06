@@ -7,9 +7,9 @@
 //
 // Code generated for Simulink model 'controller'.
 //
-// Model version                  : 1.444
+// Model version                  : 1.448
 // Simulink Coder version         : 9.3 (R2020a) 18-Nov-2019
-// C/C++ source code generated on : Sat May  2 11:21:40 2020
+// C/C++ source code generated on : Tue May  5 16:02:29 2020
 //
 // Target selection: ert.tlc
 // Embedded hardware selection: Intel->x86-64 (Windows64)
@@ -385,13 +385,13 @@ class controllerModelClass {
                              // Computed Parameter: UnitDelay_InitialCondition_g
                                 //  Referenced by: '<S1>/Unit Delay'
 
-    real32_T Gain_Gain_n;              // Computed Parameter: Gain_Gain_n
+    real32_T Gain_Gain_m1;             // Computed Parameter: Gain_Gain_m1
                                           //  Referenced by: '<S13>/Gain'
 
-    real32_T Bias_Bias_f;              // Computed Parameter: Bias_Bias_f
+    real32_T Bias_Bias_p;              // Computed Parameter: Bias_Bias_p
                                           //  Referenced by: '<S13>/Bias'
 
-    real32_T Gain1_Gain_l;             // Computed Parameter: Gain1_Gain_l
+    real32_T Gain1_Gain_c;             // Computed Parameter: Gain1_Gain_c
                                           //  Referenced by: '<S13>/Gain1'
 
     real32_T UnitDelay3_InitialCondition;

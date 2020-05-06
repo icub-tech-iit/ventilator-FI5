@@ -7,9 +7,9 @@
 //
 // Code generated for Simulink model 'controller'.
 //
-// Model version                  : 1.444
+// Model version                  : 1.448
 // Simulink Coder version         : 9.3 (R2020a) 18-Nov-2019
-// C/C++ source code generated on : Sat May  2 11:21:40 2020
+// C/C++ source code generated on : Tue May  5 16:02:29 2020
 //
 // Target selection: ert.tlc
 // Embedded hardware selection: Intel->x86-64 (Windows64)
@@ -176,21 +176,30 @@ void controllerModelClass::step()
     //   Inport: '<Root>/params'
     //   Product: '<S14>/Product'
     //   Product: '<S15>/Product'
+    //   Sum: '<S14>/Sum'
+    //   Sum: '<S15>/Sum'
     //   UnitDelay: '<S1>/Unit Delay1'
 
-    rtb_cmH2O_idx_0 = (controller_P.Gain_Gain * controller_DW.UnitDelay1_DSTATE
-                       [0] + controller_P.Bias_Bias) * controller_U.params[1] *
-      controller_P.Gain1_Gain_h * controller_P.cmH2O_Gain;
-    rtb_cmH2O_idx_1 = (controller_P.Gain_Gain * controller_DW.UnitDelay1_DSTATE
-                       [1] + controller_P.Bias_Bias) * controller_U.params[1] *
-      controller_P.Gain1_Gain_h * controller_P.cmH2O_Gain;
-    rtb_cmH2O_idx_2 = (controller_P.Gain_Gain * controller_DW.UnitDelay1_DSTATE
-                       [2] + controller_P.Bias_Bias) * controller_U.params[1] *
-      controller_P.Gain1_Gain_h * controller_P.cmH2O_Gain;
-    rtb_cmH2O_idx_3 = (controller_P.Gain_Gain_p *
-                       controller_DW.UnitDelay1_DSTATE[3] +
-                       controller_P.Bias_Bias_h) * controller_U.params[2] *
-      controller_P.Gain1_Gain_n * controller_P.cmH2O_Gain;
+    rtb_cmH2O_idx_0 = ((controller_P.Gain_Gain *
+                        controller_DW.UnitDelay1_DSTATE[0] +
+                        controller_P.Bias_Bias) * controller_U.params[1] *
+                       controller_P.Gain1_Gain_h - controller_U.params[1]) *
+      controller_P.cmH2O_Gain;
+    rtb_cmH2O_idx_1 = ((controller_P.Gain_Gain *
+                        controller_DW.UnitDelay1_DSTATE[1] +
+                        controller_P.Bias_Bias) * controller_U.params[1] *
+                       controller_P.Gain1_Gain_h - controller_U.params[1]) *
+      controller_P.cmH2O_Gain;
+    rtb_cmH2O_idx_2 = ((controller_P.Gain_Gain *
+                        controller_DW.UnitDelay1_DSTATE[2] +
+                        controller_P.Bias_Bias) * controller_U.params[1] *
+                       controller_P.Gain1_Gain_h - controller_U.params[1]) *
+      controller_P.cmH2O_Gain;
+    rtb_cmH2O_idx_3 = ((controller_P.Gain_Gain_p *
+                        controller_DW.UnitDelay1_DSTATE[3] +
+                        controller_P.Bias_Bias_h) * controller_U.params[2] *
+                       controller_P.Gain1_Gain_n - controller_U.params[2]) *
+      controller_P.cmH2O_Gain;
 
     // MATLABSystem: '<S1>/HSC LP'
     if (controller_DW.obj.FilterObj->isInitialized != 1) {
@@ -396,10 +405,10 @@ void controllerModelClass::step()
     //   Product: '<S2>/Product'
     //   UnitDelay: '<S1>/Unit Delay'
 
-    rtb_cmH2O_idx_3 = (controller_P.Gain_Gain_n *
+    rtb_cmH2O_idx_3 = (controller_P.Gain_Gain_m1 *
                        controller_DW.UnitDelay_DSTATE_m[0] +
-                       controller_P.Bias_Bias_f) * controller_U.params[0] *
-      controller_P.Gain1_Gain_l * rtb_Divide * rtb_Divide1;
+                       controller_P.Bias_Bias_p) * controller_U.params[0] *
+      controller_P.Gain1_Gain_c * rtb_Divide * rtb_Divide1;
 
     // Outputs for Enabled SubSystem: '<S1>/Compute Trigger' incorporates:
     //   EnablePort: '<S8>/Enable'
@@ -437,10 +446,10 @@ void controllerModelClass::step()
     //   Product: '<S2>/Product1'
     //   UnitDelay: '<S1>/Unit Delay'
 
-    rtb_cmH2O_idx_2 = (controller_P.Gain_Gain_n *
+    rtb_cmH2O_idx_2 = (controller_P.Gain_Gain_m1 *
                        controller_DW.UnitDelay_DSTATE_m[1] +
-                       controller_P.Bias_Bias_f) * controller_U.params[0] *
-      controller_P.Gain1_Gain_l * rtb_Divide * rtb_Divide1 *
+                       controller_P.Bias_Bias_p) * controller_U.params[0] *
+      controller_P.Gain1_Gain_c * rtb_Divide * rtb_Divide1 *
       controller_P.Gain_Gain_e;
 
     // RelationalOperator: '<S4>/Compare' incorporates:
