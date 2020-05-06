@@ -1,12 +1,12 @@
 $version 1.0
 
-attr active = Application::SettingsDialog;
+attr active = Application;
 attr callStackMonitor_Show = false;
 attr codeColSelect = false;
 attr codeFirstPos = <0,0>;
-attr codeInspector = Application::SettingsDialog.onExitButton;
-attr codeSelEnd = <0,0>;
-attr codeSelStart = <0,0>;
+attr codeInspector = Application::Menubar.onSettingsButton;
+attr codeSelEnd = <0,1>;
+attr codeSelStart = <0,1>;
 attr connectInspectors = false;
 attr debug_TrackUpdates = false;
 attr extractDoc_ClassOverview = true;
@@ -41,19 +41,6 @@ view unit Application
 {
   attr enableGrid = true;
   attr grid = 10;
-  attr scrollTo = <497,-7>;
-  attr zoom = 1.0;
-}
-
-view class Application::SettingsDialog
-{
-  attr codeColSelect = false;
-  attr codeFirstPos = <0,0>;
-  attr codeInspector = onExitButton;
-  attr codeSelEnd = <18,0>;
-  attr codeSelStart = <18,0>;
-  attr enableGrid = true;
-  attr grid = 10;
   attr scrollTo = <-7,-7>;
   attr zoom = 1.0;
 }
@@ -63,8 +50,16 @@ view class Application::Menubar
   attr codeColSelect = false;
   attr codeFirstPos = <0,0>;
   attr codeInspector = onSettingsButton;
-  attr codeSelEnd = <87,1>;
-  attr codeSelStart = <15,1>;
+  attr codeSelEnd = <0,1>;
+  attr codeSelStart = <0,1>;
+  attr enableGrid = true;
+  attr grid = 10;
+  attr scrollTo = <-7,-7>;
+  attr zoom = 1.0;
+}
+
+view vclass Application::MenubarSTM32
+{
   attr enableGrid = true;
   attr grid = 10;
   attr scrollTo = <-7,-7>;

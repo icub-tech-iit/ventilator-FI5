@@ -1373,7 +1373,6 @@ class Menubar : Core::Group
   $rect <240,390,440,430>
   slot onSettingsButton
   {
-
     PresentDialog( SettingsDialog, null, null, null, null, null, null, null, null, false );
 
     sender; /* the method is called from the sender object */
@@ -24788,7 +24787,20 @@ vclass DataplotterSTM32 : Application::Dataplotter;
 
 $rect <580,130,780,170>
 $variant STM32F746
-vclass MenubarSTM32 : Application::Menubar;
+vclass MenubarSTM32 : Application::Menubar
+{
+  $rect <20,20,160,60>
+  inherited object PCVButton
+  {
+    preset Label = "PRCV";
+  }
+
+  $rect <20,20,160,60>
+  inherited object SettingsDialog
+  {
+    preset Bounds = <0,0,480,68>;
+  }
+}
 
 $rect <20,90,220,130>
 $variant WIN32
@@ -25124,6 +25136,7 @@ vclass MenubarWin32 : Application::Menubar
   inherited object PCVButton
   {
     preset Bounds = <133,80,266,160>;
+    preset Label = "PRCV";
     preset Appearance = WidgetSet::PushButton_Medium;
   }
 
