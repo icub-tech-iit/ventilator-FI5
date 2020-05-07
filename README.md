@@ -29,7 +29,7 @@ $ git clone https://github.com/icub-tech-iit/ventilator-fi5.git --branch <branch
 
 | | | | | | |
 |:---:|:---|:---|:---:|:---|:---|
-| [<img src="https://github.com/maggia80.png" width="40">](https://github.com/maggia80) | Marco Maggiali | [@maggia80](https://github.com/maggia80) | | Corrado Onorato | |
+| [<img src="https://github.com/maggia80.png" width="40">](https://github.com/maggia80) | Marco Maggiali | [@maggia80](https://github.com/maggia80) | [<img src="https://github.com/CorradoOnorato.png" width="40">](https://github.com/CorradoOnorato) | Corrado Onorato | [@CorradoOnorato](https://github.com/CorradoOnorato) |
 | [<img src="https://github.com/pattacini.png" width="40">](https://github.com/pattacini) | Ugo Pattacini | [@pattacini](https://github.com/pattacini) | [<img src="https://github.com/vtikha.png" width="40">](https://github.com/vtikha) | Vadim Tikhanoff | [@vtikha](https://github.com/vtikha) |
 | [<img src="https://github.com/MrAndrea.png" width="40">](https://github.com/MrAndrea) | Andrea Mura | [@MrAndrea](https://github.com/MrAndrea) | [<img src="https://github.com/Fabrizio69.png" width="40">](https://github.com/Fabrizio69) | Fabrizo Larosa | [@Fabrizio69](https://github.com/Fabrizio69) |
 | [<img src="https://github.com/claudiolorini.png" width="40">](https://github.com/claudiolorini) | Claudio Lorini | [@claudiolorini](https://github.com/claudiolorini) | [<img src="https://github.com/marcoaccame.png" width="40">](https://github.com/marcoaccame) | Marco Accame | [@marcoaccame](https://github.com/marcoaccame) |
@@ -45,7 +45,8 @@ $ git clone https://github.com/icub-tech-iit/ventilator-fi5.git --branch <branch
 | [<img src="https://github.com/Miche19.png" width="40">](https://github.com/Miche19) | Simone Michelini | [@Miche19](https://github.com/Miche19) | [<img src="https://github.com/traversaro.png" width="40">](https://github.com/traversaro) | Silvio Traversaro | [@traversaro](https://github.com/traversaro) |
 | [<img src="https://github.com/Andreamenini68.png" width="40">](https://github.com/Andreamenini68) | Andrea Menini | [@Andreamenini68](https://github.com/Andreamenini68) | [<img src="https://github.com/zapparella.png" width="40">](https://github.com/zapparella) | Salvatore Zapparella | [@zapparella](https://github.com/zapparella) |
 | [<img src="https://github.com/silviacriscenzo.png" width="40">](https://github.com/silviacriscenzo) | Silvia Criscenzo | [@silviacriscenzo](https://github.com/silviacriscenzo) | [<img src="https://github.com/miggia.png" width="40">](https://github.com/miggia) | Alberto Parmiggiani | [@miggia](https://github.com/miggia) |
-| | Luca Rivano | | | Matteo Laffranchi | |
+| [<img src="https://github.com/LucaBrunatto.png" width="40">](https://github.com/LucaBrunatto) | Luca Brunatto | [@LucaBrunatto](https://github.com/LucaBrunatto) | [<img src="https://github.com/mgentili81.png" width="40">](https://github.com/mgentili81) | Marco Gentili | [@mgentili81](https://github.com/mgentili81) |
+| | Luca Rivano | | [<img src="https://github.com/mlaffranchi.png" width="40">](https://github.com/mlaffranchi) | Matteo Laffranchi | [@mlaffranchi](https://github.com/mlaffranchi) |
 | | Silvia Scarpetta | | | Marco Freddolini | |
 | | Roberto Puddu | | | Marco Pinaffo | |
 | | Carlo Tacchino | | | Marco Ghidini | |
