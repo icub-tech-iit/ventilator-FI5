@@ -28,6 +28,7 @@
 // to use another rtos, maybe certified for security such as SafeRTOS, change the calls with osal_
 #include "osal.h"
 
+#include "osal_system.h"
 
 // --------------------------------------------------------------------------------------------------------------------
 // - pimpl: private implementation (see scott meyers: item 22 of effective modern c++, item 31 of effective c++
@@ -47,6 +48,12 @@ namespace vnt { namespace os {
         return (osal_info_status_running != osal_info_get_status()) ? (tt++) : osal_system_abstime_get();
     }
     
+    static uint32_t _milli()
+    {         
+//        return osal_system_millitime_get();
+        return _now() / 1000;
+    }    
+    
     static bool _initted = false;
     static Config _config {};
     
@@ -60,8 +67,8 @@ namespace vnt { namespace os {
         }
         
         _config = config;
-        // must init the hw bsp with now()
-        vnt::bsp::init({nullptr, _now});
+        // must init the hw bsp with now()        
+        vnt::bsp::init({nullptr, _now, _milli});
         _initted = true;
         return true;        
     }

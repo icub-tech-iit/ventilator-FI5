@@ -42,10 +42,6 @@ namespace vnt { namespace bsp {
         return initted;
     }   
         
-    static uint32_t _get1millitick()
-    {
-        return vnt::core::now() / 1000;        
-    }
 
     bool init(const Config &config)
     {
@@ -56,8 +52,8 @@ namespace vnt { namespace bsp {
                 
         // put whatwever is required for ...        
         stm32hal_config_t cfg = {0};
-        cfg.tick1ms_init = config.initmicrotime;
-        cfg.tick1ms_get = _get1millitick;
+        cfg.tick1ms_init = config.initclock;
+        cfg.tick1ms_get = config.get1millitime;
         
         stm32hal_init(&cfg);
         

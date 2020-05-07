@@ -75,12 +75,13 @@ namespace vnt { namespace bsp {
     
     struct Config
     {         
-        vnt::core::fpWorker initmicrotime {nullptr};  
-        vnt::core::fpGetU64 get1microtime {nullptr};         
+        vnt::core::fpWorker initclock {nullptr};  
+        vnt::core::fpGetU64 get1microtime {nullptr}; 
+        vnt::core::fpGetU32 get1millitime {nullptr};        
         
         constexpr Config() = default;
-        constexpr Config(vnt::core::fpWorker _init, vnt::core::fpGetU64 _tmicro) : initmicrotime(_init), get1microtime(_tmicro) {}
-        bool isvalid() const { if(nullptr != get1microtime) { return true; } else { return false; } }
+        constexpr Config(vnt::core::fpWorker _init, vnt::core::fpGetU64 _tmicro, vnt::core::fpGetU32 _tmilli) : initclock(_init), get1microtime(_tmicro), get1millitime(_tmilli) {}
+        bool isvalid() const { if((nullptr != get1microtime) || (nullptr != get1millitime)) { return true; } else { return false; } }
     }; 
             
     bool initialised();
