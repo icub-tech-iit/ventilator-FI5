@@ -108,6 +108,12 @@ extern osal_abstime_t osal_system_abstime_get(void);
  **/
 extern osal_nanotime_t osal_system_nanotime_get(void);
 
+/** @fn         extern uint64_t osal_system_millitime_get(void)
+    @brief      Retrieves total time of life in milli seconds WITHOUT ANY SCV call.
+    @return     The time of life expressed in mill-seconds
+ **/
+extern uint64_t osal_system_millitime_get(void);
+
 
 /** @fn         extern void osal_system_scheduling_suspend(void)
     @brief      Suspends the scheduler. The calling task shall have exclusive execution privileges until it calls

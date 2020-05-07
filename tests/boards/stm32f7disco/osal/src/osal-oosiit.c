@@ -35,6 +35,8 @@
 
 #include "stdio.h"
 
+#include "oosiit_hid.h"
+
 // --------------------------------------------------------------------------------------------------------------------
 // - declaration of extern public interface
 // --------------------------------------------------------------------------------------------------------------------
@@ -45,6 +47,7 @@
 // --------------------------------------------------------------------------------------------------------------------
 // - declaration of extern hidden interface 
 // --------------------------------------------------------------------------------------------------------------------
+
 
 
 extern void osal_hid_reset_static_ram(void);
@@ -557,6 +560,11 @@ extern osal_abstime_t osal_system_abstime_get(void)
 extern osal_nanotime_t osal_system_nanotime_get(void)
 {
     return(oosiit_nanotime_get());
+}
+
+extern uint64_t osal_system_millitime_get(void)
+{
+    return (osal_usec_in_tick*oosiit_time) / 1000;
 }
 
 extern void osal_system_scheduling_suspend(void)
