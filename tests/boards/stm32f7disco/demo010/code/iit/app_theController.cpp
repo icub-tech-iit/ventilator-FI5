@@ -125,7 +125,7 @@ static void matlab_feed(const app::theController::Inp &inp)
     inputs.S7_Pi = inp.S7pressure;         // S7 Pressure [code] (float)
     inputs.params[0] = 50.F;    // Zephyr FS [SLPM] (float)
     inputs.params[1] = 160.F;   // HSC LP FS [mbar] (float)
-    inputs.params[2] = 10000.F; // HSC HP FS [mbar] (float)
+    inputs.params[2] = 150.F; // HSC HP FS [mbar] (float)
     controller_Obj.setExternalInputs(&inputs);   
 }
 
@@ -256,7 +256,19 @@ struct app::theController::Impl
     const Inp& getinp() const
     {
        return _inp; 
-    }       
+    } 
+    
+    bool setIEratio(float ieratio)
+    {
+        const controllerModelClass::P_controller_T& parameters = controller_Obj.getBlockParameters();
+        controllerModelClass::P_controller_T p = parameters;
+        static volatile float ie = 0;
+        ie = ieratio;
+        ie = ie;
+        p.Controller_IE_ratio = ieratio;      
+        controller_Obj.setBlockParameters(&p); 
+        return true;
+    }        
 };
 
 
@@ -322,6 +334,11 @@ namespace app {
     const theController::Inp& theController::getInp() const
     {
         return pImpl->getinp();
+    }  
+
+    bool theController::setIEratio(float ieratio)
+    {
+        return pImpl->setIEratio(ieratio);
     }    
 
     

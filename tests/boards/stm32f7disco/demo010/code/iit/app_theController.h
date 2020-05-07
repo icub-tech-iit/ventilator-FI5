@@ -158,7 +158,7 @@ namespace app {
             bool isvalid() const { return true; }
         };
         
-        enum class Mode { IDLE = 1, VCV = 3 };
+        enum class Mode { IDLE = 1, CPAP = 2, VCV = 3, PRVC = 4 };
 
         static theController& getInstance();
             
@@ -177,6 +177,8 @@ namespace app {
         const Out& getOut() const;
         
         const Inp& getInp() const;
+        
+        bool setIEratio(float ieratio);
 
     public:
         ~theController();

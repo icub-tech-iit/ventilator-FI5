@@ -72,10 +72,20 @@ namespace app { namespace tCTRL {
 
 // place where put the control mode
 
-constexpr int VCV = 3;
+
+
 constexpr int IDLE = 1;
+constexpr int CPAP = 2;
+constexpr int VCV = 3;
+constexpr int PRVC = 4;
 
 volatile int CTRLmode = IDLE; // vcv
+volatile int IERvalue = 50;
+
+volatile int V1perc = 0;
+volatile bool V2on = true;
+
+volatile int v2val = 2500;
 
 
 // - the code which specialises the thread CTRL
@@ -247,7 +257,8 @@ void startup(vnt::os::Thread *t, void *param)
         
         
     app::theController::getInstance().init({});    
-    app::theController::getInstance().set(app::theController::Mode::IDLE);    
+    app::theController::getInstance().set(app::theController::Mode::IDLE);  
+    app::theController::getInstance().setIEratio(0.5f);         
                           
 }
 
@@ -265,6 +276,11 @@ void alertme(int v)
 
 volatile vnt::core::Time times[8] = {0};
 
+app::theController::Inp iii {};
+app::theController::Out ooo {};
+
+volatile float tincode = 0;
+volatile float toutval  =0;
 
 void onevent(vnt::os::Thread *t, vnt::os::EventMask eventmask, void *param)
 {
@@ -300,6 +316,7 @@ void onevent(vnt::os::Thread *t, vnt::os::EventMask eventmask, void *param)
     {
         static uint32_t _tick = 0;
         static volatile int latestCTRLmode = IDLE;
+        static volatile int latestIERvalue = 50;
         
         times[2] = vnt::core::now();
                 
@@ -315,17 +332,41 @@ void onevent(vnt::os::Thread *t, vnt::os::EventMask eventmask, void *param)
         
         if(CTRLmode != latestCTRLmode)
         {
-            if((CTRLmode == VCV) || (CTRLmode == IDLE))
+            if((CTRLmode == VCV) || (CTRLmode == IDLE) || (CTRLmode == CPAP) || (CTRLmode == PRVC))
             {
                 latestCTRLmode = CTRLmode;
                 app::theController::Mode m = static_cast<app::theController::Mode>(CTRLmode);
                 app::theController::getInstance().set(m);                  
             }  
         }
+
+        if(IERvalue != latestIERvalue)
+        {
+            latestIERvalue = IERvalue;
+            app::theController::getInstance().setIEratio(static_cast<float>(IERvalue)/100.0f);                  
+        }
+
+        
+       
         
         app::theController::getInstance().set(allinput);
         app::theController::getInstance().tick();
+        const app::theController::Inp &inp = app::theController::getInstance().getInp();
         const app::theController::Out &out = app::theController::getInstance().getOut();
+        
+        iii = inp;
+        ooo = out;
+        
+        tincode = iii.S3temperature;
+        toutval = ooo.S3temperature;
+        
+        
+//        const app::theController::Inp &inp = app::theController::getInstance().getInp();
+//        if(0 == (_tick % 100))
+//        {            
+//            inp.print();
+//            out.print();
+//        }
         
 #if defined(TESTRUNTIMEDBG) 
 #else        
@@ -403,10 +444,17 @@ void onevent(vnt::os::Thread *t, vnt::os::EventMask eventmask, void *param)
 //            }           
         }
 #else
+
+// 1000 chiusa 5000 aperta (5000 no pwm) 
+
+//        outdata.buzzer = 5000; // magic number found inside boar_driver.c which is max value.
+//        outdata.valve1 = static_cast<uint32_t>(5000.0*out.CPvalvePerc/100.0);
+//        outdata.valve2 = v2val;
+
         outdata.buzzer = 5000; // magic number found inside boar_driver.c which is max value.
         outdata.valve1 = static_cast<uint32_t>(5000.0*out.CPvalvePerc/100.0);
-        outdata.valve2 = (true == out.CFBvalveON) ? (2500) : (500);
-        outdata.gpio = 0;        
+        outdata.valve2 = (true == out.CFBvalveON) ? (5000) : (1000); 
+
 #endif   
 
        
@@ -458,15 +506,15 @@ uint8_t getvalues(GraphicValues_t *gv)
     
 //    gv->plot1.val = app::tCTRL::latestCTRLout.filtS7pressure;
     gv->plot1.val = app::tCTRL::latestCTRLout.filtS1pressure;
-    gv->plot2.val = app::tCTRL::latestCTRLout.S2flowrate/3;
-    gv->plot3.val = app::tCTRL::latestCTRLout.filtS7pressure/1000;
+    gv->plot2.val = app::tCTRL::latestCTRLout.S2flowrate;
+    gv->plot3.val = app::tCTRL::latestCTRLout.estTidalVolume;
 
 //    float v = app::tCTRL::latestCTRLout.S2flowrate;
     
-//    gv->val1 = app::tCTRL::latestCTRLout.S2flowrate/fac;
-//    gv->val2 = app::tCTRL::latestSNSdata.flow2/fac;
-//    gv->val3 = app::tCTRL::latestCTRLout.S5flowrate/fac;
-//    gv->val4 = app::tCTRL::latestSNSdata.flow1/fac;
+    gv->val1 = 0;
+    gv->val2 = 0;
+    gv->val3 = static_cast<float>(IERvalue)/100.0f;
+    gv->val4 = app::tCTRL::latestCTRLout.estTidalVolume;
 
     osal_mutex_release(app::tCTRL::mtx);
     
