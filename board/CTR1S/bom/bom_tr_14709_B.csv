@@ -1,0 +1,51 @@
+P;IITCODE;N.M;QTY;REFDES;PACKAGE;CATEGORY;Value;Supply_voltage;Tolerance;Pieces_quoted;Prepared;;;Description;Manuf;Manuf Code;Supplier;Supplier Code
+1;579;;1,00;U4;SOT23-5;AO;LMC7101-BIM5;2.7/15V;;;;;;Operational Amplifier, single, 2.7/15V supply voltage, rail to rail output swing, SMD, SOT23-5;National Semiconductor;LMC7101-BIM5;FARNELL ITALIA S.R.L.;1212200;National Semiconductor;LMC7101-BIM5;DIGI-KEY CORPORATION;LMC7101BIM5NSTR-ND;National Semiconductor;LMC7101-BIM5;FARNELL ITALIA S.R.L.;3117162;
+P;IITCODE;N.M;QTY;REFDES;PACKAGE;CATEGORY;Value;Ranges;Tolerance;Pieces_quoted;Prepared;;;Description;Manuf;Manuf Code;Supplier;Supplier Code
+2;14700;;1,00;U3;4132;AP;4132;;;;;;;GPIO Expander module, 16 Additional I/O over I2C, for Raspberry PI;Adafruit;4132;MOUSER ELECTRONICS;485-4132;
+3;14701;;2,00;U1 U5;3190;AP;3190;;;;;;;Brushed DC Motor Driver Breakout, Adafruit;Adafruit;3190;MOUSER ELECTRONICS;485-3190;
+4;14703;;1,00;M7;-;AP;STM32F746G-DISCO;;;;;;;ARM 32F746G, Discovery Kit ARM® Cortex®-M7 Embedded Evaluation Board;St microelectronics;STM32F746G-DISCO;MOUSER ELECTRONICS;511-STM32F746G-DISCO;
+P;IITCODE;N.M;QTY;REFDES;PACKAGE;CATEGORY;Capacitance;Voltage;Tolerance;Dielectric;ESR;Rated RMS current;Temp;Description;Manuf;Manuf Code;Supplier;Supplier Code
+5;3;;3,00;C16 C15 C13;0603;C;100nF;50V;10%;X7R;;;;Multilayer Ceramic Capacitor, 100nF, 50V, 10%, X7R, SMD, 0603;Kemet;C0603C104K5RAC7867;SILVERSTAR S.R.L.;KETC0603C104K5RAC7867;Kemet;C0603C104K5RACTU;DIGI-KEY CORPORATION;399-5089-2-ND;Kemet;C0603C104K5RACTU;FARNELL ITALIA S.R.L.;1288255;Murata;GRM188R71H104KA93D;RS COMPONENTS S.P.A.;624-2480;
+6;652;;1,00;C14;0603;C;33nF;50V;5%;X7R;;;;Multilayer Ceramic Capacitor, 33nF, 50V, 5%, X7R, SMD, 0603;Avx;06035C333JAT2A;DIGI-KEY CORPORATION;478-3723-2-N;Avx;06035C333JAT2A;FARNELL ITALIA S.R.L.;1740618;Avx;06035C333JAT2A;MOUSER ELECTRONICS;581-06035C333J;
+7;7120;;12,00;C12 C11 C10 C9 C8 C7 C6 C5 C4 C3 C2 C1;0603;C;10nF;25V;5%;C0G;;;;Multilayer Ceramic Capacitor, 10nF, 25V, 5%, C0G, SMD, 0603;Kemet;C0603C103J3GACTU;FARNELL ITALIA S.R.L.;1457729RL;Kemet;C0603C103J3GACTU;RS COMPONENTS S.P.A.;801-5230;
+P;IITCODE;N.M;QTY;REFDES;PACKAGE;CATEGORY;Value;Current;Impedence;Pieces_quoted;Prepared;;;Description;Manuf;Manuf Code;Supplier;Supplier Code
+8;274;;5,00;J24 J23 J22 J21 J20;MKDS12-381;CO;MKDS 1/2-3.81;12A;;;;;;Terminal block, MKDS, 2 contacts, 1 row, female, p.3.81mm, Straight, w to b, 12A, screw terminal, THD;Phoenix;1727010;RS COMPONENTS S.P.A.;101-5384;Phoenix;1727010;FARNELL ITALIA S.R.L.;3704579;
+9;275;;2,00;J28 J14;MKDS13-381;CO;MKDS 1/3-3.81;12A;;;;;;Terminal block, MKDS, 3 contacts, 1 row, female, p.3.81mm, Straight, w to b, 12A, screw terminal, THD;Phoenix;1727023;RS COMPONENTS S.P.A.;101-5390;Phoenix;1727023;FARNELL ITALIA S.R.L.;3704580;
+10;288;;2,00;J17 J5;53261-0471;CO;53261-0471;1A;;;;;;PCB connector, Picoblade, 4 contacts, 1 row, male, p.1.25mm, 90°, w to b, lock, key, SMD;Molex;53261-0471;RS COMPONENTS S.P.A.;542-7113;Molex;53261-0471;FARNELL ITALIA S.R.L.;1125374;
+11;504;;3,00;TP3 TP1 TP2;TP-1206;CO;S1751-46;;;;;;;Test point, SMD, 1206;Harwin;S1751-46;FARNELL ITALIA S.R.L.;1022338;
+12;628;;1,00;J11;PSTRIP5X1_M;CO;M20-9990545;3A;;;;;;PCB connector, Pin strip, 5 contacts, 1 row, male, p.2.54mm, Straight, b to b, nolock, nokey, THD;Harwin;M20-9990545;FARNELL ITALIA S.R.L.;1022252;
+13;709;;3,00;J32 J27 J18;53261-0871;CO;53261-0871;1A;;;;;;PCB connector, Picoblade, 8 contacts, 1 row, male, p.1.25mm, 90°, w to b, nolock, key, SMD;Molex;53261-0871;RS COMPONENTS S.P.A.;542-7157;
+14;805;;1,00;J3;PSTRIP6X1_M;CO;M20-9990645;3A;;;;;;PCB connector, Pin strip, 6 contacts, 1 row, male, p.2.54mm, Straight, b to b, nolock, nokey, THD;Harwin;M20-9990645;FARNELL ITALIA S.R.L.;1022254;
+15;1124;;3,00;J12 J9 J7;53261-0671;CO;53261-0671;1A;;;;;;PCB connector, Picoblade, 6 contacts, 1 row, male, p.1.25mm,  90°, w to b, nolock, key, SMD;Molex;53261-0671;FARNELL ITALIA S.R.L.;1125375;Molex;53261-0671;RS COMPONENTS S.P.A.;542-7135;
+16;1210;;2,00;J16 J6;53398-0471;CO;53398-0471;1A;;;;;;PCB connector, Picoblade, 4 contacts, 1 row, male, p.1.25mm, Straight, w to b, nolock, key, SMD;Molex;53398-0471;FARNELL ITALIA S.R.L.;1125367;
+17;1388;;3,00;J13 J10 J8;53398-0671;CO;53398-0671;1A;;;;;;PCB connector, Picoblade, 6 contacts, 1 row, male, p.1.25mm, Straight, w to b, nolock, key, SMD;Molex;53398-0671;FARNELL ITALIA S.R.L.;1125368;
+18;1391;;2,00;J31 J19;53398-0871;CO;53398-0871;1A;;;;;;PCB connector, Picoblade, 8 contacts, 1 row, male, p.1.25mm, Straight, w to b, nolock, key, SMD;Molex;53398-0871;RS COMPONENTS S.P.A.;656-3030;
+19;12787;;2,00;J4 J1;PSTRIP8X1_M;CO;M20-9990445;3A;;;;;;PCB connector, Pin strip, 8 contacts, 1 row, male, p.2.54mm, Straight, b to b, nolock, nokey, THD;Harwin;M20-9990845;RS COMPONENTS S.P.A.;681-2997;
+20;13911;;1,00;J2;PSTRIP10X1_M;CO;TSW-110-07-G-S;5.7A;;;;;;PCB connector, Pin strip, 10 contacts, 1 row, male, p.2.54mm, straight, b to b, nolock, nokey, THD;Samtec;TSW-110-07-G-S;FARNELL ITALIA S.R.L.;2856742;
+P;IITCODE;N.M;QTY;REFDES;PACKAGE;CATEGORY;Value;Current;Pieces_quoted;Prepared;;;;Description;Manuf;Manuf Code;Supplier;Supplier Code
+21;14713;;2,00;J30 J29;-;COPF;642-4957;1A;;;;;;Flying connector, IDC, 16 contacts, 2 rows, female, p.2.54mm, Straight, w to w, no lock, key, 1A;RS;642-4957;RS COMPONENTS S.P.A.;642-4957;
+P;IITCODE;N.M;QTY;REFDES;PACKAGE;CATEGORY;Value;Power;Tolerance;Pieces_quoted;Prepared;;;Description;Manuf;Manuf Code;Supplier;Supplier Code
+22;5126;;1,00;U8;JHM10D;DC;JHM1012D05;10W;10%;;;;;Insulated, DC/DC converter, Vin 9/18V, Vout +/-5V, 10W, insulation 4KVdc, THD, DIP, for medical use;Xp power;JHM1012D05;FARNELL ITALIA S.R.L.;2065338;
+P;IITCODE;N.M;QTY;REFDES;PACKAGE;CATEGORY;Value;Current;Pieces_quoted;Prepared;;;;Description;Manuf;Manuf Code;Supplier;Supplier Code
+23;617;;2,00;D2 D1;DO214AA;DI;SL22;2A;;;;;;Diode schottky, Vrrm: 20V, If: 2A, Ifms: 100A, SMD, DO214AA;Vishay;SL22;FARNELL ITALIA S.R.L.;9550780;
+P;IITCODE;N.M;QTY;REFDES;PACKAGE;CATEGORY;Value;Ranges;Tolerance;Pieces_quoted;Prepared;;;Description;Manuf;Manuf Code;Supplier;Supplier Code
+24;14710.0;;1,00;PCB;;PCB;CTR1S_00;;;;MM;;;CTR1S_00, IIT - Printed Circuit board;IIT;14707;EUROCIRCUITS bvba;14710 0;
+P;IITCODE;N.M;QTY;REFDES;PACKAGE;CATEGORY;Resistance;Power;Tolerance;Stability;Prepared;;;Description;Manuf;Manuf Code;Supplier;Supplier Code
+25;242;;3,00;R33 R32 R2;0603;R;0R;0.063W;1%;200ppm;;;;Resistor Thick film, 0R, 0.063W, 1%, SMD, 0603;Multicomp;MC-0.063W-0603-0R;FARNELL ITALIA S.R.L.;9331662RL;Multicomp;MC-0.063W-0603-0R;FARNELL ITALIA S.R.L.;9331662;
+26;245;;9,00;R13 R14 R15 R19 R20 R21 R22 R23 R31;0603;R;1K;0.1W;1%;100ppm;;;;Resistor Thick Film, 1K, 0.1W, 1%, SMD, 0603;Phycomp;232270461002;FARNELL ITALIA S.R.L.;9238484;Phycomp;232270461002;MOUSER ELECTRONICS;603-RC0603FR-071KL;Phycomp;RC0603FR-071KL;DIGI-KEY CORPORATION;311-1.00KHRTR-ND;Phycomp;RC0603FR-071KL;RS COMPONENTS S.P.A.;504-8928;
+27;447;;2,00;R16 R18;0603;R;220R;0.1W;1%;100ppm;;;;Resistor Thick film, 220R, 0.1W, 1%, SMD, 0603;Phycomp;RC0603FR-07220RL;DIGI-KEY CORPORATION;311-220HRTR-ND;Phycomp;RC0603FR-07220RL;FARNELL ITALIA S.R.L.;9238409;
+28;453;;1,00;R29;0603;R;1K2;0.1W;1%;200ppm;;;;Resistor Thick film, 1K2, 0.1W, 1%, SMD, 0603;Phycomp;RC0603FR-071K2L;DIGI-KEY CORPORATION;311-1.20KHRTR-ND;Phycomp;RC0603FR-071K2L;FARNELL ITALIA S.R.L.;9238492;
+29;454;;1,00;R30;0603;R;1K5;0.1W;1%;100ppm;;;;Resistor Thick film, 1K5, 0.1W, 1%, SMD, 0603;Phycomp;RC0603FR-071K5L;DIGI-KEY CORPORATION;311-1.50KHRTR-ND;Phycomp;RC0603FR-071K5L;FARNELL ITALIA S.R.L.;9238506;
+30;455;;1,00;R28;0603;R;2K2;0.1W;1%;100ppm;;;;Resistor Thick film, 2K2, 0.1W, 1%, SMD, 0603;Phycomp;RC0603FR-072K2L;DIGI-KEY CORPORATION;311-2.20KHRTR-ND;Phycomp;RC0603FR-072K2L;FARNELL ITALIA S.R.L.;1117250;Yageo;RC0603FR-072K2L;FARNELL ITALIA S.R.L.;2413680;
+31;462;;1,00;R27;0603;R;15K;0.1W;1%;100ppm;;;;Resistor Thick film 15K,  0.1W, 1%, SMD, 0603;Phycomp;RC0603FR-0715KL;DIGI-KEY CORPORATION;311-15.0KHRTR-ND;Welwyn;ASC0603EW-15KFT5;FARNELL ITALIA S.R.L.;2078916;
+32;1574;;11,00;R5 R6 R7 R8 R9 R10 R11 R17 R24 R34 R35;0603;R;10K;0.063W;1%;100ppm;;;;Resistor Thick film, 10K, 0.063W, 1%, SMD, 0603;Multicomp;MC 0.063W 0603 1% 10K;FARNELL ITALIA S.R.L.;9330399;Multicomp;MC 0.063W 0603 1% 10K;FARNELL ITALIA S.R.L.;9330399RL;
+33;12058;;4,00;R42 R43 R44 R45;6.3X2.3;R;100R;0.5W;5%;700ppm;;;;Resistor Carbon film, 100R, 0.5W, 5%, THD, Diam 6.3x2.3mm;RS;707-8142;RS COMPONENTS S.P.A.;707-8142;
+P;IITCODE;N.M;QTY;REFDES;PACKAGE;CATEGORY;Value;Supply_voltage;Ranges;Pieces_quoted;Prepared;;;Description;Manuf;Manuf Code;Supplier;Supplier Code
+34;14702;;1,00;U2;1536;SE;Buzzer 5V;;;;;;;Miniature piezo buzzer, for Adafruit breadboard, 2kHz, 3/5V, THD;Adafruit;1536;MOUSER ELECTRONICS;485-1536;
+P;IITCODE;N.M;QTY;REFDES;PACKAGE;CATEGORY;Value;Current;Impedence;Pieces_quoted;Prepared;;;Description;Manuf;Manuf Code;Supplier;Supplier Code
+35;5232;X;25,00;TP28 TP25 TP26 TP27 TP23 TP24 TP20 TP21 TP22 TP18 TP19 TP15 TP16 TP17 TP13 TP14 TP10 TP11 TP12 TP8 TP9 TP5 TP6 TP7 TP4;TP-ATE, TP-ATE-TH, TP-ATE-SMALL, TP-ATE_1MM;CO;TEST POINT 3mm;;;;;;;Test point, PCB, round, 3mm, for automatic test equipment;IIT;5232;IIT  FACILITY EDL;5232;
+P;IITCODE;N.M;QTY;REFDES;PACKAGE;CATEGORY;Value;;;;;;;Description;Manuf;Manuf Code;Supplier;Supplier Code
+36;4270;X;4,00;H4 H3 H2 H1;MH3;FAST;M3 Metallized hole;;;;;;;PCB hole, metallized, for M3 thread;IIT;4270;IIT  FACILITY EDL;4270;
+P;IITCODE;N.M;QTY;REFDES;PACKAGE;CATEGORY;Resistance;Power;Tolerance;Stability;Prepared;;;Description;Manuf;Manuf Code;Supplier;Supplier Code
+37;242;X;6,00;R37 R38 R39 R40 R41 R4;0603;R;0R;0.063W;1%;200ppm;;;;Resistor Thick film, 0R, 0.063W, 1%, SMD, 0603;Multicomp;MC-0.063W-0603-0R;FARNELL ITALIA S.R.L.;9331662RL;Multicomp;MC-0.063W-0603-0R;FARNELL ITALIA S.R.L.;9331662;
+38;289;X;1,00;R1;0805;R;0R;0.125W;1%;200ppm;;;;Resistor Thick Film, 0R, 0.125W, 1%, SMD, 0805;Phycomp;232273091002;FARNELL ITALIA S.R.L.;9233750;
