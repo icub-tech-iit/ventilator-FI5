@@ -235,8 +235,8 @@ void EwSaveRegister( void* aBuffer )
 
 // IIT-ICUB-TECH
 #include "osal_system.h"
-extern volatile uint64_t oosiit_time;
-extern uint32_t osal_usec_in_tick;
+//extern volatile uint64_t oosiit_time;
+//extern uint32_t osal_usec_in_tick;
 /*******************************************************************************
 * FUNCTION:
 *   EwGetTicks
@@ -256,7 +256,8 @@ extern uint32_t osal_usec_in_tick;
 unsigned long EwGetTicks( void )
 {
   //  return osal_system_ticks_abstime_get()/1000; // IIT-ICUB-TECH
-    return (osal_usec_in_tick*oosiit_time) / 1000 ;
+  //  return (osal_usec_in_tick*oosiit_time) / 1000 ;
+    return osal_system_millitime_get();
   //return EwBspClockGetTicks();
 }
 
