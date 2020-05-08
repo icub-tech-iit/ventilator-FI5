@@ -257,7 +257,7 @@ static pwm_config_t pwm1_cfg = {
 
 static pwm_config_t pwm2_cfg = {
     .timer_frequency = 200000000,
-    .pwm_frequency = 100000,
+    .pwm_frequency = 50000,
     .type = PWM_TYPE_COMPLEMENTARY,
     .channel = 2,
     .n_channel = 0,
