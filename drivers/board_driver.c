@@ -15,6 +15,22 @@
 
 #include <string.h>
 
+#warning FIXME_PWM
+/*
+ * The correct PWM configuration can be achieved by disabling the following
+ * PWM_QUIRK definition. Doing this brokes the higher level implementation
+ * because it has been tuned when the PWM was wrongly configured. So we
+ * need to remove PWM_QUIRK and fix higher level accordingly..
+ *
+ * Two things changes:
+ * 1) when PWM_QUIRK is enabled the PWM input rage is 0 to 5000, when PWM_QUIRK
+ *    is disabled the PWM input range is 0 to 24000; since the Vsupply is 24V,
+ *    this cause the PWM input to correctly represent the equivalent PWM output
+ *    voltage.
+ * 2) when PWM_QUIRK is enabled, the PWM2 duty is clamped to 50%
+ */
+#define PWM_QUIRK
+
 /****************************************************************/
 /* Local definitions.                                           */
 /****************************************************************/
@@ -180,7 +196,7 @@ static int board_sample_encoder_button();
 /****************************************************************/
 /* Exported functions declarations.                             */
 /****************************************************************/
-// marco.accame: i remove it because it is already declared in board_driver.h 
+// marco.accame: i remove it because it is already declared in board_driver.h
 // void i2c_xfer_completed(int retcode);
 void encoder_changed();
 
@@ -245,23 +261,35 @@ static mcp23017_cfg_t gpio_cfg = {
     .direction = 0xFFF0,  // 1b is input. 0b is output. lsb is mounted connector.
     .pup = 0xFFF0
 };
-#warning here is config of outputs. in mv. 
+#warning here is config of outputs. in mv.
 static pwm_config_t pwm1_cfg = {
     .timer_frequency = 200000000,
     .pwm_frequency = 100000,
     .type = PWM_TYPE_NORMAL,
     .channel = 1,
     .n_channel = 0,
+#ifdef PWM_QUIRK
     .input_voltage = 5000
+#else
+    .input_voltage = 24000
+#endif
 };
 
 static pwm_config_t pwm2_cfg = {
     .timer_frequency = 200000000,
+#ifdef PWM_QUIRK
+    .pwm_frequency = 100000,
+#else
     .pwm_frequency = 50000,
+#endif
     .type = PWM_TYPE_COMPLEMENTARY,
     .channel = 2,
     .n_channel = 0,
+#ifdef PWM_QUIRK
     .input_voltage = 5000
+#else
+    .input_voltage = 24000
+#endif
 };
 
 static i2c_xfer_cb_data_t i2c_xfer_cb_data =
@@ -546,12 +574,12 @@ static int board_read_gpio_expander(mcp23017_handle_t* gpio_dev, uint16_t* value
 static int board_read_gpio(uint32_t* value)
 {
     GPIO_PinState pin = HAL_GPIO_ReadPin(GPIOC, GPIO_PIN_6);
-    
+
     if(pin == GPIO_PIN_SET)
         *value |= BOARD_LED_ALARM;
     else
         *value &= ~BOARD_LED_ALARM;
-    
+
     return RC_OK;
 }
 
