@@ -10,8 +10,10 @@ This repository is organized based upon the following multiple parallel (i.e. or
 
 ### Ventilator FI5
 
+Here's the [FI5 technical specifications](./design/FI5-specs.pdf).
+
 <p align="center">
-  <a href="./design/FI-specs.pdf">
+  <a href="./design/FI5-specs.pdf">
   <img src="./assets/fi5-diagram.png"/>
   </a>  
 </p>
