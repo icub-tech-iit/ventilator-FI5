@@ -2,32 +2,34 @@
 #include "access_once.h"
 #include "encoder.h"
 
-int encoder_init(encoder_handle_t *h)
+int encoder_init(encoder_handle_t *h,
+		 void(*encoder_sample)(bool *a, bool *b))
 {
 	h->encoder_pos = 0;
 	h->encoder_prev = 3;
 	h->encoder_tmp = 0;
 	h->encoder_count = 0;
 	h->encoder_fsm = ENCODER_IDLE;
+	h->encoder_sample = encoder_sample;
 
-	return button_init(&h->button_h);
+	return 0;
 }
 
 
-void encoder_get(encoder_handle_t *h, int *tick, bool *button)
+void encoder_get(encoder_handle_t *h, int *tick)
 {
 	*tick = ACCESS_ONCE(h->encoder_count);
 	ACCESS_ONCE(h->encoder_count) = 0;
-	button_out(&h->button_h, button);
 }
 
 
-void encoder_decode(encoder_handle_t *h, bool a, bool b, bool button)
+void encoder_decode(encoder_handle_t *h)
 {
 	uint8_t tmp;
+	bool a, b;
 	int encoder_tick = 0;
 
-	button_in(&h->button_h, button);
+	h->encoder_sample(&a, &b);
 	tmp = a ? 1 : 0;
 	tmp |= b ? 2 : 0;
 

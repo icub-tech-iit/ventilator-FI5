@@ -17,13 +17,13 @@ typedef struct {
 		ENCODER_IDLE,
 		ENCODER_RELEASE
 	} encoder_fsm;
-	button_handle_t button_h;
-
+	void(*encoder_sample)(bool *a, bool *b);
 } encoder_handle_t;
 
-int encoder_init(encoder_handle_t *h);
-void encoder_decode(encoder_handle_t *h, bool a, bool b, bool button);
-void encoder_get(encoder_handle_t *h, int *tick, bool *button);
+int encoder_init(encoder_handle_t *h,
+		 void(*encoder_sample)(bool *a, bool *b));
+void encoder_decode(encoder_handle_t *h);
+void encoder_get(encoder_handle_t *h, int *tick);
 
 #ifdef __cplusplus
 }

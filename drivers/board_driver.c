@@ -174,12 +174,15 @@ static void board_buzzer_ret_code(int ret_code);
 
 static int board_read_check(board_sensor_data_t* in_data);
 
+static void board_sample_encoder(bool *a, bool *b);
+static int board_sample_encoder_button();
+
 /****************************************************************/
 /* Exported functions declarations.                             */
 /****************************************************************/
 // marco.accame: i remove it because it is already declared in board_driver.h 
 // void i2c_xfer_completed(int retcode);
-void encoder_changed(bool a, bool b, bool button);
+void encoder_changed();
 
 static const board_config_t s_board_config_default =
 {
@@ -557,16 +560,10 @@ static int board_read_encoder(encoder_handle_t* encoder_dev,
                               uint32_t* button_mask)
 {
     int encoder_tick;
-    bool encoder_pressed;
 
-    encoder_get(encoder_dev, &encoder_tick, &encoder_pressed);
+    encoder_get(encoder_dev, &encoder_tick);
 
     *tick = encoder_tick;
-
-    if(encoder_pressed)
-        *button_mask = *button_mask | BOARD_BUTTON_ENCODER;
-    else
-        *button_mask = *button_mask & ~BOARD_BUTTON_ENCODER;
 
     return 0;
 }
@@ -913,7 +910,8 @@ static int board_init_all(void)
         return ret_code;
 
     // Initialize the encoder
-    encoder_init(&board_dev.encoder);
+    encoder_init(&board_dev.encoder,
+                 board_sample_encoder);
 
     // Initialize the analogic acquisitions
     ret_code = board_init_analog();
@@ -1132,13 +1130,57 @@ static int board_init_analog(void)
     return RC_OK;
 }
 
+static void board_sample_encoder(bool *a, bool *b)
+{
+		*a = (GPIO_PIN_SET == HAL_GPIO_ReadPin(GPIOA, GPIO_PIN_15));
+		*b = (GPIO_PIN_SET == HAL_GPIO_ReadPin(GPIOI, GPIO_PIN_2));
+}
+
+static int board_sample_encoder_button(void)
+{
+    return (GPIO_PIN_RESET == HAL_GPIO_ReadPin(GPIOI, GPIO_PIN_1));
+}
+
+static int board_sample_button_1(void)
+{
+    return GPIO_PIN_RESET == HAL_GPIO_ReadPin(GPIOI, GPIO_PIN_0);
+}
+
+static int board_sample_button_2(void)
+{
+    return GPIO_PIN_RESET == HAL_GPIO_ReadPin(GPIOG, GPIO_PIN_7);
+}
+
+static int board_sample_button_3(void)
+{
+    return GPIO_PIN_RESET == HAL_GPIO_ReadPin(GPIOB, GPIO_PIN_4);
+}
+
+static int board_sample_button_4(void)
+{
+    return GPIO_PIN_RESET == HAL_GPIO_ReadPin(GPIOG, GPIO_PIN_6);
+}
+
+static int board_sample_button_5(void)
+{
+    return GPIO_PIN_RESET == HAL_GPIO_ReadPin(GPIOI, GPIO_PIN_3);
+}
+
 static int board_init_buttons(void)
 {
     int i;
+    int(*cbs[])(void) = {
+        board_sample_button_1,
+        board_sample_button_2,
+        board_sample_button_3,
+        board_sample_button_4,
+        board_sample_button_5,
+        board_sample_encoder_button
+    };
 
 	for(i = 0; i < BOARD_BUTTON_NUMBER; i++)
     {
-		button_init(&board_dev.buttons[i]);
+		button_init(&board_dev.buttons[i], cbs[i]);
     }
 
     return RC_OK;
@@ -1230,8 +1272,7 @@ static int board_read_check(board_sensor_data_t* in_data)
 /****************************************************************/
 void i2c_xfer_completed(int retcode)
 {
-    volatile int last = 1;
-    last = last;
+    int last = 1;
 
     i2c_xfer_cb_data.index++;
     /* As long as we don't hit an error, and there are segments, keep on TXing */
@@ -1246,12 +1287,12 @@ void i2c_xfer_completed(int retcode)
         i2c_xfer_cb_data.cb(retcode, i2c_xfer_cb_data.args);
 }
 
-void encoder_changed(bool a, bool b, bool button)
+void encoder_changed()
 {
-	encoder_decode(&board_dev.encoder, a, b, button);
+	encoder_decode(&board_dev.encoder);
 }
 
-void button_changed(int n, bool state)
+void button_changed(int n)
 {
-	button_in(&board_dev.buttons[n-1], state);
+	button_notify(&board_dev.buttons[n-1]);
 }

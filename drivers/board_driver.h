@@ -26,13 +26,13 @@ extern "C" {
 #define BOARD_ALL_SENSORS       (0x3FFF)
 #define BOARD_NO_SENSOR         (0x0000)
 
-#define BOARD_BUTTON_ENCODER    (0x0010)
 #define BOARD_BUTTON_1          (0x0001)
 #define BOARD_BUTTON_2          (0x0002)
 #define BOARD_BUTTON_3          (0x0004)
 #define BOARD_BUTTON_4          (0x0008)
 #define BOARD_BUTTON_ALARM      (0x0010)
-#define BOARD_BUTTON_NUMBER     (5)
+#define BOARD_BUTTON_ENCODER    (0x0020)
+#define BOARD_BUTTON_NUMBER     (6)
 
 #define BOARD_LED_1             (0x00000001)
 #define BOARD_LED_2             (0x00000002)
@@ -144,8 +144,8 @@ int board_read_sensors_async(board_sensor_data_t* in_data, board_read_callback_t
 int board_apply_actuation(board_actuation_data_t* out_data);
 void i2c_xfer_completed(int retcode);
 
-void encoder_changed(bool a, bool b, bool button);
-void button_changed(int id, bool state);
+void encoder_changed(void);
+void button_changed(int id);
 
 #ifdef __cplusplus
 }

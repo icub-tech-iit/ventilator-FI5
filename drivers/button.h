@@ -12,11 +12,12 @@ typedef struct {
 	uint32_t systick;
 	bool prev_state;
 	volatile bool button_press;
+	int(*button_sample)(void);
 } button_handle_t;
 
-void button_in(button_handle_t *h, bool state);
+void button_notify(button_handle_t *h);
 void button_out(button_handle_t *h, bool *state);
-int button_init(button_handle_t *h);
+int button_init(button_handle_t *h, int(*button_sample)(void));
 
 #ifdef __cplusplus
 }
