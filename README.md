@@ -23,7 +23,7 @@ To build a [Rapidly manufactured ventilator system](https://www.gov.uk/governmen
 
 ### 🔽 How to clone locally specific branches
 ```sh
-$ git clone https://github.com/icub-tech-iit/ventilator-FI5.git --branch <branch-name>
+$ git clone https://github.com/icub-tech-iit/ventilator-FI5.git --branch <branch-name> --single-branch
 ```
 
 ### License
