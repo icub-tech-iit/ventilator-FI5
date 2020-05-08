@@ -14,7 +14,7 @@ Here's the [FI5 technical specifications](./design/FI5-specs.pdf).
 
 <p align="center">
   <a href="./design/FI5-specs.pdf">
-  <img src="./assets/fi5-diagram.png"/>
+  <img src="./assets/FI5-diagram.png"/>
   </a>  
 </p>
 
@@ -23,7 +23,7 @@ To build a [Rapidly manufactured ventilator system](https://www.gov.uk/governmen
 
 ### 🔽 How to clone locally specific branches
 ```sh
-$ git clone https://github.com/icub-tech-iit/ventilator-fi5.git --branch <branch-name>
+$ git clone https://github.com/icub-tech-iit/ventilator-FI5.git --branch <branch-name>
 ```
 
 ### 👥 Contributors
