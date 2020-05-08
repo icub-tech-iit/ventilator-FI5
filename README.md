@@ -9,16 +9,15 @@ This repository is organized based upon the following multiple parallel (i.e. or
 - 🔘 [`code`](../../tree/code) contains code.
 
 ### Ventilator FI5
-The FI5 Ventilator is inspired by the MVM design from [Galbiati et al. 2020](https://arxiv.org/abs/2003.10405).
 
 <p align="center">
-  <a href="./design/covid_ventilator_scheme.pdf">
+  <a href="./design/FI-specs.pdf">
   <img src="./assets/fi5-diagram.png"/>
   </a>  
 </p>
 
-### Project objective
-To build a [Rapidly manufactured ventilator system](https://www.gov.uk/government/publications/coronavirus-covid-19-ventilator-supply-specification/rapidly-manufactured-ventilator-system-specification) to be used only in extreme emergency situation under strict control of a doctor    
+### Project objectives
+To build a [Rapidly manufactured ventilator system](https://www.gov.uk/government/publications/coronavirus-covid-19-ventilator-supply-specification/rapidly-manufactured-ventilator-system-specification) to be used only in extreme emergency conditions under strict control of a doctor.    
 
 ### 🔽 How to clone locally specific branches
 ```sh
@@ -46,8 +45,13 @@ $ git clone https://github.com/icub-tech-iit/ventilator-fi5.git --branch <branch
 | [<img src="https://github.com/Andreamenini68.png" width="40">](https://github.com/Andreamenini68) | Andrea Menini | [@Andreamenini68](https://github.com/Andreamenini68) | [<img src="https://github.com/zapparella.png" width="40">](https://github.com/zapparella) | Salvatore Zapparella | [@zapparella](https://github.com/zapparella) |
 | [<img src="https://github.com/silviacriscenzo.png" width="40">](https://github.com/silviacriscenzo) | Silvia Criscenzo | [@silviacriscenzo](https://github.com/silviacriscenzo) | [<img src="https://github.com/miggia.png" width="40">](https://github.com/miggia) | Alberto Parmiggiani | [@miggia](https://github.com/miggia) |
 | [<img src="https://github.com/LucaBrunatto.png" width="40">](https://github.com/LucaBrunatto) | Luca Brunatto | [@LucaBrunatto](https://github.com/LucaBrunatto) | [<img src="https://github.com/mgentili81.png" width="40">](https://github.com/mgentili81) | Marco Gentili | [@mgentili81](https://github.com/mgentili81) |
-| | Luca Rivano | | [<img src="https://github.com/mlaffranchi.png" width="40">](https://github.com/mlaffranchi) | Matteo Laffranchi | [@mlaffranchi](https://github.com/mlaffranchi) |
+| [<img src="https://github.com/falberticc.png" width="40">](https://github.com/falberticc) | Francesco Alberti | [@falberticc](https://github.com/falberticc) | [<img src="https://github.com/mlaffranchi.png" width="40">](https://github.com/mlaffranchi) | Matteo Laffranchi | [@mlaffranchi](https://github.com/mlaffranchi) |
 | | Silvia Scarpetta | | | Marco Freddolini | |
 | | Roberto Puddu | | | Marco Pinaffo | |
 | | Carlo Tacchino | | | Marco Ghidini | |
 | | Simone Codeluppi | | | Alberto Mingotti | |
+| | Federico Palmieri | | | Bruno Petrini| |
+| | Marco Ricci | | | Ferdinando Muto | |
+| | Marco Solieri | | | Federico Ghirardi | |
+| | Maurizio Busi | | | Luca Rivano | |
+
