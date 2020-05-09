@@ -1,3 +1,8 @@
+DISCLAIMER
+============== 
+
+This material was developed in the context of the project FI5 (“rapidly manufactured ventilator system”). It is provided “AS IS”, without any warranty, and only to facilitate the design of a replicable prototype of a ventilator that is not legally classified as medical device under the laws and regulations of the country where it was developed nor is CE marked.  Any prototype shall in any case undergo mandatory procedures set forth by the laws and regulations in force in the country of prospective use prior to any use (compassionate use included) and/or commercialization.
+
 Ventilator FI5
 ==============
 
