@@ -7,5 +7,6 @@ classdef MapIndex < Simulink.IntEnumType
     MAP_Transfer_PRVC_2(4)
     MAP_Transfer_AutoTrigger(5)
     MAP_Transfer_Test(6)
+    MAP_ALARMS_1(7)
   end
 end 
