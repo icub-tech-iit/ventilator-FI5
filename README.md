@@ -64,7 +64,7 @@ The files contained in this repository are licensed under the [BSD-3-Clause](htt
 | [<img src="https://github.com/silviacriscenzo.png" width="40">](https://github.com/silviacriscenzo) | Silvia Criscenzo | [@silviacriscenzo](https://github.com/silviacriscenzo) | [<img src="https://github.com/miggia.png" width="40">](https://github.com/miggia) | Alberto Parmiggiani | [@miggia](https://github.com/miggia) |
 | [<img src="https://github.com/LucaBrunatto.png" width="40">](https://github.com/LucaBrunatto) | Luca Brunatto | [@LucaBrunatto](https://github.com/LucaBrunatto) | [<img src="https://github.com/mgentili81.png" width="40">](https://github.com/mgentili81) | Marco Gentili | [@mgentili81](https://github.com/mgentili81) |
 | [<img src="https://github.com/falberticc.png" width="40">](https://github.com/falberticc) | Francesco Alberti | [@falberticc](https://github.com/falberticc) | [<img src="https://github.com/mlaffranchi.png" width="40">](https://github.com/mlaffranchi) | Matteo Laffranchi | [@mlaffranchi](https://github.com/mlaffranchi) |
-| | Silvia Scarpetta | | | Marco Freddolini | |
+| [<img src="https://github.com/SilviaScar.png" width="40">](https://github.com/SilviaScar) | Silvia Scarpetta | [@SilviaScar](https://github.com/SilviaScar) | | Marco Freddolini | |
 | | Roberto Puddu | | | Marco Pinaffo | |
 | | Laura Taverna | | | Marco Ghidini | |
 | | Simone Codeluppi | | | Alberto Mingotti | |
