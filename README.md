@@ -60,11 +60,11 @@ The files contained in this repository are licensed under the [BSD-3-Clause](htt
 | [<img src="https://github.com/falberticc.png" width="40">](https://github.com/falberticc) | Francesco Alberti | [@falberticc](https://github.com/falberticc) | [<img src="https://github.com/mlaffranchi.png" width="40">](https://github.com/mlaffranchi) | Matteo Laffranchi | [@mlaffranchi](https://github.com/mlaffranchi) |
 | | Silvia Scarpetta | | | Marco Freddolini | |
 | | Roberto Puddu | | | Marco Pinaffo | |
-| | Carlo Tacchino | | | Marco Ghidini | |
+| | Laura Taverna | | | Marco Ghidini | |
 | | Simone Codeluppi | | | Alberto Mingotti | |
 | | Federico Palmieri | | | Bruno Petrini| |
 | | Marco Ricci | | | Ferdinando Muto | |
 | | Marco Solieri | | | Federico Ghirardi | |
 | | Maurizio Busi | | | Luca Rivano | |
-| | Laura Taverna | | |    | |
+| | Carlo Tacchino | | |    | |
 
