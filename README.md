@@ -16,13 +16,13 @@ IIT will not track, and will not be liable for the User’s use of the Material,
 ## Technical specifications
 The **FI5** device is our response to the need for a [rapidly manufactured ventilator system](https://www.gov.uk/government/publications/coronavirus-covid-19-ventilator-supply-specification/rapidly-manufactured-ventilator-system-specification).
 
-Here's the [**`FI5 technical specifications`**](./design/FI5-specs.pdf).
+Here's the document containing the [**`FI5 technical specifications`**](./design/FI5-specs.pdf).
 
 | |
 | :---: |
-| <img src="./assets/FI5-diagram.png" width="550"/> |
-| <img src="./assets/FI5-device.png" width="550"/> |
-| <img src="./assets/FI5-internals.png" width="550"/> |
+| <img src="./assets/FI5-diagram.png" width="600"/> |
+| <img src="./assets/FI5-device.png" width="600"/> |
+| <img src="./assets/FI5-internals.png" width="600"/> |
 
 ## Repository structure
 This repository is organized based upon the following multiple parallel (i.e. orphan in Git jargon) branches:
