@@ -21,7 +21,8 @@ This repository is organized based upon the following multiple parallel (i.e. or
 - 🔘 [`ele`](../../tree/ele) contains electronics schematics.
 - 🔘 [`code`](../../tree/code) contains code.
 
-### Ventilator FI5
+### Technical specifications
+The **FI5** device is our response to the need for a [rapidly manufactured ventilator system](https://www.gov.uk/government/publications/coronavirus-covid-19-ventilator-supply-specification/rapidly-manufactured-ventilator-system-specification).
 
 Here's the [FI5 technical specifications](./design/FI5-specs.pdf).
 
@@ -30,9 +31,6 @@ Here's the [FI5 technical specifications](./design/FI5-specs.pdf).
   <img src="./assets/FI5-diagram.png"/>
   </a>  
 </p>
-
-### Project objectives
-To build a [Rapidly manufactured ventilator system](https://www.gov.uk/government/publications/coronavirus-covid-19-ventilator-supply-specification/rapidly-manufactured-ventilator-system-specification) to be used only in extreme emergency conditions under strict control of a doctor.    
 
 ### 🔽 How to clone locally specific branches
 ```sh
