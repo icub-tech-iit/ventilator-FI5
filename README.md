@@ -21,6 +21,8 @@ Here's the [FI5 technical specifications](./design/FI5-specs.pdf).
 <p align="center">
   <a href="./design/FI5-specs.pdf">
   <img src="./assets/FI5-diagram.png"/>
+  <img src="./assets/FI5-device.png"/>
+  <img src="./assets/FI5-internals.png"/>
   </a>  
 </p>
 
