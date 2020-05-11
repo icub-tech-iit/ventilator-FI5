@@ -1,11 +1,19 @@
-DISCLAIMER
-============== 
-
-This material was developed in the context of the project FI5 (“rapidly manufactured ventilator system”). It is provided “AS IS”, without any warranty, and only to facilitate the design of a replicable prototype of a ventilator that is not legally classified as medical device under the laws and regulations of the country where it was developed nor is CE marked.  Any prototype shall in any case undergo mandatory procedures set forth by the laws and regulations in force in the country of prospective use prior to any use (compassionate use included) and/or commercialization.
-
 Ventilator FI5
 ==============
 
+## DISCLAIMER
+
+Fondazione Istituto Italiano di Tecnologia (“IIT”), having its headquarters in Genova (Italy), via Morego 30, declares that the designs, technical specifications, documents and other materials (“Material”) contained  on this repository are the result of scientific research activities carried out by IIT’s personnel in the context of the project FI5 (“Rapidly manufactured ventilator system”). 
+
+The Material is made available to Users only to facilitate the design of a replicable prototype of a ventilator that is not legally classified as medical device under the laws and regulations of the country where it was developed, nor is CE marked.  Any prototype shall in any case undergo mandatory procedures set forth by the laws and regulations in force in the country of prospective use prior to any use (compassionate use included) and/or commercialization.
+
+By using the Material, you are agreeing to the following disclaimer.
+
+IIT provides the Material “AS IS”, and makes no representations or warranties of any kind whatever concerning the Material, whether express or implied. This includes, without limitation, warranties of merchantability, fitness for a particular purpose, non-infringement, absence of latent or other defects, accuracy, or the presence or absence of errors, the precision or reasonableness of assumptions, studies and conclusions based on scientific facts or data, whether or not known or discoverable.
+
+IIT will not track, and will not be liable for the User’s use of the Material, and is not liable for any violation of law committed or suffered by the User in connection with its use of the Material. In no event will IIT be liable, and hereby explicitly waives all liability, for any direct, special, indirect, incidental, consequential, or other losses, costs, expenses, or damages of any kind arising out of the Material or use of the Material, even if IIT has been advised of the possibility of such losses, costs, expenses, or damages.
+
+## Repository structure
 This repository is organized based upon the following multiple parallel (i.e. orphan in Git jargon) branches:
 - 🔘 [`master`](../../tree/master) contains the core design.
 - 🔘 [`doc`](../../tree/doc) contains documentation.
