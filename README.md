@@ -18,13 +18,11 @@ The **FI5** device is our response to the need for a [rapidly manufactured venti
 
 Here's the [FI5 technical specifications](./design/FI5-specs.pdf).
 
-<p align="center">
-  <a href="./design/FI5-specs.pdf">
-  <img src="./assets/FI5-diagram.png"/>
-  <img src="./assets/FI5-device.png"/>
-  <img src="./assets/FI5-internals.png"/>
-  </a>  
-</p>
+| |
+| :---: |
+| [<img src="./assets/FI5-diagram.png"/>](./design/FI5-specs.pdf) |
+| [<img src="./assets/FI5-device.png"/>](./design/FI5-specs.pdf) |
+| [<img src="./assets/FI5-internals.png"/>](./design/FI5-specs.pdf) |
 
 ## Repository structure
 This repository is organized based upon the following multiple parallel (i.e. orphan in Git jargon) branches:
