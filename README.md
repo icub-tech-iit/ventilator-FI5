@@ -66,4 +66,5 @@ The files contained in this repository are licensed under the [BSD-3-Clause](htt
 | | Marco Ricci | | | Ferdinando Muto | |
 | | Marco Solieri | | | Federico Ghirardi | |
 | | Maurizio Busi | | | Luca Rivano | |
+| | Laura Taverna | | |    | |
 
