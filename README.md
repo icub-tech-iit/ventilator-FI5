@@ -21,8 +21,8 @@ Here's the document containing the [**`FI5 technical specifications`**](./design
 | |
 | :---: |
 | <img src="./assets/FI5-diagram.png" width="600"/> |
-| <img src="./assets/FI5-device.png" width="600"/> |
-| <img src="./assets/FI5-internals.png" width="600"/> |
+| <img src="./assets/FI5-device.jpg" width="600"/> |
+| <img src="./assets/FI5-internals.jpg" width="600"/> |
 
 ## Repository structure
 This repository is organized based upon the following multiple parallel (i.e. orphan in Git jargon) branches:
