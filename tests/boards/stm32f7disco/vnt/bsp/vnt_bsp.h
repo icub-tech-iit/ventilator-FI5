@@ -37,31 +37,6 @@ namespace vnt { namespace bsp {
 }} // namespace vnt { namespace bsp {
 
 
-namespace vnt { namespace bsp { namespace sns {
-    
-
-    #warning TODO: adjust the names of the sensors according to BOM rev 9
-    
-    enum class PRS : std::uint8_t { S1 = 0, S2 = 1, S3 = 2, none = 31, maxnumberof = 3 };
-    
-    enum class FLW : std::uint8_t { F1 = 0, F2 = 1, F3 = 2, none = 31, maxnumberof = 3 };
-    
-    // put others and review
-
-}}} // namespace vnt { namespace bsp { namespace sns {
-
-
-namespace vnt { namespace bsp { namespace act {
-    
-    // valve
-    enum class VLV : std::uint8_t { V1 = 0, V2 = 1, none = 31, maxnumberof = 2 };
-    
-    enum class XXX : std::uint8_t { x1 = 0, X2 = 1, X3 = 2, none = 31, maxnumberof = 3 };
-    
-    // put others and review
-
-}}} // namespace vnt { namespace bsp { namespace sns {
-
 
 namespace vnt { namespace bsp {
     
@@ -94,11 +69,7 @@ namespace vnt { namespace bsp {
     
     // forces a reset
     void reset();
-    
-//    // prints on the trace port
-//    int puts(const char* str);
-//    int puts(const std::string &str);
-    
+        
     // forces the cpu to exec a given number of assembly instructions to reach the specified delay
     // if os is running, prefer vnt::core::delay() 
     void delay(vnt::core::relTime t);  
@@ -107,7 +78,36 @@ namespace vnt { namespace bsp {
 
 
 
+#if defined(VNTcfg_FI5)
+    // nothing so far
+#else
+    
+    // we dont need them anymore. it was just a proposal for how to manage sensors before using another approach
+namespace vnt { namespace bsp { namespace sns {
+    
 
+//    #warning TODO: adjust the names of the sensors according to BOM rev 9
+    
+    enum class PRS : std::uint8_t { S1 = 0, S2 = 1, S3 = 2, none = 31, maxnumberof = 3 };
+    
+    enum class FLW : std::uint8_t { F1 = 0, F2 = 1, F3 = 2, none = 31, maxnumberof = 3 };
+    
+    // put others and review
+
+}}} // namespace vnt { namespace bsp { namespace sns {
+
+namespace vnt { namespace bsp { namespace act {
+    
+    // valve
+    enum class VLV : std::uint8_t { V1 = 0, V2 = 1, none = 31, maxnumberof = 2 };
+    
+    enum class XXX : std::uint8_t { x1 = 0, X2 = 1, X3 = 2, none = 31, maxnumberof = 3 };
+    
+    // put others and review
+
+}}} // namespace vnt { namespace bsp { namespace sns {
+
+#endif
 
 #endif  // include-guard
 

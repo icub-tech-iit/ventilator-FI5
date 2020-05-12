@@ -12,6 +12,12 @@
 #ifndef _VNT_BSP_ACT_VALVE_H_
 #define _VNT_BSP_ACT_VALVE_H_
 
+#if defined(VNTcfg_FI5)
+    // nothing so far
+#else
+
+    // we dont use it anymore. it was used just for test
+
 
 #include "vnt_core.h"
 #include "vnt_bsp.h"
@@ -42,6 +48,7 @@ namespace vnt { namespace bsp { namespace act { namespace valve {
     
 }}}} // namespace vnt { namespace bsp { namespace act { namespace valve {
 
+#endif
 
 #endif  // include-guard
 

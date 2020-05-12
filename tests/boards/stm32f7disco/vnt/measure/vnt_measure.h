@@ -15,6 +15,13 @@
 
 #include "vnt_core.h"
 
+
+#if defined(VNTcfg_FI5)
+    // nothing so far
+#else
+
+    // we dont use it anymore. it was just a proposal
+
 // single point of entry for all measurement units. 
 // except for vnt::core::Time which is extensively used and cannot be easily changed
     
@@ -98,7 +105,7 @@ namespace vnt { namespace measure {
     
 }} // namespace vnt { namespace measure {
 
-
+#endif
 
 #endif  // include-guard
 

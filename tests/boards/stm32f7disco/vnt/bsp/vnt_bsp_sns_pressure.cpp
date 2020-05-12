@@ -7,6 +7,12 @@
  *          the ventilator project
 */
 
+#if defined(VNTcfg_FI5)
+    // nothing so far
+#else
+
+    // we dont use it anymore. it was used just for test
+
 #define TEST_VNT_BSP_SNS_PRESSURE
 
 // --------------------------------------------------------------------------------------------------------------------
@@ -327,6 +333,8 @@ namespace vnt { namespace bsp { namespace sns { namespace pressure {
     
  
 }}}} // namespace vnt { namespace bsp { namespace sns { namespace pressure {
+
+#endif
 
 
 // - end-of-file (leave a blank line after)----------------------------------------------------------------------------

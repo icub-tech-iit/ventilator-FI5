@@ -12,7 +12,12 @@
 #ifndef _VNT_BSP_SNS_PRESSURE_H_
 #define _VNT_BSP_SNS_PRESSURE_H_
 
+#if defined(VNTcfg_FI5)
+    // nothing so far
+#else
 
+    // we dont use it anymore. it was used just for test
+    
 #include "vnt_core.h"
 #include "vnt_bsp.h"
 #include "vnt_measure.h"
@@ -49,6 +54,8 @@ namespace vnt { namespace bsp { namespace sns { namespace pressure {
     result_t read(vnt::bsp::sns::PRS s, vnt::measure::TimedPressure *ptimedvalue, const vnt::os::Action &alert);
     
 }}}} // namespace vnt { namespace bsp { namespace sns { namespace pressure {
+
+#endif
 
 
 #endif  // include-guard
