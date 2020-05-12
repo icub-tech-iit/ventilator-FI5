@@ -363,6 +363,11 @@ void Error_Handler(void);
 
 extern I2C_HandleTypeDef hi2c1;
 
+extern ADC_HandleTypeDef hadc3;
+extern DMA_HandleTypeDef hdma_adc3;
+
+extern void stm32hal_adc_init(void);
+
 #ifdef __cplusplus
 }
 #endif

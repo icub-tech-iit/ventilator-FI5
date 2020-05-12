@@ -97,6 +97,11 @@ static void MX_USART1_UART_Init(void);
 // - definition of extern public functions
 // --------------------------------------------------------------------------------------------------------------------
 
+extern void stm32hal_adc_init(void)
+{
+    MX_DMA_Init();
+    MX_ADC3_Init();    
+}
 
 extern void stm32hal_board_init(void)
 {
@@ -145,8 +150,9 @@ extern void stm32hal_board_init(void)
 #if defined(EDL_DRIVER_CODE)
 
     MX_GPIO_Init();
-    MX_DMA_Init();
-    MX_ADC3_Init();
+//    MX_DMA_Init();
+//    MX_ADC3_Init();
+//    stm32hal_adc_init();
 //    MX_CRC_Init();
 //    MX_DMA2D_Init();
     MX_I2C1_Init();
@@ -168,6 +174,7 @@ extern void stm32hal_board_init(void)
 
  }
 
+ 
 
 // --------------------------------------------------------------------------------------------------------------------
 // - definition of funtions genrated by cube-mx which must be global..... sic!
@@ -1619,7 +1626,7 @@ static void MX_GPIO_Init(void)
   HAL_NVIC_EnableIRQ(EXTI0_IRQn);
 
   HAL_NVIC_SetPriority(EXTI1_IRQn, 0, 0);
-//  HAL_NVIC_EnableIRQ(EXTI1_IRQn);
+  HAL_NVIC_EnableIRQ(EXTI1_IRQn);
 
   HAL_NVIC_SetPriority(EXTI2_IRQn, 0, 0);
   HAL_NVIC_EnableIRQ(EXTI2_IRQn);
