@@ -7,7 +7,11 @@
  * disabled (i.e. GPIO read on-the-fly)
  */
 
-#define BUTTON_DEBOUNCE 0
+#if defined(DRIVER_HAS_INTERNALDEBOUNCE)
+    #define BUTTON_DEBOUNCE 100
+#else
+    #define BUTTON_DEBOUNCE 0
+#endif    
 
 int button_init(button_handle_t *h, int(*button_sample)(void))
 {
