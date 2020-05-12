@@ -32,10 +32,12 @@ This repository is organized based upon the following multiple parallel (i.e. or
 - 🔘 [`ele`](../../tree/ele) contains electronics schematics.
 - 🔘 [`code`](../../tree/code) contains code.
 
-### 🔽 How to clone locally specific branches
+### 🔽 How to clone specific branches locally
 ```sh
-$ git clone https://github.com/icub-tech-iit/ventilator-FI5.git --branch <branch-name> --single-branch
+$ git clone https://github.com/icub-tech-iit/ventilator-FI5.git --single-branch --branch <branch-name>
 ```
+
+Be careful that `mech` and `ele` branches are handled via [Git LFS](https://help.github.com/en/articles/installing-git-large-file-storage).
 
 ## License
 The files contained in this repository are licensed under the [BSD-3-Clause](https://opensource.org/licenses/BSD-3-Clause) license, except the following files: 
