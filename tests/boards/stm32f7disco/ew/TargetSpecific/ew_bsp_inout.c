@@ -41,6 +41,8 @@
 
 static TButtonCallback        ButtonCallback = NULL;
 
+#define IITICUBTECH_REMOVED
+
 
 /*******************************************************************************
 * FUNCTION:
@@ -58,6 +60,10 @@ static TButtonCallback        ButtonCallback = NULL;
 *******************************************************************************/
 void EwBspInOutInitButton( TButtonCallback aButtonCallback )
 {
+#if defined(IITICUBTECH_REMOVED)     
+    ButtonCallback = aButtonCallback;
+#else    
+    
   GPIO_InitTypeDef GPIO_InitStructure;
 
   /* Enable GPIOI clock */
@@ -74,6 +80,8 @@ void EwBspInOutInitButton( TButtonCallback aButtonCallback )
   HAL_NVIC_EnableIRQ( KEY_BUTTON_EXTI_IRQn );
 
   ButtonCallback = aButtonCallback;
+#endif
+
 }
 
 
@@ -93,7 +101,10 @@ void EwBspInOutInitButton( TButtonCallback aButtonCallback )
 *******************************************************************************/
 void EwBspInOutInitLed( void )
 {
+#if defined(IITICUBTECH_REMOVED)
+#else
   BSP_LED_Init( EW_LED );
+#endif
 }
 
 
@@ -113,7 +124,10 @@ void EwBspInOutInitLed( void )
 *******************************************************************************/
 void EwBspInOutLedOn( void )
 {
+#if defined(IITICUBTECH_REMOVED)
+#else    
   BSP_LED_On( EW_LED );
+#endif    
 }
 
 
@@ -133,7 +147,10 @@ void EwBspInOutLedOn( void )
 *******************************************************************************/
 void EwBspInOutLedOff( void )
 {
+#if defined(IITICUBTECH_REMOVED)
+#else    
   BSP_LED_Off( EW_LED );
+#endif    
 }
 
 
@@ -154,6 +171,8 @@ void EwBspInOutLedOff( void )
 *******************************************************************************/
 void EwBspInOutEventHandler( int aEventId )
 {
+#if defined(IITICUBTECH_REMOVED)
+#else    
   uint16_t GPIO_Pin = ( uint16_t ) aEventId;
 
   if ( GPIO_Pin == KEY_BUTTON_PIN )
@@ -165,6 +184,7 @@ void EwBspInOutEventHandler( int aEventId )
     if ( ButtonCallback )
       ButtonCallback( pinState );
   }
+#endif
 }
 
 /* msy */
