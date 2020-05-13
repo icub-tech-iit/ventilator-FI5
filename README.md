@@ -89,4 +89,4 @@ We would like to thank the team [**Camozzi**](https://en.automation.camozzi.com/
 
 ## ✉ Contacts
 
-If you need further information on the FI5 project, don't hesitate to drop an email to **ventilator-FI5 _at_ iit.it**.
+If you need further information on the FI5 project, don't hesitate to send an email to **ventilator-FI5 _at_ iit.it**.
