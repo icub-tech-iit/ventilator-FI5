@@ -56,6 +56,10 @@ The files contained in this repository are licensed under the [BSD-3-Clause](htt
 ## 🙏 Acknowledgements
 We would like to thank the team [**Camozzi**](https://en.automation.camozzi.com/) for their invaluable support that allowed us to correctly model the key elements of the FI5 ventilator.
 
+## 📰 News and Media
+- [The announcement on Scuderia Ferrari Mission Winnow](https://www.ferrari.com/en-EN/formula1/articles/scuderia-ferrari-and-italian-institute-of-technology-present-fi5).
+- [GenovaQuotidana](https://genovaquotidiana.com/2020/05/13/nuovo-respiratore-polmonare-firmato-scuderia-ferrari-mission-winnow-e-iit) (in Italian).
+
 ## 👥 Contributors
 
 | | | | | | |
