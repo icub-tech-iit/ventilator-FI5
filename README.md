@@ -71,6 +71,8 @@ We would like to thank the team [**Camozzi**](https://en.automation.camozzi.com/
 | :---: | :---: |
 | [<img src="./assets/presentation.jpg" width="300"/>](https://youtu.be/0cS7hDUI7wY) | [<img src="./assets/presentation.jpg" width="300"/>](https://youtu.be/8o9P0SrOOLM) |
 
+---
+
 | 🔘 Click to enlarge | 🔘 Click to enlarge |
 | :---: | :---: |
 | [<img src="./assets/ODP00242.jpg" width="300"/>](./assets/ODP00242.jpg) | [<img src="./assets/ODP00248.jpg" width="300"/>](./assets/ODP00248.jpg) |
