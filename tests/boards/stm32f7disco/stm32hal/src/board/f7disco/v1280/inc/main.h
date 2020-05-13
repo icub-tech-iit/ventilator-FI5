@@ -136,8 +136,6 @@ void Error_Handler(void);
 #define DCMI_D5_GPIO_Port GPIOD
 #define FMC_D3_Pin GPIO_PIN_1
 #define FMC_D3_GPIO_Port GPIOD
-#define ARDUINO_D7_Pin GPIO_PIN_3
-#define ARDUINO_D7_GPIO_Port GPIOI
 #define OTG_FS_N_Pin GPIO_PIN_11
 #define OTG_FS_N_GPIO_Port GPIOA
 #define uSD_Detect_Pin GPIO_PIN_13
@@ -327,8 +325,8 @@ void Error_Handler(void);
 #define FMC_D11_GPIO_Port GPIOE
 #define ULPI_D3_Pin GPIO_PIN_10
 #define ULPI_D3_GPIO_Port GPIOB
-#define ARDUINO_PWM_D6_Pin GPIO_PIN_6
-#define ARDUINO_PWM_D6_GPIO_Port GPIOH
+#define EBUZZ_M_Pin GPIO_PIN_6
+#define EBUZZ_M_GPIO_Port GPIOH
 #define LCD_SDA_Pin GPIO_PIN_8
 #define LCD_SDA_GPIO_Port GPIOH
 #define DCMI_D1_Pin GPIO_PIN_10
@@ -357,6 +355,8 @@ void Error_Handler(void);
 #define FMC_D10_GPIO_Port GPIOE
 #define ULPI_D4_Pin GPIO_PIN_11
 #define ULPI_D4_GPIO_Port GPIOB
+#define EBUZZ_P_Pin GPIO_PIN_15
+#define EBUZZ_P_GPIO_Port GPIOB
 /* USER CODE BEGIN Private defines */
 
 /* USER CODE END Private defines */
