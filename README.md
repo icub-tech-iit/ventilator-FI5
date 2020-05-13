@@ -1,7 +1,7 @@
 Ventilator FI5
 ==============
 
-[**Istituto Italiano di Tecnologia**](https://iit.it) (IIT) and [**Scuderia Ferrari**](https://www.ferrari.com/en-EN/formula1) have jointly promoted the design and realization of the **FI5 device** as the response to the need for a [rapidly manufactured ventilator system](https://www.gov.uk/government/publications/coronavirus-covid-19-ventilator-supply-specification/rapidly-manufactured-ventilator-system-specification).
+[**Istituto Italiano di Tecnologia**](https://iit.it) (IIT) and [**Scuderia Ferrari**](https://www.ferrari.com/en-EN/formula1) have jointly promoted the design and realization of the **FI5 device** as response to the need for a [rapidly manufactured ventilator system](https://www.gov.uk/government/publications/coronavirus-covid-19-ventilator-supply-specification/rapidly-manufactured-ventilator-system-specification).
 
 List of **IIT facilities and research lines** that collaboratored to the FI5 project:
 
