@@ -56,7 +56,7 @@ The files contained in this repository are licensed under the [BSD-3-Clause](htt
 ## 🙏 Acknowledgements
 We would like to thank the team [**Camozzi**](https://en.automation.camozzi.com/) for their invaluable support that allowed us to correctly model the key elements of the FI5 ventilator.
 
-## 📰 News and Media
+## 📰 News
 - [IIT](https://www.iit.it/iit-vs-covid-19)
 - [Scuderia Ferrari Mission Winnow](https://www.ferrari.com/en-EN/formula1/articles/scuderia-ferrari-and-italian-institute-of-technology-present-fi5)
 - [Formula1](https://www.formula1.com/en/latest/article.ferrari-unveil-new-ventilator-for-coronavirus-patients-designed-and-built-in.7DrOsmsbQB9piUafeuuXJA.html)
@@ -64,6 +64,9 @@ We would like to thank the team [**Camozzi**](https://en.automation.camozzi.com/
 - [GenovaQuotidana](https://genovaquotidiana.com/2020/05/13/nuovo-respiratore-polmonare-firmato-scuderia-ferrari-mission-winnow-e-iit) (Italian)
 - [Corriere.it](https://www.corriere.it/sport/formula-1/notizie/coronavirus-f1-all-ospedale-ecco-ventilatore-polmonare-fi5-progettato-sole-cinque-settimane-b1168c74-9510-11ea-b53d-888d5c72a186_preview.shtml) (Italian)
 - [ESPN](https://www.espn.in/f1/story/_/id/29169438/ferrari-reveals-details-low-cost-covid-19-ventilator)
+
+## 🎥 Media
+- [Pictures](./assets).
 
 ## 👥 Contributors
 
