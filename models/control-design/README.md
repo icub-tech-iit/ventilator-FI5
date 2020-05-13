@@ -11,7 +11,7 @@ The Embedded Coder is then used to generate the corresponding code of the contro
 
 The controller, whose main architecture is shown below, comprises the following modules:
 - Filtering stage
-- Time generator and autotriggering
+- Pulse generator and autotriggering
 - Volume controller
 - Pressure controller
 - Tidal volume computation
