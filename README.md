@@ -53,7 +53,7 @@ The files contained in this repository are licensed under the [BSD-3-Clause](htt
 * [Embedded Wizard](https://www.embedded-wizard.de/) files provided by [TARA Systems GmbH](https://www.tara-systems.de/), that are licensed under the terms described in [Embedded Wizard End User License Agreement](../../tree/code/tests/boards/stm32f7disco/ew/PlatformPackage/License.txt).
 
 ## 🙏 Acknowledgements
-We would like to thank the [**Camozzi**](https://en.automation.camozzi.com/) team for the invaluable support that allowed us to correctly model the key elements of the FI5 ventilator.
+We would like to thank the team [**Camozzi**](https://en.automation.camozzi.com/) for their invaluable support that allowed us to correctly model the key elements of the FI5 ventilator.
 
 ## 👥 Contributors
 
