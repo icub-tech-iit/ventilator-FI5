@@ -1,7 +1,7 @@
 Mechanical Drawings of Ventilator FI5
 =====================================
 
-## CAD repository.
+## CAD repository
 To correctly manage the large files stored within this repository, follow the [instructions to install Git LFS][1].
 
 You can conveniently download the CAD releases by clicking on the following links:
