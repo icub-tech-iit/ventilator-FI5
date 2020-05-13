@@ -78,5 +78,5 @@ The files contained in this repository are licensed under the [BSD-3-Clause](htt
 
 ## ✉ Contacts
 
-If you need further information on the FI5 project, don't hesitate to drop an email to [ventilator-FI5@iit.it](mailto:ventilator-FI5@iit.it).
+If you need further information on the FI5 project, don't hesitate to drop an email to **ventilator-FI5 _at_ iit.it**.
 
