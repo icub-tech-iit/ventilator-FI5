@@ -3,6 +3,8 @@ Control Design
 
 The controller has been designed and realized in Simulink and tested within a meaningful subset of the pneumatic circuit implemented in Simscape.
 
+More details can be found in [**`FI5 technical specifications`**](../../design/FI5-specs.pdf).
+
 ![](./assets/ventilator.png)
 
 The Embedded Coder is then used to generate the corresponding code of the controller that can be profitably deployed on the target device.

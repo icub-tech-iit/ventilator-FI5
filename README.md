@@ -27,7 +27,7 @@ Here's the document containing the [**`FI5 technical specifications`**](./design
 ## Repository structure
 This repository is organized based upon the following multiple parallel (i.e. orphan in Git jargon) branches:
 - 🔘 [`master`](../../tree/master) contains the core design.
-- 🔘 [`doc`](../../tree/doc) contains documentation.
+- 🔘 [`doc`](../../tree/doc) contains supporting documents.
 - 🔘 [`mech`](../../tree/mech) contains mechanical drawings.
 - 🔘 [`ele`](../../tree/ele) contains electronics schematics.
 - 🔘 [`code`](../../tree/code) contains code.
