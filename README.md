@@ -65,7 +65,9 @@ We would like to thank the team [**Camozzi**](https://en.automation.camozzi.com/
 - [GenovaQuotidana](https://genovaquotidiana.com/2020/05/13/nuovo-respiratore-polmonare-firmato-scuderia-ferrari-mission-winnow-e-iit) (Italian)
 - [Corriere.it](https://www.corriere.it/sport/formula-1/notizie/coronavirus-f1-all-ospedale-ecco-ventilatore-polmonare-fi5-progettato-sole-cinque-settimane-b1168c74-9510-11ea-b53d-888d5c72a186_preview.shtml) (Italian)
 - [LaStampa.it](https://www.lastampa.it/motori/tecnologia/2020/05/13/news/ferrari-e-istituto-italiano-di-tecnologia-contro-il-coronavirus-nasce-il-ventilatore-polmonare-fi5-1.38839589) (Italian)
+- [La Repubblica](https://www.repubblica.it/dossier/cronaca/italia-riparte/2020/05/13/news/ferrari_il_record_piu_bello_solo_5_settimane_per_creare_i_ventilatori_polmonari-256526848) (Italian)
 - [ESPN](https://www.espn.in/f1/story/_/id/29169438/ferrari-reveals-details-low-cost-covid-19-ventilator)
+- [GPTODAY.net](https://www.gptoday.net/en/news/f1/255479/ferrari-produces-new-ventilator-for-facilities-dealing-with-covid-19-patients)
 
 ## 🎥 Media
 
