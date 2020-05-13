@@ -414,7 +414,7 @@ int board_apply_actuation(board_actuation_data_t* out_data)
     }
 
     // Write the local GPIOs
-    HAL_GPIO_WritePin(GPIOC, GPIO_PIN_6, (out_data->gpio & BOARD_LED_ALARM) ? GPIO_PIN_RESET : GPIO_PIN_SET);
+    HAL_GPIO_WritePin(GPIOC, GPIO_PIN_6, (out_data->gpio & BOARD_LED_ALARM) ? GPIO_PIN_SET : GPIO_PIN_RESET);
 
     return RC_OK;
 }
