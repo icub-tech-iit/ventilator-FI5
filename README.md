@@ -1,6 +1,16 @@
 Ventilator FI5
 ==============
 
+The **FI5** device is the response promoted by the [Istituto Italiano di Tecnologia](https://iit.it) (IIT) to the need for a [rapidly manufactured ventilator system](https://www.gov.uk/government/publications/coronavirus-covid-19-ventilator-supply-specification/rapidly-manufactured-ventilator-system-specification).
+
+List of **facilities and research lines** that collaboratored to the FI5 project:
+
+| | |
+| :---: | :--- |
+| [<img src="./assets/logo_icub-tech.png" width="80"/>](https://iit.it/research/facilities/icub-tech) | [iCub Tech](https://iit.it/research/facilities/icub-tech) |
+| [<img src="./assets/logo_edl.png" width="80"/>](https://iit.it/research/facilities/electronic-design-laboratory) | [Electronic Design Laboratory](https://iit.it/research/facilities/electronic-design-laboratory) |
+| [<img src="./assets/logo_rehab.png" width="80"/>](https://iit.it/research/lines/rehab-technologies-inail-iit-lab) | [Rehab Technologies - INAIL-IIT lab](https://iit.it/research/lines/rehab-technologies-inail-iit-lab) |
+
 ## DISCLAIMER
 
 Fondazione Istituto Italiano di Tecnologia (“IIT”), having its headquarters in Genova (Italy), via Morego 30, declares that the designs, technical specifications, documents and other materials (“Material”) contained  on this repository are the result of scientific research activities carried out by IIT’s personnel in the context of the project FI5 (“Rapidly manufactured ventilator system”). 
@@ -14,8 +24,6 @@ IIT provides the Material “AS IS”, and makes no representations or warrantie
 IIT will not track, and will not be liable for the User’s use of the Material, and is not liable for any violation of law committed or suffered by the User in connection with its use of the Material. In no event will IIT be liable, and hereby explicitly waives all liability, for any direct, special, indirect, incidental, consequential, or other losses, costs, expenses, or damages of any kind arising out of the Material or use of the Material, even if IIT has been advised of the possibility of such losses, costs, expenses, or damages.
 
 ## Technical specifications
-The **FI5** device is our response to the need for a [rapidly manufactured ventilator system](https://www.gov.uk/government/publications/coronavirus-covid-19-ventilator-supply-specification/rapidly-manufactured-ventilator-system-specification).
-
 Here's the document containing the [**`FI5 technical specifications`**](./design/FI5-specs.pdf).
 
 | |
