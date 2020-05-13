@@ -66,6 +66,8 @@ We would like to thank the team [**Camozzi**](https://en.automation.camozzi.com/
 - [ESPN](https://www.espn.in/f1/story/_/id/29169438/ferrari-reveals-details-low-cost-covid-19-ventilator)
 
 ## 🎥 Media
+- [Presentation](https://youtu.be/0cS7hDUI7wY)
+- [Presentazione](https://youtu.be/8o9P0SrOOLM) (Italian)
 - [Pictures](./assets)
 
 ## 👥 Contributors
