@@ -159,7 +159,7 @@ void initSystem(vnt::os::Thread *t, void* initparam)
     
     // but must disable the buzzer
     board_actuation_data_t out = {0};
-    out.buzzer = 5000;
+    out.buzzer = 0; // off if a 0, on if 1
     board_apply_actuation(&out);
     
     // start wdt

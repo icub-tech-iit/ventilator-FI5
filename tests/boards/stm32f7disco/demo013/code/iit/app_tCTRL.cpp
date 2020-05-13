@@ -319,7 +319,7 @@ volatile vnt::core::Time times[8] = {0};
 
 
 static void processINPUT(const board_sensor_data_t &ai);
-static void setSTATE();
+static void setSTATE(const board_sensor_data_t &ai);
 
 void onevent(vnt::os::Thread *t, vnt::os::EventMask eventmask, void *param)
 {
@@ -363,7 +363,7 @@ void onevent(vnt::os::Thread *t, vnt::os::EventMask eventmask, void *param)
         driveroutput.out.valve2 = (true == out.CFBvalveON) ? (5000) : (1000); 
         
         // apply the leds etc. i keep it after the controller so that if we have an alarm ...
-        setSTATE();
+        setSTATE(driverinput.data);
         
         // we write to drivers        
         int r = board_apply_actuation(&driveroutput.out);
@@ -382,17 +382,19 @@ void onevent(vnt::os::Thread *t, vnt::os::EventMask eventmask, void *param)
 
 static void processBTNs(const board_sensor_data_t &ai);
 static void processKNOBs(const board_sensor_data_t &ai);
-static void setLEDs();
+static void processENC(const board_sensor_data_t &ai);
+static void setLEDs(const board_sensor_data_t &ai);
 
 static void processINPUT(const board_sensor_data_t &ai)
 {
     processBTNs(ai);                        
     processKNOBs(ai); 
+    processENC(ai); 
 }
 
-static void setSTATE()
+static void setSTATE(const board_sensor_data_t &ai)
 {
-    setLEDs(); 
+    setLEDs(ai); 
 }
 
 
@@ -535,25 +537,45 @@ void processKNOBs(const board_sensor_data_t &ai)
     firsttime = false;
 }
 
-void setLEDs()
+void processENC(const board_sensor_data_t &ai)
 {
+    // marco.accame: so far it is just for testing the encoder
+//    if(0 != ai.encoder)
+//    {
+//        vnt::bsp::trace::puts(std::string("encoder = ") + std::to_string(ai.encoder));
+//    }
+
+//    if(0 != ai.buttons)  
+//    {
+//        char btns[32] = {0};
+//        snprintf(btns, sizeof(btns), "0x%x", ai.buttons);
+//        vnt::bsp::trace::puts(std::string("buttons = ") + btns);
+//    }  
+//    else
+//    {
+//        vnt::bsp::trace::puts(std::string("buttons = 0"));
+//    }
+}
+
+void setLEDs(const board_sensor_data_t &ai)
+{        
     driveroutput.out.gpio = 0;
     
     if(app::theController::Mode::IDLE == ctrlmode)
     {
-        vnt::core::binary::bit::set(driveroutput.out.gpio, 3);        
+        vnt::core::binary::bit::set(driveroutput.out.gpio, 0);        
     }        
     else if(app::theController::Mode::CPAP == ctrlmode)
     {
-        vnt::core::binary::bit::set(driveroutput.out.gpio, 2);
+        vnt::core::binary::bit::set(driveroutput.out.gpio, 1);
     }
     else if(app::theController::Mode::VCV == ctrlmode)
     {
-        vnt::core::binary::bit::set(driveroutput.out.gpio, 1);
+        vnt::core::binary::bit::set(driveroutput.out.gpio, 2);
     }  
     else if(app::theController::Mode::PRCV == ctrlmode)
     {
-        vnt::core::binary::bit::set(driveroutput.out.gpio, 0);
+        vnt::core::binary::bit::set(driveroutput.out.gpio, 3);
     } 
     
     bool alarm = false;
@@ -561,7 +583,27 @@ void setLEDs()
     {
         driveroutput.out.gpio |= BOARD_LED_ALARM;
     }
-
+    
+    bool bIDLE = vnt::core::binary::bit::check(ai.buttons, 3);
+    bool bCPAP = vnt::core::binary::bit::check(ai.buttons, 2);
+    bool bVCV = vnt::core::binary::bit::check(ai.buttons, 1);
+    bool bPRCV = vnt::core::binary::bit::check(ai.buttons, 0);
+    if(bIDLE)
+    {
+        vnt::core::binary::bit::set(driveroutput.out.gpio, 0);
+    }
+    if(bCPAP)
+    {
+        vnt::core::binary::bit::set(driveroutput.out.gpio, 1);
+    }    
+    if(bVCV)
+    {
+        vnt::core::binary::bit::set(driveroutput.out.gpio, 2);
+    }
+    if(bPRCV)
+    {
+        vnt::core::binary::bit::set(driveroutput.out.gpio, 3);
+    }
 }        
 
 }} // namespace app { namespace tCTRL {
