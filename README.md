@@ -59,6 +59,7 @@ We would like to thank the team [**Camozzi**](https://en.automation.camozzi.com/
 ## 📰 News
 - [IIT](https://iit.it/iit-vs-covid-19/fi5-ventilator)
 - [Scuderia Ferrari Mission Winnow](https://www.ferrari.com/en-EN/formula1/articles/scuderia-ferrari-and-italian-institute-of-technology-present-fi5)
+- [Federation Internationale De L'Automobile](https://www.fia.com/news/scuderia-ferrari-mission-winnow-and-italian-institute-technology-present-fi5)
 - [Formula1](https://www.formula1.com/en/latest/article.ferrari-unveil-new-ventilator-for-coronavirus-patients-designed-and-built-in.7DrOsmsbQB9piUafeuuXJA.html)
 - [Gazzetta MOTORI](https://www.gazzetta.it/Formula-1/13-05-2020/coronavirus-arriva-fi5-ventilatore-creato-ferrari-istituto-italiano-tecnologia-370941034843.shtml) (Italian)
 - [GenovaQuotidana](https://genovaquotidiana.com/2020/05/13/nuovo-respiratore-polmonare-firmato-scuderia-ferrari-mission-winnow-e-iit) (Italian)
