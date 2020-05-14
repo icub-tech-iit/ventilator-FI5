@@ -65,6 +65,11 @@ Be careful that `mech` and `ele` branches are handled via [Git LFS](https://help
 - [ESPN](http://ja.espnf1.com/ferrari/motorsport/story/259754.html) (Japanese)
 - [GPTODAY.net](https://www.gptoday.net/en/news/f1/255479/ferrari-produces-new-ventilator-for-facilities-dealing-with-covid-19-patients)
 - [News1](https://www.news1.news/n1/2020/05/ferrari-and-italian-institute-of-technology-against-coronavirus-the-lung-ventilator-fi5-la-stampa-is-born.html)
+- [Le Figaro](https://sport24.lefigaro.fr/scan-sport/actualites/ferrari-devoile-fi5-son-respirateur-artificiel-pour-lutter-contre-le-coronavirus-1001783) (French)
+- [Marca](https://www.marca.com/motor/2020/05/13/5ebbe0baca4741bd618b4615.html) (Spanish)
+- [Business Insider](https://www.businessinsider.in/sports/news/ferrari-helps-design-new-low-cost-ventilator-in-coronavirus-battleto/articleshow/75724414.cms)
+- [Sky Tg24](https://tg24.sky.it/bologna/2020/05/13/ferrari-progetta-ventilatore-polmonare-in-5-settimane) (Italian)
+- [Rai News](http://www.rainews.it/dl/rainews/media/Coronavirus-Ferrari-e-Istituto-italiano-di-Tecnologia-insieme-per-un-ventilatore-polmonare-low-cost-d8e9ec2a-051e-458f-933c-15627c3b3f5b.html) (Italian)
 
 ## 🎥 Media
 
