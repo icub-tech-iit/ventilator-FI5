@@ -88,9 +88,14 @@ namespace app { namespace tHMI {
 #include "ew_bsp_clock.h"
 #endif
 
+#include "vnt_tools.h"
+#undef HMI_PRINTSTATS
+
 namespace app { namespace tHMI {
 
 vnt::os::Timer *tmrTICK = nullptr;
+    
+vnt::tools::PeriodValidator *periodVAL = nullptr;
   
 void startup(vnt::os::Thread *t, void *param)
 {
@@ -102,7 +107,11 @@ void startup(vnt::os::Thread *t, void *param)
     theleds.init(allleds);    
     theleds.get(vnt::bsp::LED::one).pulse(vnt::core::time1second); 
     
-      
+#if defined(HMI_PRINTSTATS)      
+    periodVAL = new vnt::tools::PeriodValidator;
+    periodVAL->init({40*vnt::core::time1millisec, 80*vnt::core::time1millisec, 5*vnt::core::time1second, {30*vnt::core::time1millisec, 80*vnt::core::time1millisec, 1*vnt::core::time1millisec}} );
+#endif
+        
     tmrTICK = new vnt::os::Timer;
     
     tmrTICK->start({settings.periodOfTICK, {vnt::os::EventToThread(vnt::core::tointegral(EVT::tick), t)}, vnt::os::Timer::Mode::forever, 0});
@@ -132,8 +141,28 @@ void onevent(vnt::os::Thread *t, vnt::os::EventMask eventmask, void *param)
     {
 #if defined(APP_HMI_disable)
         vnt::bsp::delay(10*vnt::core::time1millisec);
-#else  
+#else 
+        
+    #if defined(HMI_PRINTSTATS) 
+        vnt::core::Time start = vnt::core::now();
+    #endif
+        
         EwProcess();
+        
+    #if defined(HMI_PRINTSTATS)         
+        vnt::core::Time delta = 0;
+        periodVAL->tick(vnt::core::now()-start, delta);
+        // if we want we can print delta just now
+        vnt::bsp::trace::puts(vnt::core::TimeFormatter(delta).to_string());
+        if(true == periodVAL->report())
+        {
+            const vnt::tools::Histogram *h = periodVAL->histogram();
+            h->getvalues();
+            std::string str = "HMI histogram = ";
+            for(int i=0; i<h->getvalues()->inside.size(); i++) { str += std::to_string(h->getvalues()->inside[i]); str += ", "; }
+            vnt::bsp::trace::puts(str);             
+        }
+    #endif        
 #endif        
 //        
     }

@@ -693,6 +693,11 @@
               <FileType>8</FileType>
               <FilePath>..\..\vnt\tools\vnt_tools_Feeder.cpp</FilePath>
             </File>
+            <File>
+              <FileName>vnt_tools.cpp</FileName>
+              <FileType>8</FileType>
+              <FilePath>..\..\vnt\tools\vnt_tools.cpp</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>
@@ -1583,6 +1588,11 @@
               <FileName>vnt_tools_Feeder.cpp</FileName>
               <FileType>8</FileType>
               <FilePath>..\..\vnt\tools\vnt_tools_Feeder.cpp</FilePath>
+            </File>
+            <File>
+              <FileName>vnt_tools.cpp</FileName>
+              <FileType>8</FileType>
+              <FilePath>..\..\vnt\tools\vnt_tools.cpp</FilePath>
             </File>
           </Files>
         </Group>
