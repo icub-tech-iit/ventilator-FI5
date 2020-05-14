@@ -62,6 +62,7 @@ Be careful that `mech` and `ele` branches are handled via [Git LFS](https://help
 - [La Stampa](https://www.lastampa.it/motori/tecnologia/2020/05/13/news/ferrari-e-istituto-italiano-di-tecnologia-contro-il-coronavirus-nasce-il-ventilatore-polmonare-fi5-1.38839589) (Italian)
 - [La Repubblica](https://www.repubblica.it/dossier/cronaca/italia-riparte/2020/05/13/news/ferrari_il_record_piu_bello_solo_5_settimane_per_creare_i_ventilatori_polmonari-256526848) (Italian)
 - [ESPN](https://www.espn.in/f1/story/_/id/29169438/ferrari-reveals-details-low-cost-covid-19-ventilator)
+- [ESPN](http://ja.espnf1.com/ferrari/motorsport/story/259754.html) (Japanese)
 - [GPTODAY.net](https://www.gptoday.net/en/news/f1/255479/ferrari-produces-new-ventilator-for-facilities-dealing-with-covid-19-patients)
 - [News1](https://www.news1.news/n1/2020/05/ferrari-and-italian-institute-of-technology-against-coronavirus-the-lung-ventilator-fi5-la-stampa-is-born.html)
 
