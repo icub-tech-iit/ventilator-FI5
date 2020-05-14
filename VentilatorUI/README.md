@@ -16,15 +16,19 @@ Now, the files will be visible into your project.
 ### Description
 
 The Graphical User Interface of the ventilator FI5 looks like this:
-[<img src="./assets/VentilatorUI.png" width="300"/>](./assets/VentilatorUI.png)
+
+[<img src="./assets/VentilatorUI.png" width="400"/>](./assets/VentilatorUI.png)
 
 From the top to the bottom it presents three `Dataplotter`, respectively for `Pressure(cmH20)`, `Flow(L/min)` and `Tidal Volume(L)`, and a `Menubar`.
 
 #### Dataplotter
-[<img src="./assets/Dataplotter.png" width="300"/>](./assets/Dataplotter.png)
+
+[<img src="./assets/Dataplotter.png" width="400"/>](./assets/Dataplotter.png)
+
 The `Dataplotter` class implements a method called `onDraw(float)` that given a float as input , it add it as point in the graph and compute the mean and max of the values received until then. On the right it is displayed the current value, and below the mean and max values.
 
 #### Menubar
-[<img src="./assets/Menubar.png" width="300"/>](./assets/Menubar.png)
+
+[<img src="./assets/Menubar.png" width="400"/>](./assets/Menubar.png)
 
 The `Menubar` displays the values of the relative knobs, and presents also a set of buttons in order to change the configurations of the ventilator.
