@@ -16,7 +16,6 @@ List of **IIT facilities and research lines** that contributed to the FI5 projec
 | [<img src="./assets/logo_rehab.png" width="80"/>](https://iit.it/research/lines/rehab-technologies-inail-iit-lab) | [Rehab Technologies - INAIL-IIT lab](https://iit.it/research/lines/rehab-technologies-inail-iit-lab) |
 
 ## DISCLAIMER
-
 Fondazione Istituto Italiano di Tecnologia (“IIT”), having its headquarters in Genova (Italy), via Morego 30, declares that the designs, technical specifications, documents and other materials (“Material”) contained  on this repository are the result of scientific research activities carried out by IIT’s personnel in the context of the project FI5 (“Rapidly manufactured ventilator system”). 
 
 The Material is made available to Users only to facilitate the design of a replicable prototype of a ventilator that is not legally classified as medical device under the laws and regulations of the country where it was developed, nor is CE marked.  Any prototype shall in any case undergo mandatory procedures set forth by the laws and regulations in force in the country of prospective use prior to any use (compassionate use included) and/or commercialization.
@@ -54,6 +53,9 @@ Be careful that `mech` and `ele` branches are handled via [Git LFS](https://help
 ## 📰 News
 - [IIT](https://iit.it/iit-vs-covid-19/fi5-ventilator)
 - [Scuderia Ferrari Mission Winnow](https://www.ferrari.com/en-EN/formula1/articles/scuderia-ferrari-and-italian-institute-of-technology-present-fi5)
+- [Askanews](http://www.askanews.it/video/2020/05/13/maggiali-iit-respiratore-fi5-contro-il-virus-ora-open-source-20200513_video_12551772) (Italian)
+- [Il Sole 24 Ore](https://stream24.ilsole24ore.com/video/economia/maggiali-iit-respiratore-fi5-contro-virus-ora-open-source/ADf1VOQ) (Italian)
+- [MSN](https://www.msn.com/it-it/money/video/f15-un-ventilatore-polmonare-nato-da-sinergia-tra-iit-e-ferrari/vi-BB142gMe) (Italian)
 - [Federation Internationale De L'Automobile](https://www.fia.com/news/scuderia-ferrari-mission-winnow-and-italian-institute-technology-present-fi5)
 - [Formula1](https://www.formula1.com/en/latest/article.ferrari-unveil-new-ventilator-for-coronavirus-patients-designed-and-built-in.7DrOsmsbQB9piUafeuuXJA.html)
 - [Gazzetta MOTORI](https://www.gazzetta.it/Formula-1/13-05-2020/coronavirus-arriva-fi5-ventilatore-creato-ferrari-istituto-italiano-tecnologia-370941034843.shtml) (Italian)
