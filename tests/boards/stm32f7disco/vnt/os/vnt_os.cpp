@@ -50,8 +50,8 @@ namespace vnt { namespace os {
     
     static uint32_t _milli()
     {         
-//        return osal_system_millitime_get();
-        return _now() / 1000;
+        return osal_system_millitime_get();
+//        return _now() / 1000;
     }    
     
     static bool _initted = false;
