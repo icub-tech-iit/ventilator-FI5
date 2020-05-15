@@ -5,7 +5,7 @@ This repository contains the electronics of the ventilator.
 ### :file_folder: Folder organization
 This repository is organized as follows:
 - 🔘 `electrical_scheme` contains the electrical schematic of the ventilator (Logic diagram).
-- 🔘 `electronic_boards` contains the OrCad schematics of the two custom boards used in the ventilator, with the gerber files for the PCBs and the bill of material.
+- 🔘 `electronic_boards` contains the OrCad schematics of the custom boards used in the ventilator, the gerber files for the PCBs, and the bill of material.
 - 🔘 `wiring` contains the wiring diagram and the harness bill of material of the ventilator.
 
 ## Electronics repository
