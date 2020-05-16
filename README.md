@@ -53,6 +53,7 @@ Be careful that `mech` and `ele` branches are handled via [Git LFS](https://help
 ## 📰 News
 - [IIT](https://iit.it/iit-vs-covid-19/fi5-ventilator)
 - [Scuderia Ferrari Mission Winnow](https://www.ferrari.com/en-EN/formula1/articles/scuderia-ferrari-and-italian-institute-of-technology-present-fi5)
+- [Reuters](https://www.reuters.com/video/watch/ferrari-helps-drive-high-speed-developme-id713018857?chan=2iglyxg3)
 - [Askanews](http://www.askanews.it/video/2020/05/13/maggiali-iit-respiratore-fi5-contro-il-virus-ora-open-source-20200513_video_12551772) (Italian)
 - [Il Sole 24 Ore](https://stream24.ilsole24ore.com/video/economia/maggiali-iit-respiratore-fi5-contro-virus-ora-open-source/ADf1VOQ) (Italian)
 - [MSN](https://www.msn.com/it-it/money/video/f15-un-ventilatore-polmonare-nato-da-sinergia-tra-iit-e-ferrari/vi-BB142gMe) (Italian)
