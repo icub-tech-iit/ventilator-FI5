@@ -16,11 +16,12 @@ More details can be found in [**`FI5 technical specifications`**](../../design/F
 ![](./assets/alarms-handling.png)
 
 ### Example of generated main
+The following snippet shows how to interface with the generated code.
 
 ```c++
 #include <stddef.h>
-#include <stdio.h>                // This ert_main.c example uses printf/fflush
-#include "FSM0.h"                      // Model's header file
+#include <stdio.h>
+#include "FSM0.h"
 #include "rtwtypes.h"
 
 static FSM0ModelClass FSM0_Obj;             // Instance of model class
