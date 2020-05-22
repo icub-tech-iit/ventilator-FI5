@@ -30,6 +30,7 @@ The PRVC mode is implemented through a PI controller complemented with a static 
 ![](./assets/controller-prvc.png)
 
 ### Example of generated main
+The following snippet shows how to interface with the generated code.
 
 ```c++
 #include <stddef.h>
