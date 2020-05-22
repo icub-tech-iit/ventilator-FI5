@@ -34,8 +34,8 @@ The following snippet shows how to interface with the generated code.
 
 ```c++
 #include <stddef.h>
-#include <stdio.h>                // This ert_main.c example uses printf/fflush
-#include "controller.h"                // Model's header file
+#include <stdio.h>
+#include "controller.h"
 #include "rtwtypes.h"
 #include "zero_crossing_types.h"
 
