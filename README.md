@@ -131,4 +131,4 @@ The files contained in this repository are licensed under the [BSD-3-Clause](htt
 * [CMSIS](https://www.arm.com/why-arm/technologies/cmsis) [files](../../tree/code/generated/Drivers/CMSIS) provided by [arm](https://www.arm.com/), that are licensed under the terms of the [Apache License, Version 2.0](www.apache.org/licenses/LICENSE-2.0).
 
 ## ✉ Contacts
-If you need further information on the FI5 project, don't hesitate to send an email to **ventilator-FI5 _at_ iit.it**.
+If you need further information on the FI5 project, don't hesitate to send an email to <**ventilator-FI5 _at_ iit.it**>.
