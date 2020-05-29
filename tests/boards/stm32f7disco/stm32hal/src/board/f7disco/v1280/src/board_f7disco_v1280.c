@@ -1266,6 +1266,51 @@ static void MX_DMA_Init(void)
 }
 
 
+
+void stm32hal_EXTI_buttons_disable()
+{
+    HAL_NVIC_DisableIRQ(EXTI0_IRQn);
+    HAL_NVIC_DisableIRQ(EXTI1_IRQn);
+    HAL_NVIC_DisableIRQ(EXTI3_IRQn);
+    HAL_NVIC_DisableIRQ(EXTI4_IRQn);
+    HAL_NVIC_DisableIRQ(EXTI9_5_IRQn);   
+}
+
+void stm32hal_EXTI_encoder_disable()
+{
+    HAL_NVIC_DisableIRQ(EXTI2_IRQn);
+    HAL_NVIC_DisableIRQ(EXTI15_10_IRQn);      
+}
+
+void stm32hal_EXTI_disable()
+{
+    stm32hal_EXTI_buttons_disable();
+    stm32hal_EXTI_encoder_disable();     
+}
+
+
+void stm32hal_EXTI_buttons_enable()
+{
+    HAL_NVIC_EnableIRQ(EXTI0_IRQn);
+    HAL_NVIC_EnableIRQ(EXTI1_IRQn);
+    HAL_NVIC_EnableIRQ(EXTI3_IRQn);
+    HAL_NVIC_EnableIRQ(EXTI4_IRQn);
+    HAL_NVIC_EnableIRQ(EXTI9_5_IRQn);   
+}
+
+void stm32hal_EXTI_encoder_enable()
+{
+    HAL_NVIC_EnableIRQ(EXTI2_IRQn);
+    HAL_NVIC_EnableIRQ(EXTI15_10_IRQn);      
+}
+
+void stm32hal_EXTI_enable()
+{
+    stm32hal_EXTI_buttons_enable();
+    stm32hal_EXTI_encoder_enable();     
+}
+
+
 // marco.accame: we must rewrite it because some configurations are done elsewhere
 // however, at the moment we keep it as it is. it does not do any harm
 // the gpios are: 
@@ -1643,27 +1688,34 @@ static void MX_GPIO_Init(void)
 
   /* EXTI interrupt init*/
   HAL_NVIC_SetPriority(EXTI0_IRQn, 0, 0);
-  HAL_NVIC_EnableIRQ(EXTI0_IRQn);
+//  HAL_NVIC_EnableIRQ(EXTI0_IRQn);
 
   HAL_NVIC_SetPriority(EXTI1_IRQn, 0, 0);
-  HAL_NVIC_EnableIRQ(EXTI1_IRQn);
+//  HAL_NVIC_EnableIRQ(EXTI1_IRQn);
 
   HAL_NVIC_SetPriority(EXTI2_IRQn, 0, 0);
-  HAL_NVIC_EnableIRQ(EXTI2_IRQn);
+//  HAL_NVIC_EnableIRQ(EXTI2_IRQn);
 
   HAL_NVIC_SetPriority(EXTI3_IRQn, 0, 0);
-  HAL_NVIC_EnableIRQ(EXTI3_IRQn);
+//  HAL_NVIC_EnableIRQ(EXTI3_IRQn);
 
   HAL_NVIC_SetPriority(EXTI4_IRQn, 0, 0);
-  HAL_NVIC_EnableIRQ(EXTI4_IRQn);
+//  HAL_NVIC_EnableIRQ(EXTI4_IRQn);
 
   HAL_NVIC_SetPriority(EXTI9_5_IRQn, 0, 0);
-  HAL_NVIC_EnableIRQ(EXTI9_5_IRQn);
+//  HAL_NVIC_EnableIRQ(EXTI9_5_IRQn);
 
   HAL_NVIC_SetPriority(EXTI15_10_IRQn, 0, 0);
-  HAL_NVIC_EnableIRQ(EXTI15_10_IRQn);
+//  HAL_NVIC_EnableIRQ(EXTI15_10_IRQn);
+  
+    // marco.accame on 29 may 2020: better not to enable the exti interrupt in here.
+    // we need buttons exti only if the buttons use debounce mode. 
+    // we need encoder exti only if we use it.  
+  
+//    stm32hal_EXTI_disable();
 
 }
+
 
 /* USER CODE BEGIN 4 */
 

@@ -234,7 +234,7 @@ void DeviceDriver_Deinitialize( void )
 
 #if defined(LATEST_CONTROL)
 
-#include "app_tCTRLc.h"
+#include "fi5app_tCTRLc.h"
 
 int iit_UpdateValues()
 {    

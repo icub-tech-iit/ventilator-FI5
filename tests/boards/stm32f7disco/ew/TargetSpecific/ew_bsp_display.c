@@ -79,6 +79,9 @@ LTDC_LayerCfgTypeDef          LayerConfig;
   */
 void HAL_LTDC_MspInit(LTDC_HandleTypeDef *hltdc)
 {
+#if defined(APP_HMI_disable)
+    return;
+#endif    
   GPIO_InitTypeDef GPIO_Init_Structure;
 
   /*##-1- Enable peripherals and GPIO Clocks #################################*/

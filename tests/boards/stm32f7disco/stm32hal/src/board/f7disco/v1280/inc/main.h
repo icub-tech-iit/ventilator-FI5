@@ -29,6 +29,7 @@ extern "C" {
 
 /* Includes ------------------------------------------------------------------*/
 //#include "stm32f7xx_hal.h"
+#include "stm32hal.h"
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
@@ -367,6 +368,12 @@ extern ADC_HandleTypeDef hadc3;
 extern DMA_HandleTypeDef hdma_adc3;
 
 extern void stm32hal_adc_init(void);
+
+extern void stm32hal_EXTI_buttons_disable();
+extern void stm32hal_EXTI_encoder_disable();
+extern void stm32hal_EXTI_disable();
+extern void stm32hal_EXTI_buttons_enable();
+extern void stm32hal_EXTI_encoder_enable();
 
 #ifdef __cplusplus
 }
