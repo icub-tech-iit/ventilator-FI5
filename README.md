@@ -9,7 +9,9 @@ This repository contains the code which runs on the ventilator.
 
 **This document is still in draft format.**
 
+### Latest firmware
 
+In https://github.com/icub-tech-iit/ventilator-FI5/blob/code/application/bin/fi5app.hex
 
 ### Folder organization
 
