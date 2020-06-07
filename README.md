@@ -73,6 +73,7 @@ Be careful that `mech` and `ele` branches are handled via [Git LFS](https://help
 - [Business Insider](https://www.businessinsider.in/sports/news/ferrari-helps-design-new-low-cost-ventilator-in-coronavirus-battleto/articleshow/75724414.cms)
 - [Sky Tg24](https://tg24.sky.it/bologna/2020/05/13/ferrari-progetta-ventilatore-polmonare-in-5-settimane) (Italian)
 - [Rai News](http://www.rainews.it/dl/rainews/media/Coronavirus-Ferrari-e-Istituto-italiano-di-Tecnologia-insieme-per-un-ventilatore-polmonare-low-cost-d8e9ec2a-051e-458f-933c-15627c3b3f5b.html) (Italian)
+- [El Universal](https://www.eluniversal.com.mx/english/scuderia-ferrari-and-italian-institute-technology-donate-fi5-ventilator-mexico)
 
 ## 🎥 Media
 
