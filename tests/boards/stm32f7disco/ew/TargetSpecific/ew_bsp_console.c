@@ -129,7 +129,7 @@ UART_HandleTypeDef                      UART_Handle;
 void EwBspConsoleInit( void )
 {
   UART_Handle.Instance            = UART_PORTID;
-  UART_Handle.Init.BaudRate       = 921600; // 20*112500;// 112500;
+  UART_Handle.Init.BaudRate       = 4000000; // 921600; // 20*112500;// 112500;
   UART_Handle.Init.WordLength     = UART_WORDLENGTH_8B;
   UART_Handle.Init.StopBits       = UART_STOPBITS_1;
   UART_Handle.Init.Parity         = UART_PARITY_NONE;
