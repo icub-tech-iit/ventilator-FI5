@@ -301,7 +301,8 @@ struct fi5app::theController2::Impl
         out.S5flowrate = outputs.signals[5];         // S5 Flow Rate [L/min] (float)
         out.filtS7pressure = outputs.signals[6];         // S7 Filtered Pressure [cmH2O] (float)
         out.estTidalVolume = outputs.signals[7];         // Tidal Volume estimates [L] (float)
-        out.assistedVentilTrigger = outputs.signals[8];         // Assisted Ventilation Trigger [-] (float)   
+        out.maxTidalVolume2Cycles = outputs.signals[8];  // Maximum Tidal Volume per 2 cycles [L] (float)
+        out.assistedVentilTrigger = outputs.signals[9];     // Assisted Ventilation Trigger [-] (float)   
     }
 
 };

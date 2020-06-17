@@ -196,7 +196,8 @@ namespace fi5app {
             float S5flowrate {0};       // outputs.signals[5];         // S5 Flow Rate [L/min] (float)
             float filtS7pressure {0};   // outputs.signals[6];         // S7 Filtered Pressure [cmH2O] (float)
             float estTidalVolume {0};   // outputs.signals[7];         // Tidal Volume estimates [L] (float)
-            float assistedVentilTrigger {0}; //outputs.signals[8];         // Assisted Ventilation Trigger [-] (float)            
+            float maxTidalVolume2Cycles {0};   // outputs.signals[8];  // Maximum Tidal Volume per 2 cycles [L] (float)
+            float assistedVentilTrigger {0}; //outputs.signals[9];         // Assisted Ventilation Trigger [-] (float)            
             ctrlOut() = default;
             void print() const
             {

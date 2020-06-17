@@ -80,6 +80,20 @@ namespace fi5app { namespace tCTRL {
 #include "vnt_bsp_watchdog.h"
 #include "vnt_os_Timer.h"
 
+#include "stm32hal.h"
+extern UART_HandleTypeDef UART_Handle;
+namespace vnt { namespace bsp { namespace serial {
+    
+    int puts(const std::string &str)
+    {
+        const char *cs = str.c_str();
+        size_t ss = strlen(cs);
+        constexpr uint32_t mstimeout {50}; 
+        HAL_UART_Transmit( &UART_Handle, (uint8_t*)cs, ss, mstimeout);
+        return 1; 
+    }
+}}}
+
 
 
 #include "board_driver.h"
@@ -338,6 +352,9 @@ static void setSTATE(const board_sensor_data_t &ai);
 void apply(driverOutput &drvout, sharedHMIdata_t &shmi, const fi5app::theController2::fsmOut &ofsm, const fi5app::theController2::ctrlOut &octr);
 void apply(driverOutput &drvout, sharedHMIdata_t &shmi, const fi5app::theController2::Out &out);
 
+void print_log(const fi5app::theController2::Inp &inp, const fi5app::theController2::Out &out, const fi5app::theController2::ctrlOut &ctrlout);
+
+
 //volatile vnt::core::Time times[8] = {0};
 
 
@@ -378,9 +395,87 @@ void onevent(vnt::os::Thread *t, vnt::os::EventMask eventmask, void *param)
         // we write to drivers        
         board_apply_actuation(&driveroutput.out);
         
+        print_log(fi5app::theController2::getInstance().getInp(), fi5app::theController2::getInstance().getOut(), fi5app::theController2::getInstance().get_ctrlOut());
+        
         _tick++;        
     }  
 
+}
+
+
+#define PRINT_LOG
+#define PRINT_LOG_SERIAL
+constexpr uint32_t decimationfactor = 1;
+
+void print_log(const fi5app::theController2::Inp &inp, const fi5app::theController2::Out &out, const fi5app::theController2::ctrlOut &ctrlout)
+{
+#if !defined(PRINT_LOG)   
+#else
+    static uint32_t iter {0};
+    static std::string msg;
+    static std::array<float, 14> v {0};    
+    static vnt::core::Time prevduration {0};
+        
+    // reserve memory to avoid resizing the string during filling it w/ values.
+    if(0 == iter)
+    {
+        msg.reserve(512);
+    }
+
+    // increase now the iteration number
+    iter++;
+    
+    if(0 != (iter % decimationfactor))
+    {
+        return;
+    }        
+    
+    volatile vnt::core::Time start = vnt::core::now();
+           
+    // assign the values
+    v[0] = ctrlout.CPvalvePerc;
+    v[1] = ctrlout.CFBvalveON;
+    v[2] = ctrlout.targetFlowRate;
+    v[3] = ctrlout.targetPressure;
+    v[4] = ctrlout.filtS1pressure;
+    v[5] = ctrlout.S2flowrate;
+    v[6] = ctrlout.filtS3pressure;
+    v[7] = ctrlout.S3temperature;
+    v[8] = ctrlout.filtS4pressure;
+    v[9] = ctrlout.S5flowrate;
+    v[10] = ctrlout.filtS7pressure;
+    v[11] = ctrlout.estTidalVolume;
+    v[12] = ctrlout.maxTidalVolume2Cycles;
+    v[13] = ctrlout.assistedVentilTrigger;
+
+    // clear the string
+    msg.clear();
+    
+    // fill it
+    msg += std::to_string(iter);
+    msg += ", ";
+    msg += std::to_string(prevduration);
+                
+    for(int i=0; i<v.size(); i++)
+    {
+        msg += ", ";
+        msg += std::to_string(v[0]);
+    }
+ 
+    
+    // and now print it
+    
+    #if defined(PRINT_LOG_SERIAL)
+        vnt::bsp::serial::puts(msg);
+    #else
+        vnt::bsp::trace::puts(msg);
+    #endif
+        
+    
+    // finally, update the duration
+    prevduration = vnt::core::now() - start;
+    
+#endif    
 }
 
 void apply(driverOutput &drvout, sharedHMIdata_t &shmi, const fi5app::theController2::Out &out)
