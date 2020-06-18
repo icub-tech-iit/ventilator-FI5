@@ -352,7 +352,7 @@ static void setSTATE(const board_sensor_data_t &ai);
 void apply(driverOutput &drvout, sharedHMIdata_t &shmi, const fi5app::theController2::fsmOut &ofsm, const fi5app::theController2::ctrlOut &octr);
 void apply(driverOutput &drvout, sharedHMIdata_t &shmi, const fi5app::theController2::Out &out);
 
-void print_log(const fi5app::theController2::Inp &inp, const fi5app::theController2::Out &out, const fi5app::theController2::ctrlOut &ctrlout);
+void print_log(const fi5app::theController2::Inp &inp, const fi5app::theController2::Out &out, const fi5app::theController2::fsmOut &fsmout, const fi5app::theController2::ctrlOut &ctrlout);
 
 
 //volatile vnt::core::Time times[8] = {0};
@@ -395,7 +395,7 @@ void onevent(vnt::os::Thread *t, vnt::os::EventMask eventmask, void *param)
         // we write to drivers        
         board_apply_actuation(&driveroutput.out);
         
-        print_log(fi5app::theController2::getInstance().getInp(), fi5app::theController2::getInstance().getOut(), fi5app::theController2::getInstance().get_ctrlOut());
+        print_log(fi5app::theController2::getInstance().getInp(), fi5app::theController2::getInstance().getOut(), fi5app::theController2::getInstance().get_fsmOut(), fi5app::theController2::getInstance().get_ctrlOut());
         
         _tick++;        
     }  
@@ -407,7 +407,7 @@ void onevent(vnt::os::Thread *t, vnt::os::EventMask eventmask, void *param)
 #define PRINT_LOG_SERIAL
 constexpr uint32_t decimationfactor = 1;
 
-void print_log(const fi5app::theController2::Inp &inp, const fi5app::theController2::Out &out, const fi5app::theController2::ctrlOut &ctrlout)
+void print_log(const fi5app::theController2::Inp &inp, const fi5app::theController2::Out &out, const fi5app::theController2::fsmOut &fsmout, const fi5app::theController2::ctrlOut &ctrlout)
 {
 #if !defined(PRINT_LOG)   
 #else
@@ -451,21 +451,38 @@ void print_log(const fi5app::theController2::Inp &inp, const fi5app::theControll
     // clear the string
     msg.clear();
     
-    // fill it
-    msg += std::to_string(iter);
+    // fill it:
+    // iter, ctrlmode, knobsout[4], ctrlout[]
+    msg += std::to_string(iter); 
+    
+//    // prev duration
+//    msg += ", ";
+//    msg += std::to_string(prevduration); 
+    
+    // control mode
     msg += ", ";
-    msg += std::to_string(prevduration);
-                
+    msg += std::to_string(vnt::core::tointegral(fsmout.mode));
+    
+    // knobs out
+    for(int i=0; i<fsmout.KNBgui.size(); i++)
+    {
+        msg += ", ";
+        msg += std::to_string(fsmout.KNBgui[i]);        
+    }
+          
+    // control out
     for(int i=0; i<v.size(); i++)
     {
         msg += ", ";
-        msg += std::to_string(v[0]);
+        msg += std::to_string(v[i]);
     }
  
     
     // and now print it
     
     #if defined(PRINT_LOG_SERIAL)
+        msg += '\r';
+        msg += '\n';
         vnt::bsp::serial::puts(msg);
     #else
         vnt::bsp::trace::puts(msg);
