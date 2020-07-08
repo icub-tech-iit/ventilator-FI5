@@ -23,8 +23,40 @@
 
 #include <array>
 
+#define USE_KNOBS_360
+
 namespace fi5app {
-    
+
+#if defined(USE_KNOBS_360)
+    // they are the new knobs
+    struct knob360_t 
+    {
+        struct Cfg
+        {
+            float _ri {90.0f};
+            float _le {270.0f};
+            float levelsofquantization {4096};            
+            constexpr Cfg(float ri, float le, float l = 4096.0f) : _ri(ri), _le(le), levelsofquantization(l) {}        
+        };
+        
+        Cfg _cfg {90.0f, 270.0f};
+        
+        constexpr knob360_t(const Cfg &c) : _cfg(c) 
+        {   
+            
+        }
+        
+        float get(const uint32_t input) const
+        {
+            
+            float b = (static_cast<float>(input) / static_cast<float>(_cfg.levelsofquantization-1)) * 360.0f;
+            float b0 = std::max(_cfg._ri, std::min(b, _cfg._le));
+            float c = (b0 - _cfg._ri) / (_cfg._le - _cfg._ri);
+            float r = 1.0f - c;
+            return r; 
+        }        
+    };
+#else    
     struct knob_t 
     {
         struct Cfg
@@ -60,7 +92,7 @@ namespace fi5app {
         }
         
     };
-           
+#endif           
     class theController2
     {
     public:
@@ -108,51 +140,39 @@ namespace fi5app {
                 static constexpr uint8_t btnPOSprcv = 0; 
                 static constexpr uint8_t btnmap[btnNUM] = {btnPOSidle, btnPOScpap, btnPOSvcv, btnPOSprcv};
                 for(int i=0; i< btnNUM; i++) BTNpressed[i] = vnt::core::binary::bit::check(sd.buttons, btnmap[i]);
-                    
-//                static constexpr uint8_t knbPOSfreq = 0;
-//                static constexpr uint8_t kntPOSpmax = 1; 
-//                static constexpr uint8_t kntPOSieratio = 2;  
-//                static constexpr uint8_t kntPOStidalvol = 3; 
-                    
-                // conversions from analog_input to normalised values of knobs is less easy.
-                // - we need to rescale uint16_t values into another range.
-                    
-                // min and max are assigned upon readings
+                                   
+#if defined(USE_KNOBS_360)
                 
-//                constexpr knob_t knobFreq {{77, 400}}; 
-//                constexpr knob_t knobPmax {{58, 400}}; 
-//                constexpr knob_t knobIEratio {{46, 400}}; 
-//                constexpr knob_t knobTidalVolum {{56, 400}}; 
+//                static constexpr knob360_t knobFreq {{90, 270}}; 
+//                static constexpr knob360_t knobPmax {{90, 270}}; 
+//                static constexpr knob360_t knobIEratio {{90, 270}}; 
+//                static constexpr knob360_t knobTidalVolum {{90, 270}}; 
+                static constexpr std::array<knob360_t, 4> knobs {knob360_t({90.0f, 270.0f}), knob360_t({90.0f, 270.0f}), knob360_t({90.0f, 270.0f}), knob360_t({90.0f, 270.0f})};
                 
-//                constexpr knob_t knobFreq {{32, 432}}; 
-//                constexpr knob_t knobPmax {{32, 432}}; 
-//                constexpr knob_t knobIEratio {{32, 432}}; 
-//                constexpr knob_t knobTidalVolum {{32, 432}}; 
+                // luckily the order is w/out remap
+                for(int i=0; i<4; i++)
+                {    
+                    uint16_t t = sd.analog_input[i];
+                    KNBvalue[i] = knobs[i].get(t);
+                }
+
+#else                
                 constexpr uint32_t f = 1;
                 constexpr bool quantize = false;
                 constexpr knob_t knobFreq {{32, 432, quantize, f*35}}; 
-                constexpr knob_t knobPmax {{32, 432, quantize, f*55}}; 
-                constexpr knob_t knobIEratio {{32, 432, quantize, f*15}}; 
-                constexpr knob_t knobTidalVolum {{32, 432, quantize, f*18}}; 
+                //constexpr knob_t knobPmax {{32, 432, quantize, f*55}}; 
+                //constexpr knob_t knobIEratio {{32, 432, quantize, f*15}}; 
+                //constexpr knob_t knobTidalVolum {{32, 432, quantize, f*18}}; 
 
-//                constexpr knob_t knobFreq {{77, 400, true, 35}}; 
-//                constexpr knob_t knobPmax {{58, 400, true, 55}}; 
-//                constexpr knob_t knobIEratio {{46, 400, true, 15}}; 
-//                constexpr knob_t knobTidalVolum {{56, 400, true, 18}}; 
                              
                 // luckily the order is w/out remap
                 for(int i=0; i<4; i++)
                 {    
-//                    constexpr uint8_t factor = 4;                    
-//                    volatile uint16_t t = sd.analog_input[i] >> factor;
-//                    t <<= factor;
                     uint16_t t = sd.analog_input[i];
                     KNBvalue[i] = knobFreq.get(t);
                 }
-//                KNBvalue[0] = knobFreq.get(sd.analog_input[0]);
-//                KNBvalue[1] = knobPmax.get(sd.analog_input[1]);
-//                KNBvalue[2] = knobIEratio.get(sd.analog_input[2]);
-//                KNBvalue[3] = knobTidalVolum.get(sd.analog_input[3]);                
+#endif
+                
             }
     
             void print() const
