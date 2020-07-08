@@ -406,7 +406,7 @@
             <File>
               <FileName>int_handlers.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\..\..\..\generated\Src\int_handlers.c</FilePath>
+              <FilePath>..\src\board\f7disco\v1280\src\int_handlers.c</FilePath>
             </File>
           </Files>
         </Group>
