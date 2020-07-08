@@ -7,9 +7,9 @@
 //
 // Code generated for Simulink model 'FSM0'.
 //
-// Model version                  : 1.909
+// Model version                  : 1.910
 // Simulink Coder version         : 9.3 (R2020a) 18-Nov-2019
-// C/C++ source code generated on : Tue May 26 21:16:38 2020
+// C/C++ source code generated on : Wed Jul  8 15:26:02 2020
 //
 // Target selection: ert.tlc
 // Embedded hardware selection: Intel->x86-64 (Windows64)
@@ -103,36 +103,36 @@ typedef struct tag_PMfBDzoakfdM9QAdfx2o6D cell_wrap_FSM0_T;
 
 #endif                                 //typedef_cell_wrap_FSM0_T
 
-#ifndef struct_tag_ZiYJHmAzopopP55emjm3BH
-#define struct_tag_ZiYJHmAzopopP55emjm3BH
+#ifndef struct_tag_Dgbfowtw9nLp0VNFehcQBB
+#define struct_tag_Dgbfowtw9nLp0VNFehcQBB
 
-struct tag_ZiYJHmAzopopP55emjm3BH
+struct tag_Dgbfowtw9nLp0VNFehcQBB
 {
   int32_T isInitialized;
   boolean_T isSetupComplete;
   real32_T pWinLen;
-  real32_T pBuf[128];
-  real32_T pHeap[128];
+  real32_T pBuf[64];
+  real32_T pHeap[64];
   real32_T pMidHeap;
   real32_T pIdx[4];
-  real32_T pPos[128];
+  real32_T pPos[64];
   real32_T pMinHeapLength;
   real32_T pMaxHeapLength;
 };
 
-#endif                                 //struct_tag_ZiYJHmAzopopP55emjm3BH
+#endif                                 //struct_tag_Dgbfowtw9nLp0VNFehcQBB
 
 #ifndef typedef_c_dsp_private_MedianFilterCG__T
 #define typedef_c_dsp_private_MedianFilterCG__T
 
-typedef struct tag_ZiYJHmAzopopP55emjm3BH c_dsp_private_MedianFilterCG__T;
+typedef struct tag_Dgbfowtw9nLp0VNFehcQBB c_dsp_private_MedianFilterCG__T;
 
 #endif                                 //typedef_c_dsp_private_MedianFilterCG__T
 
-#ifndef struct_tag_ux3tMAblms1yxl6Ma1ZSY
-#define struct_tag_ux3tMAblms1yxl6Ma1ZSY
+#ifndef struct_tag_MTgNhEu5VQdE7pJds1AlZ
+#define struct_tag_MTgNhEu5VQdE7pJds1AlZ
 
-struct tag_ux3tMAblms1yxl6Ma1ZSY
+struct tag_MTgNhEu5VQdE7pJds1AlZ
 {
   boolean_T matlabCodegenIsDeleted;
   int32_T isInitialized;
@@ -142,12 +142,12 @@ struct tag_ux3tMAblms1yxl6Ma1ZSY
   c_dsp_private_MedianFilterCG__T pMID;
 };
 
-#endif                                 //struct_tag_ux3tMAblms1yxl6Ma1ZSY
+#endif                                 //struct_tag_MTgNhEu5VQdE7pJds1AlZ
 
 #ifndef typedef_dsp_MedianFilter_FSM0_T
 #define typedef_dsp_MedianFilter_FSM0_T
 
-typedef struct tag_ux3tMAblms1yxl6Ma1ZSY dsp_MedianFilter_FSM0_T;
+typedef struct tag_MTgNhEu5VQdE7pJds1AlZ dsp_MedianFilter_FSM0_T;
 
 #endif                                 //typedef_dsp_MedianFilter_FSM0_T
 #endif                                 // RTW_HEADER_FSM0_types_h_

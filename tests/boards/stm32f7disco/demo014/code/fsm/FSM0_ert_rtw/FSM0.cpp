@@ -7,9 +7,9 @@
 //
 // Code generated for Simulink model 'FSM0'.
 //
-// Model version                  : 1.909
+// Model version                  : 1.910
 // Simulink Coder version         : 9.3 (R2020a) 18-Nov-2019
-// C/C++ source code generated on : Tue May 26 21:16:38 2020
+// C/C++ source code generated on : Wed Jul  8 15:26:02 2020
 //
 // Target selection: ert.tlc
 // Embedded hardware selection: Intel->x86-64 (Windows64)
@@ -1730,10 +1730,10 @@ void FSM0ModelClass::FSM0_MedianFilterCG_resetImpl
   real32_T cnt2;
   int32_T c_index;
   int32_T obj_0;
-  std::memset(&obj->pBuf[0], 0, sizeof(real32_T) << 7U);
-  std::memset(&obj->pPos[0], 0, sizeof(real32_T) << 7U);
-  std::memset(&obj->pHeap[0], 0, sizeof(real32_T) << 7U);
-  obj->pWinLen = 32.0F;
+  std::memset(&obj->pBuf[0], 0, sizeof(real32_T) << 6U);
+  std::memset(&obj->pPos[0], 0, sizeof(real32_T) << 6U);
+  std::memset(&obj->pHeap[0], 0, sizeof(real32_T) << 6U);
+  obj->pWinLen = 16.0F;
   obj->pIdx[0] = obj->pWinLen;
   obj->pIdx[1] = obj->pWinLen;
   obj->pIdx[2] = obj->pWinLen;
@@ -1755,28 +1755,28 @@ void FSM0ModelClass::FSM0_MedianFilterCG_resetImpl
 
   cnt1 = 1.0F;
   cnt2 = obj->pWinLen;
-  for (c_index = 0; c_index < 32; c_index++) {
-    if (std::fmod(-static_cast<real32_T>(c_index) + 32.0F, 2.0F) == 0.0F) {
-      obj_0 = 32 - c_index;
+  for (c_index = 0; c_index < 16; c_index++) {
+    if (std::fmod(-static_cast<real32_T>(c_index) + 16.0F, 2.0F) == 0.0F) {
+      obj_0 = 16 - c_index;
       obj->pPos[obj_0 - 1] = cnt1;
+      obj->pPos[obj_0 + 15] = cnt1;
       obj->pPos[obj_0 + 31] = cnt1;
-      obj->pPos[obj_0 + 63] = cnt1;
-      obj->pPos[obj_0 + 95] = cnt1;
+      obj->pPos[obj_0 + 47] = cnt1;
       cnt1++;
     } else {
-      obj_0 = 32 - c_index;
+      obj_0 = 16 - c_index;
       obj->pPos[obj_0 - 1] = cnt2;
+      obj->pPos[obj_0 + 15] = cnt2;
       obj->pPos[obj_0 + 31] = cnt2;
-      obj->pPos[obj_0 + 63] = cnt2;
-      obj->pPos[obj_0 + 95] = cnt2;
+      obj->pPos[obj_0 + 47] = cnt2;
       cnt2--;
     }
 
-    obj_0 = static_cast<int32_T>(obj->pPos[31 - c_index]);
-    obj->pHeap[obj_0 - 1] = -static_cast<real32_T>(c_index) + 32.0F;
-    obj->pHeap[obj_0 + 31] = -static_cast<real32_T>(c_index) + 32.0F;
-    obj->pHeap[obj_0 + 63] = -static_cast<real32_T>(c_index) + 32.0F;
-    obj->pHeap[obj_0 + 95] = -static_cast<real32_T>(c_index) + 32.0F;
+    obj_0 = static_cast<int32_T>(obj->pPos[15 - c_index]);
+    obj->pHeap[obj_0 - 1] = -static_cast<real32_T>(c_index) + 16.0F;
+    obj->pHeap[obj_0 + 15] = -static_cast<real32_T>(c_index) + 16.0F;
+    obj->pHeap[obj_0 + 31] = -static_cast<real32_T>(c_index) + 16.0F;
+    obj->pHeap[obj_0 + 47] = -static_cast<real32_T>(c_index) + 16.0F;
   }
 }
 
@@ -1793,7 +1793,7 @@ void FSM0ModelClass::F_MedianFilterCG_trickleDownMax
   exitg1 = false;
   while ((!exitg1) && (i >= -obj->pMaxHeapLength)) {
     if ((i < -1.0F) && (i > -obj->pMaxHeapLength)) {
-      tmp = (chanIdx - 1) << 5;
+      tmp = (chanIdx - 1) << 4;
       if (obj->pBuf[(static_cast<int32_T>(obj->pHeap[(tmp + static_cast<int32_T>
              (i + obj->pMidHeap)) - 1]) + tmp) - 1] < obj->pBuf
           [(static_cast<int32_T>(obj->pHeap[(static_cast<int32_T>((i - 1.0F) +
@@ -1809,7 +1809,7 @@ void FSM0ModelClass::F_MedianFilterCG_trickleDownMax
       u = std::floor(u);
     }
 
-    tmp = (chanIdx - 1) << 5;
+    tmp = (chanIdx - 1) << 4;
     ind2 = i + obj->pMidHeap;
     if (!(obj->pBuf[(static_cast<int32_T>(obj->pHeap[(tmp + static_cast<int32_T>
             (u + obj->pMidHeap)) - 1]) + tmp) - 1] < obj->pBuf
@@ -1827,11 +1827,11 @@ void FSM0ModelClass::F_MedianFilterCG_trickleDownMax
       u += obj->pMidHeap;
       temp_tmp = (tmp + static_cast<int32_T>(u)) - 1;
       temp = obj->pHeap[temp_tmp];
-      tmp_0 = (((chanIdx - 1) << 5) + static_cast<int32_T>(ind2)) - 1;
+      tmp_0 = (((chanIdx - 1) << 4) + static_cast<int32_T>(ind2)) - 1;
       obj->pHeap[temp_tmp] = obj->pHeap[tmp_0];
       obj->pHeap[tmp_0] = temp;
       obj->pPos[(static_cast<int32_T>(obj->pHeap[temp_tmp]) + tmp) - 1] = u;
-      obj->pPos[(static_cast<int32_T>(obj->pHeap[tmp_0]) + ((chanIdx - 1) << 5))
+      obj->pPos[(static_cast<int32_T>(obj->pHeap[tmp_0]) + ((chanIdx - 1) << 4))
         - 1] = ind2;
       i *= 2.0F;
     }
@@ -1851,7 +1851,7 @@ void FSM0ModelClass::F_MedianFilterCG_trickleDownMin
   exitg1 = false;
   while ((!exitg1) && (i <= obj->pMinHeapLength)) {
     if ((i > 1.0F) && (i < obj->pMinHeapLength)) {
-      tmp = (chanIdx - 1) << 5;
+      tmp = (chanIdx - 1) << 4;
       if (obj->pBuf[(static_cast<int32_T>(obj->pHeap[(static_cast<int32_T>((i +
                1.0F) + obj->pMidHeap) + tmp) - 1]) + tmp) - 1] < obj->pBuf[(
            static_cast<int32_T>(obj->pHeap[(tmp + static_cast<int32_T>(i +
@@ -1867,7 +1867,7 @@ void FSM0ModelClass::F_MedianFilterCG_trickleDownMin
       u = std::floor(u);
     }
 
-    tmp = (chanIdx - 1) << 5;
+    tmp = (chanIdx - 1) << 4;
     ind1 = i + obj->pMidHeap;
     if (!(obj->pBuf[(static_cast<int32_T>(obj->pHeap[(tmp + static_cast<int32_T>
             (ind1)) - 1]) + tmp) - 1] < obj->pBuf[(static_cast<int32_T>
@@ -1883,13 +1883,13 @@ void FSM0ModelClass::F_MedianFilterCG_trickleDownMin
       }
 
       u += obj->pMidHeap;
-      temp_tmp = (((chanIdx - 1) << 5) + static_cast<int32_T>(ind1)) - 1;
+      temp_tmp = (((chanIdx - 1) << 4) + static_cast<int32_T>(ind1)) - 1;
       temp = obj->pHeap[temp_tmp];
       tmp_0 = (tmp + static_cast<int32_T>(u)) - 1;
       obj->pHeap[temp_tmp] = obj->pHeap[tmp_0];
       obj->pHeap[tmp_0] = temp;
       obj->pPos[(static_cast<int32_T>(obj->pHeap[temp_tmp]) + ((chanIdx - 1) <<
-                  5)) - 1] = ind1;
+                  4)) - 1] = ind1;
       obj->pPos[(static_cast<int32_T>(obj->pHeap[tmp_0]) + tmp) - 1] = u;
       i *= 2.0F;
     }
@@ -2667,9 +2667,9 @@ void FSM0ModelClass::step()
     vprev += obj_0->pBuf[static_cast<int32_T>(obj_0->pHeap[static_cast<int32_T>
       (obj_0->pMidHeap - 1.0F) - 1]) - 1];
     rtb_MedianFilter[0] = vprev / 2.0F;
-    vprev = obj_0->pBuf[static_cast<int32_T>(obj_0->pIdx[1]) + 31];
-    obj_0->pBuf[static_cast<int32_T>(obj_0->pIdx[1]) + 31] = FSM0_U.knobs_in[1];
-    p = obj_0->pPos[static_cast<int32_T>(obj_0->pIdx[1]) + 31];
+    vprev = obj_0->pBuf[static_cast<int32_T>(obj_0->pIdx[1]) + 15];
+    obj_0->pBuf[static_cast<int32_T>(obj_0->pIdx[1]) + 15] = FSM0_U.knobs_in[1];
+    p = obj_0->pPos[static_cast<int32_T>(obj_0->pIdx[1]) + 15];
     obj_0->pIdx[1]++;
     if (obj_0->pWinLen + 1.0F == obj_0->pIdx[1]) {
       obj_0->pIdx[1] = 1.0F;
@@ -2679,6 +2679,111 @@ void FSM0ModelClass::step()
       if (vprev < FSM0_U.knobs_in[1]) {
         vprev = p - obj_0->pMidHeap;
         F_MedianFilterCG_trickleDownMin(obj_0, vprev * 2.0F, 2);
+      } else {
+        i = p - obj_0->pMidHeap;
+        exitg1 = false;
+        while ((!exitg1) && (i > 0.0F)) {
+          vprev = std::floor(i / 2.0F);
+          flag = (obj_0->pBuf[static_cast<int32_T>(obj_0->pHeap
+                   [static_cast<int32_T>(i + obj_0->pMidHeap) + 15]) + 15] <
+                  obj_0->pBuf[static_cast<int32_T>(obj_0->pHeap
+                   [static_cast<int32_T>(vprev + obj_0->pMidHeap) + 15]) + 15]);
+          if (!flag) {
+            exitg1 = true;
+          } else {
+            p = i + obj_0->pMidHeap;
+            i = std::floor(i / 2.0F) + obj_0->pMidHeap;
+            c_previousEvent = static_cast<int32_T>(p) + 15;
+            temp = obj_0->pHeap[c_previousEvent];
+            flag_tmp = static_cast<int32_T>(i) + 15;
+            obj_0->pHeap[c_previousEvent] = obj_0->pHeap[flag_tmp];
+            obj_0->pHeap[flag_tmp] = temp;
+            obj_0->pPos[static_cast<int32_T>(obj_0->pHeap[static_cast<int32_T>(p)
+              + 15]) + 15] = p;
+            obj_0->pPos[static_cast<int32_T>(obj_0->pHeap[flag_tmp]) + 15] = i;
+            i = vprev;
+          }
+        }
+
+        if (i == 0.0F) {
+          F_MedianFilterCG_trickleDownMax(obj_0, -1.0F, 2);
+        }
+      }
+    } else if (p < obj_0->pMidHeap) {
+      if (FSM0_U.knobs_in[1] < vprev) {
+        vprev = p - obj_0->pMidHeap;
+        F_MedianFilterCG_trickleDownMax(obj_0, vprev * 2.0F, 2);
+      } else {
+        i = p - obj_0->pMidHeap;
+        exitg1 = false;
+        while ((!exitg1) && (i < 0.0F)) {
+          p = i / 2.0F;
+          if (p < 0.0F) {
+            vprev = std::ceil(p);
+          } else {
+            vprev = -0.0F;
+          }
+
+          flag = (obj_0->pBuf[static_cast<int32_T>(obj_0->pHeap
+                   [static_cast<int32_T>(vprev + obj_0->pMidHeap) + 15]) + 15] <
+                  obj_0->pBuf[static_cast<int32_T>(obj_0->pHeap
+                   [static_cast<int32_T>(i + obj_0->pMidHeap) + 15]) + 15]);
+          if (!flag) {
+            exitg1 = true;
+          } else {
+            p = i / 2.0F;
+            if (p < 0.0F) {
+              p = std::ceil(p);
+            } else {
+              p = -0.0F;
+            }
+
+            p += obj_0->pMidHeap;
+            i += obj_0->pMidHeap;
+            c_previousEvent = static_cast<int32_T>(p) + 15;
+            temp = obj_0->pHeap[c_previousEvent];
+            obj_0->pHeap[c_previousEvent] = obj_0->pHeap[static_cast<int32_T>(i)
+              + 15];
+            flag_tmp = static_cast<int32_T>(i) + 15;
+            obj_0->pHeap[flag_tmp] = temp;
+            obj_0->pPos[static_cast<int32_T>(obj_0->pHeap[c_previousEvent]) + 15]
+              = p;
+            obj_0->pPos[static_cast<int32_T>(obj_0->pHeap[flag_tmp]) + 15] = i;
+            i = vprev;
+          }
+        }
+
+        if (i == 0.0F) {
+          F_MedianFilterCG_trickleDownMin(obj_0, 1.0F, 2);
+        }
+      }
+    } else {
+      if (obj_0->pMaxHeapLength != 0.0F) {
+        F_MedianFilterCG_trickleDownMax(obj_0, -1.0F, 2);
+      }
+
+      if (obj_0->pMinHeapLength > 0.0F) {
+        F_MedianFilterCG_trickleDownMin(obj_0, 1.0F, 2);
+      }
+    }
+
+    vprev = obj_0->pBuf[static_cast<int32_T>(obj_0->pHeap[static_cast<int32_T>
+      (obj_0->pMidHeap) + 15]) + 15];
+    vprev += obj_0->pBuf[static_cast<int32_T>(obj_0->pHeap[static_cast<int32_T>
+      (obj_0->pMidHeap - 1.0F) + 15]) + 15];
+    rtb_MedianFilter[1] = vprev / 2.0F;
+    vprev = obj_0->pBuf[static_cast<int32_T>(obj_0->pIdx[2]) + 31];
+    obj_0->pBuf[static_cast<int32_T>(obj_0->pIdx[2]) + 31] = FSM0_U.knobs_in[2];
+    p = obj_0->pPos[static_cast<int32_T>(obj_0->pIdx[2]) + 31];
+    obj_0->pIdx[2]++;
+    if (obj_0->pWinLen + 1.0F == obj_0->pIdx[2]) {
+      obj_0->pIdx[2] = 1.0F;
+    }
+
+    if (p > obj_0->pMidHeap) {
+      if (vprev < FSM0_U.knobs_in[2]) {
+        vprev = p - obj_0->pMidHeap;
+        F_MedianFilterCG_trickleDownMin(obj_0, vprev * 2.0F, 3);
       } else {
         i = p - obj_0->pMidHeap;
         exitg1 = false;
@@ -2706,13 +2811,13 @@ void FSM0ModelClass::step()
         }
 
         if (i == 0.0F) {
-          F_MedianFilterCG_trickleDownMax(obj_0, -1.0F, 2);
+          F_MedianFilterCG_trickleDownMax(obj_0, -1.0F, 3);
         }
       }
     } else if (p < obj_0->pMidHeap) {
-      if (FSM0_U.knobs_in[1] < vprev) {
+      if (FSM0_U.knobs_in[2] < vprev) {
         vprev = p - obj_0->pMidHeap;
-        F_MedianFilterCG_trickleDownMax(obj_0, vprev * 2.0F, 2);
+        F_MedianFilterCG_trickleDownMax(obj_0, vprev * 2.0F, 3);
       } else {
         i = p - obj_0->pMidHeap;
         exitg1 = false;
@@ -2754,111 +2859,6 @@ void FSM0ModelClass::step()
         }
 
         if (i == 0.0F) {
-          F_MedianFilterCG_trickleDownMin(obj_0, 1.0F, 2);
-        }
-      }
-    } else {
-      if (obj_0->pMaxHeapLength != 0.0F) {
-        F_MedianFilterCG_trickleDownMax(obj_0, -1.0F, 2);
-      }
-
-      if (obj_0->pMinHeapLength > 0.0F) {
-        F_MedianFilterCG_trickleDownMin(obj_0, 1.0F, 2);
-      }
-    }
-
-    vprev = obj_0->pBuf[static_cast<int32_T>(obj_0->pHeap[static_cast<int32_T>
-      (obj_0->pMidHeap) + 31]) + 31];
-    vprev += obj_0->pBuf[static_cast<int32_T>(obj_0->pHeap[static_cast<int32_T>
-      (obj_0->pMidHeap - 1.0F) + 31]) + 31];
-    rtb_MedianFilter[1] = vprev / 2.0F;
-    vprev = obj_0->pBuf[static_cast<int32_T>(obj_0->pIdx[2]) + 63];
-    obj_0->pBuf[static_cast<int32_T>(obj_0->pIdx[2]) + 63] = FSM0_U.knobs_in[2];
-    p = obj_0->pPos[static_cast<int32_T>(obj_0->pIdx[2]) + 63];
-    obj_0->pIdx[2]++;
-    if (obj_0->pWinLen + 1.0F == obj_0->pIdx[2]) {
-      obj_0->pIdx[2] = 1.0F;
-    }
-
-    if (p > obj_0->pMidHeap) {
-      if (vprev < FSM0_U.knobs_in[2]) {
-        vprev = p - obj_0->pMidHeap;
-        F_MedianFilterCG_trickleDownMin(obj_0, vprev * 2.0F, 3);
-      } else {
-        i = p - obj_0->pMidHeap;
-        exitg1 = false;
-        while ((!exitg1) && (i > 0.0F)) {
-          vprev = std::floor(i / 2.0F);
-          flag = (obj_0->pBuf[static_cast<int32_T>(obj_0->pHeap
-                   [static_cast<int32_T>(i + obj_0->pMidHeap) + 63]) + 63] <
-                  obj_0->pBuf[static_cast<int32_T>(obj_0->pHeap
-                   [static_cast<int32_T>(vprev + obj_0->pMidHeap) + 63]) + 63]);
-          if (!flag) {
-            exitg1 = true;
-          } else {
-            p = i + obj_0->pMidHeap;
-            i = std::floor(i / 2.0F) + obj_0->pMidHeap;
-            c_previousEvent = static_cast<int32_T>(p) + 63;
-            temp = obj_0->pHeap[c_previousEvent];
-            flag_tmp = static_cast<int32_T>(i) + 63;
-            obj_0->pHeap[c_previousEvent] = obj_0->pHeap[flag_tmp];
-            obj_0->pHeap[flag_tmp] = temp;
-            obj_0->pPos[static_cast<int32_T>(obj_0->pHeap[static_cast<int32_T>(p)
-              + 63]) + 63] = p;
-            obj_0->pPos[static_cast<int32_T>(obj_0->pHeap[flag_tmp]) + 63] = i;
-            i = vprev;
-          }
-        }
-
-        if (i == 0.0F) {
-          F_MedianFilterCG_trickleDownMax(obj_0, -1.0F, 3);
-        }
-      }
-    } else if (p < obj_0->pMidHeap) {
-      if (FSM0_U.knobs_in[2] < vprev) {
-        vprev = p - obj_0->pMidHeap;
-        F_MedianFilterCG_trickleDownMax(obj_0, vprev * 2.0F, 3);
-      } else {
-        i = p - obj_0->pMidHeap;
-        exitg1 = false;
-        while ((!exitg1) && (i < 0.0F)) {
-          p = i / 2.0F;
-          if (p < 0.0F) {
-            vprev = std::ceil(p);
-          } else {
-            vprev = -0.0F;
-          }
-
-          flag = (obj_0->pBuf[static_cast<int32_T>(obj_0->pHeap
-                   [static_cast<int32_T>(vprev + obj_0->pMidHeap) + 63]) + 63] <
-                  obj_0->pBuf[static_cast<int32_T>(obj_0->pHeap
-                   [static_cast<int32_T>(i + obj_0->pMidHeap) + 63]) + 63]);
-          if (!flag) {
-            exitg1 = true;
-          } else {
-            p = i / 2.0F;
-            if (p < 0.0F) {
-              p = std::ceil(p);
-            } else {
-              p = -0.0F;
-            }
-
-            p += obj_0->pMidHeap;
-            i += obj_0->pMidHeap;
-            c_previousEvent = static_cast<int32_T>(p) + 63;
-            temp = obj_0->pHeap[c_previousEvent];
-            obj_0->pHeap[c_previousEvent] = obj_0->pHeap[static_cast<int32_T>(i)
-              + 63];
-            flag_tmp = static_cast<int32_T>(i) + 63;
-            obj_0->pHeap[flag_tmp] = temp;
-            obj_0->pPos[static_cast<int32_T>(obj_0->pHeap[c_previousEvent]) + 63]
-              = p;
-            obj_0->pPos[static_cast<int32_T>(obj_0->pHeap[flag_tmp]) + 63] = i;
-            i = vprev;
-          }
-        }
-
-        if (i == 0.0F) {
           F_MedianFilterCG_trickleDownMin(obj_0, 1.0F, 3);
         }
       }
@@ -2873,13 +2873,13 @@ void FSM0ModelClass::step()
     }
 
     vprev = obj_0->pBuf[static_cast<int32_T>(obj_0->pHeap[static_cast<int32_T>
-      (obj_0->pMidHeap) + 63]) + 63];
+      (obj_0->pMidHeap) + 31]) + 31];
     vprev += obj_0->pBuf[static_cast<int32_T>(obj_0->pHeap[static_cast<int32_T>
-      (obj_0->pMidHeap - 1.0F) + 63]) + 63];
+      (obj_0->pMidHeap - 1.0F) + 31]) + 31];
     rtb_MedianFilter[2] = vprev / 2.0F;
-    vprev = obj_0->pBuf[static_cast<int32_T>(obj_0->pIdx[3]) + 95];
-    obj_0->pBuf[static_cast<int32_T>(obj_0->pIdx[3]) + 95] = FSM0_U.knobs_in[3];
-    p = obj_0->pPos[static_cast<int32_T>(obj_0->pIdx[3]) + 95];
+    vprev = obj_0->pBuf[static_cast<int32_T>(obj_0->pIdx[3]) + 47];
+    obj_0->pBuf[static_cast<int32_T>(obj_0->pIdx[3]) + 47] = FSM0_U.knobs_in[3];
+    p = obj_0->pPos[static_cast<int32_T>(obj_0->pIdx[3]) + 47];
     obj_0->pIdx[3]++;
     if (obj_0->pWinLen + 1.0F == obj_0->pIdx[3]) {
       obj_0->pIdx[3] = 1.0F;
@@ -2895,22 +2895,22 @@ void FSM0ModelClass::step()
         while ((!exitg1) && (i > 0.0F)) {
           vprev = std::floor(i / 2.0F);
           flag = (obj_0->pBuf[static_cast<int32_T>(obj_0->pHeap
-                   [static_cast<int32_T>(i + obj_0->pMidHeap) + 95]) + 95] <
+                   [static_cast<int32_T>(i + obj_0->pMidHeap) + 47]) + 47] <
                   obj_0->pBuf[static_cast<int32_T>(obj_0->pHeap
-                   [static_cast<int32_T>(vprev + obj_0->pMidHeap) + 95]) + 95]);
+                   [static_cast<int32_T>(vprev + obj_0->pMidHeap) + 47]) + 47]);
           if (!flag) {
             exitg1 = true;
           } else {
             p = i + obj_0->pMidHeap;
             i = std::floor(i / 2.0F) + obj_0->pMidHeap;
-            c_previousEvent = static_cast<int32_T>(p) + 95;
+            c_previousEvent = static_cast<int32_T>(p) + 47;
             temp = obj_0->pHeap[c_previousEvent];
-            flag_tmp = static_cast<int32_T>(i) + 95;
+            flag_tmp = static_cast<int32_T>(i) + 47;
             obj_0->pHeap[c_previousEvent] = obj_0->pHeap[flag_tmp];
             obj_0->pHeap[flag_tmp] = temp;
-            obj_0->pPos[static_cast<int32_T>(obj_0->pHeap[c_previousEvent]) + 95]
+            obj_0->pPos[static_cast<int32_T>(obj_0->pHeap[c_previousEvent]) + 47]
               = p;
-            obj_0->pPos[static_cast<int32_T>(obj_0->pHeap[flag_tmp]) + 95] = i;
+            obj_0->pPos[static_cast<int32_T>(obj_0->pHeap[flag_tmp]) + 47] = i;
             i = vprev;
           }
         }
@@ -2935,9 +2935,9 @@ void FSM0ModelClass::step()
           }
 
           flag = (obj_0->pBuf[static_cast<int32_T>(obj_0->pHeap
-                   [static_cast<int32_T>(vprev + obj_0->pMidHeap) + 95]) + 95] <
+                   [static_cast<int32_T>(vprev + obj_0->pMidHeap) + 47]) + 47] <
                   obj_0->pBuf[static_cast<int32_T>(obj_0->pHeap
-                   [static_cast<int32_T>(i + obj_0->pMidHeap) + 95]) + 95]);
+                   [static_cast<int32_T>(i + obj_0->pMidHeap) + 47]) + 47]);
           if (!flag) {
             exitg1 = true;
           } else {
@@ -2950,14 +2950,14 @@ void FSM0ModelClass::step()
 
             p += obj_0->pMidHeap;
             i += obj_0->pMidHeap;
-            c_previousEvent = static_cast<int32_T>(p) + 95;
+            c_previousEvent = static_cast<int32_T>(p) + 47;
             temp = obj_0->pHeap[c_previousEvent];
-            flag_tmp = static_cast<int32_T>(i) + 95;
+            flag_tmp = static_cast<int32_T>(i) + 47;
             obj_0->pHeap[c_previousEvent] = obj_0->pHeap[flag_tmp];
             obj_0->pHeap[flag_tmp] = temp;
-            obj_0->pPos[static_cast<int32_T>(obj_0->pHeap[c_previousEvent]) + 95]
+            obj_0->pPos[static_cast<int32_T>(obj_0->pHeap[c_previousEvent]) + 47]
               = p;
-            obj_0->pPos[static_cast<int32_T>(obj_0->pHeap[flag_tmp]) + 95] = i;
+            obj_0->pPos[static_cast<int32_T>(obj_0->pHeap[flag_tmp]) + 47] = i;
             i = vprev;
           }
         }
@@ -2977,9 +2977,9 @@ void FSM0ModelClass::step()
     }
 
     vprev = obj_0->pBuf[static_cast<int32_T>(obj_0->pHeap[static_cast<int32_T>
-      (obj_0->pMidHeap) + 95]) + 95];
+      (obj_0->pMidHeap) + 47]) + 47];
     vprev += obj_0->pBuf[static_cast<int32_T>(obj_0->pHeap[static_cast<int32_T>
-      (obj_0->pMidHeap - 1.0F) + 95]) + 95];
+      (obj_0->pMidHeap - 1.0F) + 47]) + 47];
     rtb_MedianFilter[3] = vprev / 2.0F;
 
     // Update for RateTransition: '<S1>/Rate Transition' incorporates:
