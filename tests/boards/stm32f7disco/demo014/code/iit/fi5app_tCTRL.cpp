@@ -80,7 +80,27 @@ namespace fi5app { namespace tCTRL {
 #include "vnt_bsp_watchdog.h"
 #include "vnt_os_Timer.h"
 
+
+#include "board_driver.h"
+
 #include "stm32hal.h"
+
+#include "fi5app_theController2.h"
+
+#include "osal_mutex.h"
+
+
+#define PRINT_LOG
+#define PRINT_LOG_SERIAL
+
+#if defined(APP_HMI_disable )
+#warning if APP_HMI_disable is defined we cannot use serial. 
+#undef PRINT_LOG_SERIAL
+#endif
+
+
+#if defined(PRINT_LOG_SERIAL)
+
 extern UART_HandleTypeDef UART_Handle;
 namespace vnt { namespace bsp { namespace serial {
     
@@ -94,15 +114,8 @@ namespace vnt { namespace bsp { namespace serial {
     }
 }}}
 
+#endif
 
-
-#include "board_driver.h"
-
-#include "stm32hal.h"
-
-#include "fi5app_theController2.h"
-
-#include "osal_mutex.h"
 
 
 struct driverInput
@@ -403,8 +416,7 @@ void onevent(vnt::os::Thread *t, vnt::os::EventMask eventmask, void *param)
 }
 
 
-#define PRINT_LOG
-#define PRINT_LOG_SERIAL
+
 constexpr uint32_t decimationfactor = 1;
 
 void print_log(const fi5app::theController2::Inp &inp, const fi5app::theController2::Out &out, const fi5app::theController2::fsmOut &fsmout, const fi5app::theController2::ctrlOut &ctrlout)
