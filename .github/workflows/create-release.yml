@@ -2,17 +2,17 @@ name: Create Release
 
 on: 
   workflow_dispatch:
-  inputs:
-    name:
-      description: 'Release Name'
-      required: true
-    body:
-      description: 'Release Body Message'
-      required: true
-    tag:
-      description: 'Release Tag'
-      required: true
-      default: 'v0.0.0'
+    inputs:
+      name:
+        description: 'Release Name'
+        required: true
+      body:
+        description: 'Release Body Message'
+        required: true
+      tag:
+        description: 'Release Tag'
+        required: true
+        default: 'v0.0.0'
 
 jobs:
   doRelease:
@@ -27,31 +27,36 @@ jobs:
           echo "- Body: ${{ github.event.inputs.body }}" 
           echo "- Tag: ${{ github.event.inputs.tag }}" 
 
-      - uses: actions/checkout@master
+      - name: Clone Branch master
+        uses: actions/checkout@master
         with:
           ref: master
           path: release/master
           lfs: true
 
-      - uses: actions/checkout@master
+      - name: Clone Branch doc
+        uses: actions/checkout@master
         with:
           ref: doc
           path: release/doc
           lfs: true
 
-      - uses: actions/checkout@master
+      - name: Clone Branch mech
+        uses: actions/checkout@master
         with:
           ref: mech
           path: release/mech
           lfs: true
 
-      - uses: actions/checkout@master
+      - name: Clone Branch ele
+        uses: actions/checkout@master
         with:
           ref: ele
           path: release/ele
           lfs: true
 
-      - uses: actions/checkout@master
+      - name: Clone Branch code
+        uses: actions/checkout@master
         with:
           ref: code
           path: release/code
@@ -62,22 +67,31 @@ jobs:
           git config --global push.default upstream
           git config --global user.name "GitHub Actions"
           git config --global user.email "actions@github.com"
-          git remote set-url origin https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}.git
 
       - name: Tag Branches
         run: |
           declare -a branches=("master" "doc" "mech" "ele" "code")
           for branch in ${branches[@]}; do
-            echo "tagging $branch..."
-            cd ${GITHUB_WORKSPACE}/release/$branch
-            git tag -a ${{ github.event.inputs.tag }} -m "version ${{ github.event.inputs.tag }}"
+            echo "tagging ${branch}..."
+            cd ${GITHUB_WORKSPACE}/release/${branch}
+            git remote set-url origin https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}.git
+            git fetch --all --tags
+            tag=${branch}-${{ github.event.inputs.tag }}
+            preexisting_tag=$(git tag -l '${tag}')
+            if [ -n "${preexisting_tag}" ]; then
+              echo "overriding preexisting tag"
+              git tag -d ${tag}
+              git push --delete origin ${tag}
+            fi
+            git tag -a ${tag} -m "version ${{ github.event.inputs.tag }}"
             git push origin --tags
-            rm -RF .git
+            rm -Rf .git
           done
 
       - name: Create Asset
         run: |
-          zip -r release-${{ github.event.inputs.tag }}.zip ${GITHUB_WORKSPACE}/release
+          cd ${GITHUB_WORKSPACE}/release
+          zip -r release-${{ github.event.inputs.tag }}.zip .
 
       - name: Create Release
         id: create_release
@@ -85,7 +99,7 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          tag_name: ${{ github.event.inputs.tag }}
+          tag_name: master-${{ github.event.inputs.tag }}
           release_name: ${{ github.event.inputs.name}}
           body: ${{ github.event.inputs.body }}
 
@@ -96,6 +110,6 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: ./release-${{ github.event.inputs.tag }}.zip
+          asset_path: ${GITHUB_WORKSPACE}/release/release-${{ github.event.inputs.tag }}.zip
           asset_name: release-${{ github.event.inputs.tag }}.zip
           asset_content_type: application/zip
