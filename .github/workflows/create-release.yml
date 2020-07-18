@@ -1,0 +1,101 @@
+name: Create Release
+
+on: 
+  workflow_dispatch:
+  inputs:
+    name:
+      description: 'Release Name'
+      required: true
+    body:
+      description: 'Release Body Message'
+      required: true
+    tag:
+      description: 'Release Tag'
+      required: true
+      default: 'v0.0.0'
+
+jobs:
+  doRelease:
+    name: "Release"
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Release Inputs
+        run: |
+          echo "Release Inputs:"
+          echo "- Name: ${{ github.event.inputs.name }}" 
+          echo "- Body: ${{ github.event.inputs.body }}" 
+          echo "- Tag: ${{ github.event.inputs.tag }}" 
+
+      - uses: actions/checkout@master
+        with:
+          ref: master
+          path: release/master
+          lfs: true
+
+      - uses: actions/checkout@master
+        with:
+          ref: doc
+          path: release/doc
+          lfs: true
+
+      - uses: actions/checkout@master
+        with:
+          ref: mech
+          path: release/mech
+          lfs: true
+
+      - uses: actions/checkout@master
+        with:
+          ref: ele
+          path: release/ele
+          lfs: true
+
+      - uses: actions/checkout@master
+        with:
+          ref: code
+          path: release/code
+          lfs: true
+
+      - name: Configure Git
+        run: |
+          git config --global push.default upstream
+          git config --global user.name "GitHub Actions"
+          git config --global user.email "actions@github.com"
+          git remote set-url origin https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}.git
+
+      - name: Tag Branches
+        run: |
+          declare -a branches=("master" "doc" "mech" "ele" "code")
+          for branch in ${branches[@]}; do
+            echo "tagging $branch..."
+            cd ${GITHUB_WORKSPACE}/release/$branch
+            git tag -a ${{ github.event.inputs.tag }} -m "version ${{ github.event.inputs.tag }}"
+            git push origin --tags
+            rm -RF .git
+          done
+
+      - name: Create Asset
+        run: |
+          zip -r release-${{ github.event.inputs.tag }}.zip ${GITHUB_WORKSPACE}/release
+
+      - name: Create Release
+        id: create_release
+        uses: actions/create-release@master
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: ${{ github.event.inputs.tag }}
+          release_name: ${{ github.event.inputs.name}}
+          body: ${{ github.event.inputs.body }}
+
+      - name: Upload Release Asset
+        id: upload-release-asset 
+        uses: actions/upload-release-asset@master
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: ./release-${{ github.event.inputs.tag }}.zip
+          asset_name: release-${{ github.event.inputs.tag }}.zip
+          asset_content_type: application/zip
