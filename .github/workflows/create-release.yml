@@ -85,9 +85,9 @@ jobs:
       - name: Create Asset
         run: |
           cd ${GITHUB_WORKSPACE}/release
-          zip -r release-${{ github.event.inputs.tag }}.zip .
+          zip -r ventilator-FI5-${{ github.event.inputs.tag }}.zip .
           cd -
-          mv ${GITHUB_WORKSPACE}/release/release-${{ github.event.inputs.tag }}.zip .
+          mv ${GITHUB_WORKSPACE}/release/ventilator-FI5-${{ github.event.inputs.tag }}.zip .
           
       - name: Create Release
         id: create_release
@@ -106,6 +106,6 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: ./release-${{ github.event.inputs.tag }}.zip
-          asset_name: release-${{ github.event.inputs.tag }}.zip
+          asset_path: ./ventilator-FI5-${{ github.event.inputs.tag }}.zip
+          asset_name: ventilator-FI5-${{ github.event.inputs.tag }}.zip
           asset_content_type: application/zip
