@@ -50,6 +50,9 @@ $ git clone https://github.com/icub-tech-iit/ventilator-FI5.git --single-branch 
 
 Be careful that `mech` and `ele` branches are handled via [Git LFS](https://help.github.com/en/articles/installing-git-large-file-storage).
 
+### 📦 Releases
+You can conveniently download the whole material by visiting the [Release Page](../../releases).
+
 ## 📰 News
 - [IIT](https://iit.it/iit-vs-covid-19/fi5-ventilator)
 - [Scuderia Ferrari Mission Winnow](https://www.ferrari.com/en-EN/formula1/articles/scuderia-ferrari-and-italian-institute-of-technology-present-fi5)
