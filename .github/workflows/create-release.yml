@@ -84,11 +84,11 @@ jobs:
 
       - name: Create Asset
         run: |
-          cd ${GITHUB_WORKSPACE}/release
+          mv ${GITHUB_WORKSPACE}/release .
+          cd release
           zip -r release-${{ github.event.inputs.tag }}.zip .
-          cd
-          mv ${GITHUB_WORKSPACE}/release/release-${{ github.event.inputs.tag }}.zip .
-
+          mv release-${{ github.event.inputs.tag }}.zip ..
+          
       - name: Create Release
         id: create_release
         uses: actions/create-release@master
