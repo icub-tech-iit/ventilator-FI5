@@ -7,7 +7,7 @@ More details can be found in [**`FI5 technical specifications`**](../../design/F
 
 ![](./assets/ventilator.png)
 
-The Embedded Coder is then used to generate the corresponding code of the controller that can be profitably deployed on the target device.
+The [Embedded Coder](https://www.mathworks.com/products/embedded-coder.html) is then used to generate the corresponding code of the controller that can be profitably deployed on the target device.
 
 The controller, whose main architecture is shown below, comprises the following modules:
 - Filtering stage
@@ -28,6 +28,15 @@ The VCV mode is implemented through a PI controller complemented with a autoadap
 The PRVC mode is implemented through a PI controller complemented with a static feed-forward term. The reference square-wave with high-level PIP is further shaped by a dedicated module that is responsible for providing a given onset step and a smoother minimum-jerk profile towards the final setpoint. Finally, the controller's gains can be scheduled based on the pressure delivered by PR1 and sensed by S7.
 
 ![](./assets/controller-prvc.png)
+
+## Code Generation
+Models developed in Simulink are finally used to generate C/C++ code that can be seamlessly deployed into an embedded SW architecture adhering to the workflow depicted in the sketch below:
+
+![](./assets/code-gen.png)
+
+In detail, the Embedded Coder generates C/C++ modules sporting a clear API for providing inputs to the controllers, modifying model's parameters and retrieving the outputs of the computation.
+
+It is the responsibility of the underlying RTOS to hook the generated step function to a proper real-time clock at the right frequency and to interact with the API.
 
 ### Example of generated main
 The following snippet shows how to interface with the generated code.
