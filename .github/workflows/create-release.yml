@@ -6,9 +6,11 @@ on:
       name:
         description: 'Release Name'
         required: true
+        default: 'FI5 Ventilator Release v0.0.0'
       body:
         description: 'Release Body Message'
         required: true
+        default: 'The asset provided by this release contains the whole material stored in the repository.'
       tag:
         description: 'Release Tag'
         required: true
