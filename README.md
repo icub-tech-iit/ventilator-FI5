@@ -11,8 +11,7 @@ This repository is organized as follows:
 ## Electronics repository
 To correctly manage the large files stored within this repository, follow the [instructions to install Git LFS][1].
 
-You can conveniently download the Electronics releases by clicking on the following links:
-- [`ele-v1.0.2`][2].
+You can conveniently download the Electronics releases by by visiting the [Release Page][2].
 
 [1]: https://help.github.com/en/articles/installing-git-large-file-storage
-[2]: https://github.com/icub-tech-iit/ventilator-FI5/releases/tag/ele-v1.0.2
+[2]: https://github.com/icub-tech-iit/ventilator-FI5/releases
