@@ -16,6 +16,7 @@ The controller, whose main architecture is shown below, comprises the following 
 - Pressure controller
 - Tidal volume computation
 - Tidal volume maximum value computation
+- Tidal volume correction computation
 
 ![](./assets/controller.png)
 
@@ -105,7 +106,7 @@ void rt_OneStep(void)
   outputs.signals[5];  // S5 Flow Rate [L/min] (float)
   outputs.signals[6];  // S7 Filtered Pressure [cmH2O] (float)
   outputs.signals[7];  // Tidal Volume estimates [L] (float)
-  outputs.signals[8];  // Maximum Tidal Volume per 2 cycles [L] (float)
+  outputs.signals[8];  // Maximum Tidal Volume per cycle [L] (float)
   outputs.signals[9];  // Assisted Ventilation Trigger [-] (float)
 
   // Indicate task complete
