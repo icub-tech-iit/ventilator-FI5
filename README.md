@@ -9,9 +9,6 @@ In the following is a description of what the code does, how to load its latest 
 
 
 
-[TOC]
-
-
 
 ## What the code does
 
