@@ -21,8 +21,8 @@ Q_R = log(:,9);
 S2_Qo = log(:,12);
 S5_Qo = log(:,16);
 
-TD = log(:,18);
-MaxTD = log(:,19);
+TV = log(:,18);
+MaxTV = log(:,19);
 
 figure('color','white');
 tiledlayout(4,1);
@@ -55,11 +55,11 @@ xlim([t(1) t(end)]);
 ylim([-50 50]);
 
 ax4 = nexttile;
-stairs(t,[TD, MaxTD]);
+stairs(t,[TV, MaxTV]);
 title('Volume');
 ylabel('[l]');
 xlabel('t [s]');
-legend({'TD', 'MaxTD'}); legend('boxoff');
+legend({'TV', 'MaxTV'}); legend('boxoff');
 grid on; grid minor;
 xlim([t(1) t(end)]);
 ylim([-0.1 1]);
