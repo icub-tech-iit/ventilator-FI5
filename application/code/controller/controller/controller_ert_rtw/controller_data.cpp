@@ -7,9 +7,9 @@
 //
 // Code generated for Simulink model 'controller'.
 //
-// Model version                  : 1.524
+// Model version                  : 1.541
 // Simulink Coder version         : 9.3 (R2020a) 18-Nov-2019
-// C/C++ source code generated on : Sun May 24 20:41:38 2020
+// C/C++ source code generated on : Sat Aug 22 22:20:58 2020
 //
 // Target selection: ert.tlc
 // Embedded hardware selection: Intel->x86-64 (Windows64)
@@ -22,27 +22,27 @@
 // Block parameters (default storage)
 controllerModelClass::P_controller_T controllerModelClass::controller_P = {
   // Mask Parameter: PIDController_InitialConditionF
-  //  Referenced by: '<S54>/Integrator'
+  //  Referenced by: '<S55>/Integrator'
 
   0.0F,
 
   // Mask Parameter: PIDController_InitialConditio_c
-  //  Referenced by: '<S107>/Integrator'
+  //  Referenced by: '<S108>/Integrator'
 
   0.0F,
 
   // Mask Parameter: PIDController_Kt
-  //  Referenced by: '<S65>/Kt'
+  //  Referenced by: '<S66>/Kt'
 
   1.0F,
 
   // Mask Parameter: PIDController_Kt_j
-  //  Referenced by: '<S118>/Kt'
+  //  Referenced by: '<S119>/Kt'
 
   1.0F,
 
   // Mask Parameter: pressure_thres_const
-  //  Referenced by: '<S19>/Constant'
+  //  Referenced by: '<S20>/Constant'
 
   3.0F,
 
@@ -77,52 +77,52 @@ controllerModelClass::P_controller_T controllerModelClass::controller_P = {
   1.0F,
 
   // Computed Parameter: PC_P_Value
-  //  Referenced by: '<S22>/PC_P'
+  //  Referenced by: '<S23>/PC_P'
 
   1.0F,
 
   // Computed Parameter: PC_I_Value
-  //  Referenced by: '<S22>/PC_I'
+  //  Referenced by: '<S23>/PC_I'
 
   40.0F,
 
   // Computed Parameter: PC_FFW_Value
-  //  Referenced by: '<S22>/PC_FFW'
+  //  Referenced by: '<S23>/PC_FFW'
 
   30.0F,
 
   // Computed Parameter: PC_P_rec_Value
-  //  Referenced by: '<S22>/PC_P_rec'
+  //  Referenced by: '<S23>/PC_P_rec'
 
   0.05F,
 
   // Computed Parameter: PC_I_rec_Value
-  //  Referenced by: '<S22>/PC_I_rec'
+  //  Referenced by: '<S23>/PC_I_rec'
 
   10.0F,
 
   // Computed Parameter: PC_FFW_rec_Value
-  //  Referenced by: '<S22>/PC_FFW_rec'
+  //  Referenced by: '<S23>/PC_FFW_rec'
 
   30.0F,
 
   // Computed Parameter: P_Y0
-  //  Referenced by: '<S22>/P'
+  //  Referenced by: '<S23>/P'
 
   1.0F,
 
   // Computed Parameter: I_Y0
-  //  Referenced by: '<S22>/I'
+  //  Referenced by: '<S23>/I'
 
   40.0F,
 
   // Computed Parameter: FFW_Y0
-  //  Referenced by: '<S22>/FFW'
+  //  Referenced by: '<S23>/FFW'
 
   30.0F,
 
   // Computed Parameter: Switch2_Threshold
-  //  Referenced by: '<S22>/Switch2'
+  //  Referenced by: '<S23>/Switch2'
 
   980.661377F,
 
@@ -157,32 +157,32 @@ controllerModelClass::P_controller_T controllerModelClass::controller_P = {
   0.01F,
 
   // Computed Parameter: Constant_Value_e
-  //  Referenced by: '<S20>/Constant'
+  //  Referenced by: '<S21>/Constant'
 
   { -150.765793F, -84.9812775F, -15.96696F },
 
   // Computed Parameter: Constant1_Value
-  //  Referenced by: '<S20>/Constant 1'
+  //  Referenced by: '<S21>/Constant 1'
 
   60.0F,
 
   // Computed Parameter: Constant1_Value_n
-  //  Referenced by: '<S20>/Constant1'
+  //  Referenced by: '<S21>/Constant1'
 
   { 1.0E-6F, 0.0002F, 0.04F },
 
   // Computed Parameter: Constant2_Value
-  //  Referenced by: '<S20>/Constant2'
+  //  Referenced by: '<S21>/Constant2'
 
   1.0F,
 
   // Computed Parameter: PIP_rise_perc_Value
-  //  Referenced by: '<S20>/PIP_rise_perc'
+  //  Referenced by: '<S21>/PIP_rise_perc'
 
   70.0F,
 
   // Computed Parameter: Gain_Gain
-  //  Referenced by: '<S20>/Gain'
+  //  Referenced by: '<S21>/Gain'
 
   0.00666666683F,
 
@@ -192,7 +192,7 @@ controllerModelClass::P_controller_T controllerModelClass::controller_P = {
   0.0F,
 
   // Computed Parameter: Integrator_gainval
-  //  Referenced by: '<S54>/Integrator'
+  //  Referenced by: '<S55>/Integrator'
 
   0.005F,
 
@@ -217,77 +217,77 @@ controllerModelClass::P_controller_T controllerModelClass::controller_P = {
   0.5F,
 
   // Computed Parameter: VolumetricFlowrate_Gain
-  //  Referenced by: '<S18>/Volumetric Flow rate'
+  //  Referenced by: '<S19>/Volumetric Flow rate'
 
   30.0F,
 
   // Computed Parameter: VC_P_Value
-  //  Referenced by: '<S73>/VC_P'
+  //  Referenced by: '<S74>/VC_P'
 
   0.2F,
 
   // Computed Parameter: VC_I_Value
-  //  Referenced by: '<S73>/VC_I'
+  //  Referenced by: '<S74>/VC_I'
 
   10.0F,
 
   // Computed Parameter: VC_P_rec_Value
-  //  Referenced by: '<S73>/VC_P_rec'
+  //  Referenced by: '<S74>/VC_P_rec'
 
   0.1F,
 
   // Computed Parameter: VC_I_rec_Value
-  //  Referenced by: '<S73>/VC_I_rec'
+  //  Referenced by: '<S74>/VC_I_rec'
 
   5.0F,
 
   // Computed Parameter: ffw_Y0
-  //  Referenced by: '<S74>/ffw'
+  //  Referenced by: '<S75>/ffw'
 
   0.0F,
 
   // Computed Parameter: Q_ref_Y0
-  //  Referenced by: '<S18>/Q_ref'
+  //  Referenced by: '<S19>/Q_ref'
 
   0.0F,
 
   // Computed Parameter: IV_dc_Y0_m
-  //  Referenced by: '<S18>/IV_dc'
+  //  Referenced by: '<S19>/IV_dc'
 
   0.0F,
 
   // Computed Parameter: Constant_Value_b
-  //  Referenced by: '<S71>/Constant'
+  //  Referenced by: '<S72>/Constant'
 
   0.0F,
 
   // Computed Parameter: UnitDelay_InitialCondition_n
-  //  Referenced by: '<S18>/Unit Delay'
+  //  Referenced by: '<S19>/Unit Delay'
 
   0.0F,
 
   // Computed Parameter: Switch2_Threshold_b
-  //  Referenced by: '<S73>/Switch2'
+  //  Referenced by: '<S74>/Switch2'
 
   980.661377F,
 
   // Computed Parameter: Integrator_gainval_m
-  //  Referenced by: '<S107>/Integrator'
+  //  Referenced by: '<S108>/Integrator'
 
   0.005F,
 
   // Computed Parameter: Saturation_UpperSat_b
-  //  Referenced by: '<S18>/Saturation'
+  //  Referenced by: '<S19>/Saturation'
 
   100.0F,
 
   // Computed Parameter: Saturation_LowerSat_f
-  //  Referenced by: '<S18>/Saturation'
+  //  Referenced by: '<S19>/Saturation'
 
   0.0F,
 
   // Computed Parameter: DataStoreMemory_InitialValue
-  //  Referenced by: '<S18>/Data Store Memory'
+  //  Referenced by: '<S19>/Data Store Memory'
 
   0.0F,
 
@@ -329,7 +329,7 @@ controllerModelClass::P_controller_T controllerModelClass::controller_P = {
   // Computed Parameter: Gain_Gain_h
   //  Referenced by: '<S16>/Gain'
 
-  6.10351563E-5F,
+  6.10351562E-5F,
 
   // Computed Parameter: Bias_Bias
   //  Referenced by: '<S16>/Bias'
@@ -349,7 +349,7 @@ controllerModelClass::P_controller_T controllerModelClass::controller_P = {
   // Computed Parameter: Gain_Gain_i
   //  Referenced by: '<S15>/Gain'
 
-  6.10351563E-5F,
+  6.10351562E-5F,
 
   // Computed Parameter: Bias_Bias_h
   //  Referenced by: '<S15>/Bias'
@@ -414,7 +414,7 @@ controllerModelClass::P_controller_T controllerModelClass::controller_P = {
   // Computed Parameter: Gain_Gain_f
   //  Referenced by: '<S14>/Gain'
 
-  6.10351563E-5F,
+  6.10351562E-5F,
 
   // Computed Parameter: Bias_Bias_l
   //  Referenced by: '<S14>/Bias'
@@ -456,10 +456,20 @@ controllerModelClass::P_controller_T controllerModelClass::controller_P = {
 
   0.0F,
 
-  // Computed Parameter: TidalVolume_Gain
-  //  Referenced by: '<S1>/Tidal Volume'
+  // Computed Parameter: UnitDelay4_InitialCondition
+  //  Referenced by: '<S1>/Unit Delay4'
+
+  0.0F,
+
+  // Computed Parameter: tidal_volume_Value
+  //  Referenced by: '<S1>/tidal_volume'
 
   0.65F,
+
+  // Computed Parameter: TV_correction_gain_Value
+  //  Referenced by: '<S1>/TV_correction_gain'
+
+  0.25F,
 
   // Computed Parameter: flowby_target_Value
   //  Referenced by: '<S1>/flowby_target'

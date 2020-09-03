@@ -7,9 +7,9 @@
 //
 // Code generated for Simulink model 'FSM0'.
 //
-// Model version                  : 1.910
+// Model version                  : 1.911
 // Simulink Coder version         : 9.3 (R2020a) 18-Nov-2019
-// C/C++ source code generated on : Wed Jul  8 15:26:02 2020
+// C/C++ source code generated on : Sat Aug 22 22:22:08 2020
 //
 // Target selection: ert.tlc
 // Embedded hardware selection: Intel->x86-64 (Windows64)
@@ -2005,8 +2005,8 @@ void FSM0ModelClass::step()
   // Constant: '<S8>/Flow-by Target'
   FSM0_B.MatrixConcatenate[54] = FSM0_P.FlowbyTarget_Value[0];
 
-  // Constant: '<S8>/Not Used 1'
-  FSM0_B.MatrixConcatenate[57] = FSM0_P.NotUsed1_Value[0];
+  // Constant: '<S8>/TD Correction Gain'
+  FSM0_B.MatrixConcatenate[57] = FSM0_P.TDCorrectionGain_Value[0];
 
   // Constant: '<S12>/Test1 Peak [%]'
   FSM0_B.MatrixConcatenate[60] = FSM0_P.Test1Peak_Value[0];
@@ -2018,7 +2018,7 @@ void FSM0ModelClass::step()
   FSM0_B.MatrixConcatenate[66] = FSM0_P.Test2Periods_Value[0];
 
   // Constant: '<S12>/Not Used 1'
-  FSM0_B.MatrixConcatenate[69] = FSM0_P.NotUsed1_Value_h[0];
+  FSM0_B.MatrixConcatenate[69] = FSM0_P.NotUsed1_Value[0];
 
   // Constant: '<S6>/S7 Min [cmH2O]'
   FSM0_B.MatrixConcatenate[72] = FSM0_P.S7MincmH2O_Value[0];
@@ -2101,8 +2101,8 @@ void FSM0ModelClass::step()
   // Constant: '<S8>/Flow-by Target'
   FSM0_B.MatrixConcatenate[55] = FSM0_P.FlowbyTarget_Value[1];
 
-  // Constant: '<S8>/Not Used 1'
-  FSM0_B.MatrixConcatenate[58] = FSM0_P.NotUsed1_Value[1];
+  // Constant: '<S8>/TD Correction Gain'
+  FSM0_B.MatrixConcatenate[58] = FSM0_P.TDCorrectionGain_Value[1];
 
   // Constant: '<S12>/Test1 Peak [%]'
   FSM0_B.MatrixConcatenate[61] = FSM0_P.Test1Peak_Value[1];
@@ -2114,7 +2114,7 @@ void FSM0ModelClass::step()
   FSM0_B.MatrixConcatenate[67] = FSM0_P.Test2Periods_Value[1];
 
   // Constant: '<S12>/Not Used 1'
-  FSM0_B.MatrixConcatenate[70] = FSM0_P.NotUsed1_Value_h[1];
+  FSM0_B.MatrixConcatenate[70] = FSM0_P.NotUsed1_Value[1];
 
   // Constant: '<S6>/S7 Min [cmH2O]'
   FSM0_B.MatrixConcatenate[73] = FSM0_P.S7MincmH2O_Value[1];
@@ -2197,8 +2197,8 @@ void FSM0ModelClass::step()
   // Constant: '<S8>/Flow-by Target'
   FSM0_B.MatrixConcatenate[56] = FSM0_P.FlowbyTarget_Value[2];
 
-  // Constant: '<S8>/Not Used 1'
-  FSM0_B.MatrixConcatenate[59] = FSM0_P.NotUsed1_Value[2];
+  // Constant: '<S8>/TD Correction Gain'
+  FSM0_B.MatrixConcatenate[59] = FSM0_P.TDCorrectionGain_Value[2];
 
   // Constant: '<S12>/Test1 Peak [%]'
   FSM0_B.MatrixConcatenate[62] = FSM0_P.Test1Peak_Value[2];
@@ -2210,7 +2210,7 @@ void FSM0ModelClass::step()
   FSM0_B.MatrixConcatenate[68] = FSM0_P.Test2Periods_Value[2];
 
   // Constant: '<S12>/Not Used 1'
-  FSM0_B.MatrixConcatenate[71] = FSM0_P.NotUsed1_Value_h[2];
+  FSM0_B.MatrixConcatenate[71] = FSM0_P.NotUsed1_Value[2];
 
   // Constant: '<S6>/S7 Min [cmH2O]'
   FSM0_B.MatrixConcatenate[74] = FSM0_P.S7MincmH2O_Value[2];

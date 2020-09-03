@@ -23,11 +23,10 @@
 
 #include <array>
 
-#define USE_KNOBS_360
 
 namespace fi5app {
 
-#if defined(USE_KNOBS_360)
+#if defined(USE_KNOBS_V2)
     // they are the new knobs
     struct knob360_t 
     {
@@ -56,7 +55,8 @@ namespace fi5app {
             return r; 
         }        
     };
-#else    
+#elif defined(USE_KNOBS_V1) 
+    // they are the old knobs    
     struct knob_t 
     {
         struct Cfg
@@ -92,6 +92,8 @@ namespace fi5app {
         }
         
     };
+#else
+    #error chose the knob version
 #endif           
     class theController2
     {
@@ -141,7 +143,7 @@ namespace fi5app {
                 static constexpr uint8_t btnmap[btnNUM] = {btnPOSidle, btnPOScpap, btnPOSvcv, btnPOSprcv};
                 for(int i=0; i< btnNUM; i++) BTNpressed[i] = vnt::core::binary::bit::check(sd.buttons, btnmap[i]);
                                    
-#if defined(USE_KNOBS_360)
+#if defined(USE_KNOBS_V2)
                 
 //                static constexpr knob360_t knobFreq {{90, 270}}; 
 //                static constexpr knob360_t knobPmax {{90, 270}}; 
@@ -156,7 +158,8 @@ namespace fi5app {
                     KNBvalue[i] = knobs[i].get(t);
                 }
 
-#else                
+#elif defined(USE_KNOBS_V1)
+                
                 constexpr uint32_t f = 1;
                 constexpr bool quantize = false;
                 constexpr knob_t knobFreq {{32, 432, quantize, f*35}}; 
@@ -171,6 +174,8 @@ namespace fi5app {
                     uint16_t t = sd.analog_input[i];
                     KNBvalue[i] = knobFreq.get(t);
                 }
+#else
+    #error chose the knob version
 #endif
                 
             }

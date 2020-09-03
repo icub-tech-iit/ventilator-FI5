@@ -7,9 +7,9 @@
 //
 // Code generated for Simulink model 'controller'.
 //
-// Model version                  : 1.524
+// Model version                  : 1.541
 // Simulink Coder version         : 9.3 (R2020a) 18-Nov-2019
-// C/C++ source code generated on : Sun May 24 20:41:38 2020
+// C/C++ source code generated on : Sat Aug 22 22:20:58 2020
 //
 // Target selection: ert.tlc
 // Embedded hardware selection: Intel->x86-64 (Windows64)
@@ -25,9 +25,12 @@ const uint8_T controller_IN_EXPIRATION = 1U;
 const uint8_T controller_IN_INSPIRATION = 2U;
 const uint8_T controller_IN_TRIGGER_WAIT = 4U;
 
-// Named constants for Chart: '<S1>/TD Max'
-const uint8_T controller_IN_COMPUTE_MAX = 1U;
+// Named constants for Chart: '<S1>/TV Correction'
+const uint8_T controlle_IN_COMPUTE_CORRECTION = 1U;
 const uint8_T controller_IN_IDLE = 2U;
+
+// Named constants for Chart: '<S1>/TV Max'
+const uint8_T controller_IN_COMPUTE_MAX = 1U;
 void controllerModelClass::controller_SystemCore_release
   (b_dspcodegen_BiquadFilter_con_T *obj)
 {
@@ -99,8 +102,7 @@ void controllerModelClass::step()
   real32_T rtb_PIP;
   ZCEventType zcEvent;
   boolean_T rtb_Compare_k;
-  boolean_T rtb_Compare_m;
-  boolean_T rtb_Compare_f;
+  boolean_T rtb_Compare_p;
   real32_T rtb_Divide;
   int32_T i;
   real32_T rtb_TmpSignalConversionAtHSCL_0;
@@ -145,6 +147,9 @@ void controllerModelClass::step()
         controller_P.DiscreteTimeIntegrator_IC;
       controller_DW.DiscreteTimeIntegrator_PrevRese = 2;
 
+      // InitializeConditions for UnitDelay: '<S1>/Unit Delay4'
+      controller_DW.UnitDelay4_DSTATE = controller_P.UnitDelay4_InitialCondition;
+
       // InitializeConditions for MATLABSystem: '<S1>/HSC LP'
       if (controller_DW.obj.FilterObj->isInitialized == 1) {
         // System object Initialization function: dsp.BiquadFilter
@@ -162,7 +167,7 @@ void controllerModelClass::step()
       // End of InitializeConditions for MATLABSystem: '<S1>/HSC LP'
 
       // SystemReset for Chart: '<S1>/Pulse Generator'
-      controller_DW.doneDoubleBufferReInit = false;
+      controller_DW.doneDoubleBufferReInit_i = false;
       controller_DW.elapsedTicks_i = 0U;
 
       // Chart: '<S1>/Pulse Generator'
@@ -170,19 +175,26 @@ void controllerModelClass::step()
       controller_DW.temporalCounter_i1_c = 0U;
       controller_B.pulse = 1.0F;
 
-      // SystemReset for Chart: '<S1>/TD Max'
+      // SystemReset for Chart: '<S1>/TV Correction'
+      controller_B.TV_correction = 0.0F;
+      controller_DW.doneDoubleBufferReInit = false;
+
+      // Chart: '<S1>/TV Correction'
+      controller_DW.is_c2_controller = controller_IN_IDLE;
+
+      // SystemReset for Chart: '<S1>/TV Max'
       controller_DW.temporalCounter_i1 = 0U;
       controller_DW.elapsedTicks = 0U;
 
-      // Chart: '<S1>/TD Max'
+      // Chart: '<S1>/TV Max'
       controller_DW.is_c1_controller = controller_IN_IDLE;
-      controller_B.TD_max = (rtNaNF);
+      controller_B.TV_max = (rtNaNF);
 
       // Enable for Chart: '<S1>/Pulse Generator'
       controller_DW.presentTicks_j = (&controller_M)->Timing.clockTick0;
       controller_DW.previousTicks_j = controller_DW.presentTicks_j;
 
-      // Enable for Chart: '<S1>/TD Max'
+      // Enable for Chart: '<S1>/TV Max'
       controller_DW.presentTicks = (&controller_M)->Timing.clockTick0;
       controller_DW.previousTicks = controller_DW.presentTicks;
       controller_DW.Controller_MODE = true;
@@ -445,8 +457,8 @@ void controllerModelClass::step()
     if (!(controller_DW.UnitDelay3_DSTATE != 0.0F)) {
       controller_DW.ComputeTrigger_MODE = true;
 
-      // RelationalOperator: '<S19>/Compare' incorporates:
-      //   Constant: '<S19>/Constant'
+      // RelationalOperator: '<S20>/Compare' incorporates:
+      //   Constant: '<S20>/Constant'
       //   MATLABSystem: '<S1>/HSC LP'
 
       controller_B.Compare_m = (rtb_IProdOut_d <=
@@ -495,8 +507,8 @@ void controllerModelClass::step()
     controller_DW.temporalCounter_i1_c += controller_DW.elapsedTicks_i;
     controller_DW.control_mode_prev = controller_DW.control_mode_start;
     controller_DW.control_mode_start = controller_P.Controller_control_mode;
-    if (!controller_DW.doneDoubleBufferReInit) {
-      controller_DW.doneDoubleBufferReInit = true;
+    if (!controller_DW.doneDoubleBufferReInit_i) {
+      controller_DW.doneDoubleBufferReInit_i = true;
       controller_DW.control_mode_prev = controller_P.Controller_control_mode;
     }
 
@@ -597,19 +609,51 @@ void controllerModelClass::step()
     // RelationalOperator: '<S5>/Compare' incorporates:
     //   Constant: '<S5>/Constant'
 
-    rtb_Compare_m = (controller_P.Controller_control_mode ==
-                     controller_P.CompareToConstant2_const);
+    controller_B.Compare = (controller_P.Controller_control_mode ==
+      controller_P.CompareToConstant2_const);
+
+    // UnitDelay: '<S1>/Unit Delay4'
+    controller_B.UnitDelay4 = controller_DW.UnitDelay4_DSTATE;
+
+    // Chart: '<S1>/TV Correction' incorporates:
+    //   Constant: '<S1>/TV_correction_gain'
+    //   Constant: '<S1>/tidal_volume'
+
+    controller_DW.TV_max_prev = controller_DW.TV_max_start;
+    controller_DW.TV_max_start = controller_B.UnitDelay4;
+    if (!controller_DW.doneDoubleBufferReInit) {
+      controller_DW.doneDoubleBufferReInit = true;
+      controller_DW.TV_max_prev = controller_B.UnitDelay4;
+    }
+
+    if (controller_DW.is_c2_controller == 1) {
+      if (!controller_B.Compare) {
+        controller_DW.is_c2_controller = controller_IN_IDLE;
+      } else {
+        if ((!rtIsNaNF(controller_B.UnitDelay4)) && (controller_DW.TV_max_prev
+             != controller_DW.TV_max_start)) {
+          controller_B.TV_correction += (controller_P.tidal_volume_Value -
+            controller_B.UnitDelay4) * controller_P.TV_correction_gain_Value;
+          controller_DW.is_c2_controller = controlle_IN_COMPUTE_CORRECTION;
+        }
+      }
+    } else {
+      // case IN_IDLE:
+      if (controller_B.Compare) {
+        controller_DW.is_c2_controller = controlle_IN_COMPUTE_CORRECTION;
+      }
+    }
 
     // RelationalOperator: '<S6>/Compare' incorporates:
     //   Constant: '<S6>/Constant'
 
-    rtb_Compare_f = (controller_P.Controller_control_mode ==
+    rtb_Compare_p = (controller_P.Controller_control_mode ==
                      controller_P.CompareToConstant3_const);
 
     // Logic: '<S1>/Logical Operator6'
-    controller_B.LogicalOperator6 = (rtb_Compare_m || rtb_Compare_f);
+    controller_B.LogicalOperator6 = (controller_B.Compare || rtb_Compare_p);
 
-    // Chart: '<S1>/TD Max' incorporates:
+    // Chart: '<S1>/TV Max' incorporates:
     //   Constant: '<S1>/respiratory_rate'
 
     controller_DW.presentTicks = (&controller_M)->Timing.clockTick0;
@@ -620,10 +664,10 @@ void controllerModelClass::step()
     if (controller_DW.is_c1_controller == 1) {
       if (!controller_B.LogicalOperator6) {
         controller_DW.is_c1_controller = controller_IN_IDLE;
-        controller_B.TD_max = (rtNaNF);
+        controller_B.TV_max = (rtNaNF);
       } else if (controller_DW.temporalCounter_i1 >= 60.0F /
-                 controller_P.respiratory_rate_Value * 2.0F * 100.0F) {
-        controller_B.TD_max = controller_DW.tmp_max;
+                 controller_P.respiratory_rate_Value * 100.0F) {
+        controller_B.TV_max = controller_DW.tmp_max;
         controller_DW.is_c1_controller = controller_IN_COMPUTE_MAX;
         controller_DW.temporalCounter_i1 = 0U;
         controller_DW.tmp_max = controller_B.DiscreteTimeIntegrator;
@@ -654,7 +698,7 @@ void controllerModelClass::step()
     controller_Y.signals[5] = rtb_TmpSignalConversionAtHSCL_2;
     controller_Y.signals[6] = rtb_TmpSignalConversionAtHSCL_0;
     controller_Y.signals[7] = controller_B.DiscreteTimeIntegrator;
-    controller_Y.signals[8] = controller_B.TD_max;
+    controller_Y.signals[8] = controller_B.TV_max;
     controller_Y.signals[9] = controller_B.Compare_m;
 
     // Outputs for Enabled SubSystem: '<S1>/Pressure Control' incorporates:
@@ -663,7 +707,7 @@ void controllerModelClass::step()
     // Logic: '<S1>/Logical Operator2' incorporates:
     //   Logic: '<S11>/Logical Operator'
 
-    if (rtb_Compare_k || rtb_Compare_f) {
+    if (rtb_Compare_k || rtb_Compare_p) {
       if (!controller_DW.PressureControl_MODE) {
         // InitializeConditions for DiscreteFilter: '<S11>/Input Shaping'
         controller_DW.InputShaping_icLoad = 1U;
@@ -672,7 +716,7 @@ void controllerModelClass::step()
         controller_DW.UnitDelay_DSTATE_o =
           controller_P.UnitDelay_InitialCondition;
 
-        // InitializeConditions for DiscreteIntegrator: '<S54>/Integrator'
+        // InitializeConditions for DiscreteIntegrator: '<S55>/Integrator'
         controller_DW.Integrator_DSTATE_p =
           controller_P.PIDController_InitialConditionF;
         controller_DW.Integrator_PrevResetState_f = 2;
@@ -682,27 +726,27 @@ void controllerModelClass::step()
       // Gain: '<S11>/PIP'
       rtb_PIP = controller_P.PIP_Gain * rtb_TmpSignalConversionAtHSCL_1;
 
-      // Gain: '<S20>/Gain' incorporates:
+      // Gain: '<S21>/Gain' incorporates:
       //   Constant: '<S1>/IE_ratio'
       //   Constant: '<S1>/respiratory_rate'
-      //   Constant: '<S20>/Constant 1'
-      //   Constant: '<S20>/PIP_rise_perc'
-      //   Fcn: '<S20>/fun1'
-      //   Product: '<S20>/Product2'
+      //   Constant: '<S21>/Constant 1'
+      //   Constant: '<S21>/PIP_rise_perc'
+      //   Fcn: '<S21>/fun1'
+      //   Product: '<S21>/Product2'
 
       rtb_IProdOut_d = controller_P.PIP_rise_perc_Value *
         controller_P.Constant1_Value / controller_P.respiratory_rate_Value *
         (controller_P.IE_ratio_Value / (controller_P.IE_ratio_Value + 1.0F)) *
         controller_P.Gain_Gain;
 
-      // Math: '<S20>/Math Function'
+      // Math: '<S21>/Math Function'
       rtb_SumFdbk_i = rtb_IProdOut_d * rtb_IProdOut_d;
 
-      // Product: '<S20>/Product1' incorporates:
-      //   Constant: '<S20>/Constant'
-      //   Constant: '<S20>/Constant1'
-      //   Product: '<S20>/Divide'
-      //   Product: '<S20>/Product'
+      // Product: '<S21>/Product1' incorporates:
+      //   Constant: '<S21>/Constant'
+      //   Constant: '<S21>/Constant1'
+      //   Product: '<S21>/Divide'
+      //   Product: '<S21>/Product'
 
       rtb_pnm_idx_0 = controller_P.Constant_Value_e[0] / (rtb_IProdOut_d *
         rtb_SumFdbk_i) * controller_P.Constant1_Value_n[0];
@@ -711,33 +755,33 @@ void controllerModelClass::step()
       rtb_pnm_idx_2 = controller_P.Constant_Value_e[2] / rtb_IProdOut_d *
         controller_P.Constant1_Value_n[2];
 
-      // Fcn: '<S20>/a0'
+      // Fcn: '<S21>/a0'
       rtb_Divide5 = ((rtb_pnm_idx_2 + rtb_pnm_idx_1) + rtb_pnm_idx_0) - 8.0F;
 
-      // Product: '<S20>/Divide1' incorporates:
-      //   Fcn: '<S20>/b0_3'
+      // Product: '<S21>/Divide1' incorporates:
+      //   Fcn: '<S21>/b0_3'
 
       rtb_IProdOut_d = rtb_pnm_idx_0 / rtb_Divide5;
 
-      // Product: '<S20>/Divide2' incorporates:
-      //   Fcn: '<S20>/b1_2'
+      // Product: '<S21>/Divide2' incorporates:
+      //   Fcn: '<S21>/b1_2'
 
       rtb_SumFdbk_i = 3.0F * rtb_pnm_idx_0 / rtb_Divide5;
 
-      // Product: '<S20>/Divide3' incorporates:
-      //   Fcn: '<S20>/a1'
+      // Product: '<S21>/Divide3' incorporates:
+      //   Fcn: '<S21>/a1'
 
       rtb_TmpSignalConversionAtHSCL_2 = (((-rtb_pnm_idx_2 + rtb_pnm_idx_1) +
         3.0F * rtb_pnm_idx_0) + 24.0F) / rtb_Divide5;
 
-      // Product: '<S20>/Divide4' incorporates:
-      //   Fcn: '<S20>/a2'
+      // Product: '<S21>/Divide4' incorporates:
+      //   Fcn: '<S21>/a2'
 
       rtb_SumFdbk = (((-rtb_pnm_idx_2 - rtb_pnm_idx_1) + 3.0F * rtb_pnm_idx_0) -
                      24.0F) / rtb_Divide5;
 
-      // Product: '<S20>/Divide5' incorporates:
-      //   Fcn: '<S20>/a3'
+      // Product: '<S21>/Divide5' incorporates:
+      //   Fcn: '<S21>/a3'
 
       rtb_Divide5 = (((rtb_pnm_idx_2 - rtb_pnm_idx_1) + rtb_pnm_idx_0) + 8.0F) /
         rtb_Divide5;
@@ -749,7 +793,7 @@ void controllerModelClass::step()
       controller_B.TmpSignalConversionAtInputShapi[3] = rtb_IProdOut_d;
 
       // SignalConversion generated from: '<S11>/Input Shaping' incorporates:
-      //   Constant: '<S20>/Constant2'
+      //   Constant: '<S21>/Constant2'
 
       controller_B.TmpSignalConversionAtInputSha_h[0] =
         controller_P.Constant2_Value;
@@ -759,7 +803,7 @@ void controllerModelClass::step()
       controller_B.TmpSignalConversionAtInputSha_h[3] = rtb_Divide5;
 
       // Product: '<S11>/Product' incorporates:
-      //   Fcn: '<S20>/fun'
+      //   Fcn: '<S21>/fun'
       //   Gain: '<S11>/Gain3'
       //   Gain: '<S11>/PIP_step_perc'
       //   MATLABSystem: '<S1>/HSC LP'
@@ -810,16 +854,16 @@ void controllerModelClass::step()
       rtb_Divide5 = rtb_SumFdbk_i - tmp;
 
       // Outputs for Enabled SubSystem: '<S11>/Params Selector' incorporates:
-      //   EnablePort: '<S22>/Enable'
+      //   EnablePort: '<S23>/Enable'
 
       if (!(rtb_TmpSignalConversionAtHSCL_1 != 0.0F)) {
-        // Switch: '<S22>/Switch2' incorporates:
-        //   Constant: '<S22>/PC_FFW'
-        //   Constant: '<S22>/PC_FFW_rec'
-        //   Constant: '<S22>/PC_I'
-        //   Constant: '<S22>/PC_I_rec'
-        //   Constant: '<S22>/PC_P'
-        //   Constant: '<S22>/PC_P_rec'
+        // Switch: '<S23>/Switch2' incorporates:
+        //   Constant: '<S23>/PC_FFW'
+        //   Constant: '<S23>/PC_FFW_rec'
+        //   Constant: '<S23>/PC_I'
+        //   Constant: '<S23>/PC_I_rec'
+        //   Constant: '<S23>/PC_P'
+        //   Constant: '<S23>/PC_P_rec'
         //   MATLABSystem: '<S1>/HSC LP'
 
         if (rtb_TmpSignalConversionAtHSCL_0 > controller_P.Switch2_Threshold) {
@@ -832,37 +876,37 @@ void controllerModelClass::step()
           controller_B.Switch2[2] = controller_P.PC_FFW_Value;
         }
 
-        // End of Switch: '<S22>/Switch2'
+        // End of Switch: '<S23>/Switch2'
 
-        // SignalConversion generated from: '<S22>/FFW'
+        // SignalConversion generated from: '<S23>/FFW'
         controller_B.OutportBufferForFFW = controller_B.Switch2[2];
 
-        // SignalConversion generated from: '<S22>/I'
+        // SignalConversion generated from: '<S23>/I'
         controller_B.OutportBufferForI = controller_B.Switch2[1];
       }
 
       // End of Outputs for SubSystem: '<S11>/Params Selector'
 
-      // Product: '<S51>/IProd Out' incorporates:
+      // Product: '<S52>/IProd Out' incorporates:
       //   Logic: '<S11>/Logical Operator'
 
       rtb_PIP = rtb_Divide5 * controller_B.OutportBufferForI;
 
-      // Product: '<S59>/PProd Out'
+      // Product: '<S60>/PProd Out'
       rtb_Divide5 *= controller_B.Switch2[0];
 
-      // Sum: '<S66>/SumI1' incorporates:
-      //   Gain: '<S65>/Kt'
+      // Sum: '<S67>/SumI1' incorporates:
+      //   Gain: '<S66>/Kt'
       //   Sum: '<S11>/Sum5'
-      //   Sum: '<S64>/Sum Fdbk'
-      //   Sum: '<S65>/SumI3'
+      //   Sum: '<S65>/Sum Fdbk'
+      //   Sum: '<S66>/SumI3'
       //   UnitDelay: '<S11>/Unit Delay'
 
       rtb_PIP += ((controller_DW.UnitDelay_DSTATE_o -
                    controller_B.OutportBufferForFFW) - (rtb_Divide5 +
         controller_DW.Integrator_DSTATE_p)) * controller_P.PIDController_Kt;
 
-      // DiscreteIntegrator: '<S54>/Integrator'
+      // DiscreteIntegrator: '<S55>/Integrator'
       if ((rtb_TmpSignalConversionAtHSCL_1 > 0.0F) &&
           (controller_DW.Integrator_PrevResetState_f <= 0)) {
         controller_DW.Integrator_DSTATE_p =
@@ -872,10 +916,10 @@ void controllerModelClass::step()
       controller_B.Integrator_m = controller_P.Integrator_gainval * rtb_PIP +
         controller_DW.Integrator_DSTATE_p;
 
-      // End of DiscreteIntegrator: '<S54>/Integrator'
+      // End of DiscreteIntegrator: '<S55>/Integrator'
 
       // Sum: '<S11>/Sum2' incorporates:
-      //   Sum: '<S63>/Sum'
+      //   Sum: '<S64>/Sum'
 
       rtb_Divide5 = (rtb_Divide5 + controller_B.Integrator_m) +
         controller_B.OutportBufferForFFW;
@@ -926,8 +970,12 @@ void controllerModelClass::step()
     // End of Logic: '<S1>/Logical Operator2'
     // End of Outputs for SubSystem: '<S1>/Pressure Control'
 
-    // Gain: '<S1>/Tidal Volume'
-    rtb_SumFdbk_i = controller_P.TidalVolume_Gain *
+    // Product: '<S1>/Product' incorporates:
+    //   Constant: '<S1>/tidal_volume'
+    //   Sum: '<S1>/Sum2'
+
+    rtb_SumFdbk_i = (controller_B.TV_correction +
+                     controller_P.tidal_volume_Value) *
       rtb_TmpSignalConversionAtHSCL_1;
 
     // Logic: '<S1>/Logical Operator4' incorporates:
@@ -935,20 +983,20 @@ void controllerModelClass::step()
     //   Logic: '<S1>/Logical Operator5'
     //   RelationalOperator: '<S8>/Compare'
 
-    rtb_Compare_m = ((rtb_Compare_f && (rtb_SumFdbk_i ==
-      controller_P.Constant_Value_d)) || rtb_Compare_m);
+    rtb_Compare_p = ((rtb_Compare_p && (rtb_SumFdbk_i ==
+      controller_P.Constant_Value_d)) || controller_B.Compare);
 
     // Outputs for Enabled SubSystem: '<S1>/Volume Control' incorporates:
-    //   EnablePort: '<S18>/Enable'
+    //   EnablePort: '<S19>/Enable'
 
-    if (rtb_Compare_m) {
+    if (rtb_Compare_p) {
       controller_DW.VolumeControl_MODE = true;
 
-      // Switch: '<S18>/Switch' incorporates:
+      // Switch: '<S19>/Switch' incorporates:
       //   Constant: '<S1>/flowby_target'
-      //   Constant: '<S71>/Constant'
-      //   Gain: '<S18>/Volumetric Flow rate'
-      //   RelationalOperator: '<S71>/Compare'
+      //   Constant: '<S72>/Constant'
+      //   Gain: '<S19>/Volumetric Flow rate'
+      //   RelationalOperator: '<S72>/Compare'
 
       if (rtb_SumFdbk_i == controller_P.Constant_Value_b) {
         controller_B.Switch_c = controller_P.flowby_target_Value;
@@ -957,32 +1005,32 @@ void controllerModelClass::step()
           rtb_SumFdbk_i;
       }
 
-      // End of Switch: '<S18>/Switch'
+      // End of Switch: '<S19>/Switch'
 
-      // Outputs for Triggered SubSystem: '<S18>/Store FFW' incorporates:
-      //   TriggerPort: '<S75>/Trigger'
+      // Outputs for Triggered SubSystem: '<S19>/Store FFW' incorporates:
+      //   TriggerPort: '<S76>/Trigger'
 
       zcEvent = rt_R32ZCFcn(FALLING_ZERO_CROSSING,
                             &controller_PrevZCX.StoreFFW_Trig_ZCE,
                             (controller_B.Switch_c));
       if (zcEvent != NO_ZCEVENT) {
-        // DataStoreWrite: '<S75>/Data Store Write' incorporates:
-        //   UnitDelay: '<S18>/Unit Delay'
+        // DataStoreWrite: '<S76>/Data Store Write' incorporates:
+        //   UnitDelay: '<S19>/Unit Delay'
 
         controller_DW.FFW = controller_DW.UnitDelay_DSTATE_n;
       }
 
-      // End of Outputs for SubSystem: '<S18>/Store FFW'
+      // End of Outputs for SubSystem: '<S19>/Store FFW'
 
-      // Sum: '<S18>/Sum1'
+      // Sum: '<S19>/Sum1'
       rtb_TmpSignalConversionAtHSCL_2 = controller_B.Switch_c -
         rtb_TmpSignalConversionAtHSCL_3;
 
-      // Switch: '<S73>/Switch2' incorporates:
-      //   Constant: '<S73>/VC_I'
-      //   Constant: '<S73>/VC_I_rec'
-      //   Constant: '<S73>/VC_P'
-      //   Constant: '<S73>/VC_P_rec'
+      // Switch: '<S74>/Switch2' incorporates:
+      //   Constant: '<S74>/VC_I'
+      //   Constant: '<S74>/VC_I_rec'
+      //   Constant: '<S74>/VC_P'
+      //   Constant: '<S74>/VC_P_rec'
       //   MATLABSystem: '<S1>/HSC LP'
 
       if (rtb_TmpSignalConversionAtHSCL_0 > controller_P.Switch2_Threshold_b) {
@@ -993,38 +1041,38 @@ void controllerModelClass::step()
         rtb_SumFdbk_i = controller_P.VC_I_Value;
       }
 
-      // End of Switch: '<S73>/Switch2'
+      // End of Switch: '<S74>/Switch2'
 
-      // Product: '<S104>/IProd Out'
+      // Product: '<S105>/IProd Out'
       rtb_IProdOut_d = rtb_TmpSignalConversionAtHSCL_2 * rtb_SumFdbk_i;
 
-      // Product: '<S112>/PProd Out'
+      // Product: '<S113>/PProd Out'
       rtb_TmpSignalConversionAtHSCL_2 *= rtb_TmpSignalConversionAtHSCL_3;
 
-      // Outputs for Enabled SubSystem: '<S18>/Read FFW' incorporates:
-      //   EnablePort: '<S74>/Enable'
+      // Outputs for Enabled SubSystem: '<S19>/Read FFW' incorporates:
+      //   EnablePort: '<S75>/Enable'
 
       if (controller_B.Switch_c > 0.0F) {
         controller_DW.ReadFFW_MODE = true;
 
-        // DataStoreRead: '<S74>/Data Store Read'
+        // DataStoreRead: '<S75>/Data Store Read'
         controller_B.DataStoreRead = controller_DW.FFW;
       } else {
         if (controller_DW.ReadFFW_MODE) {
-          // Disable for Outport: '<S74>/ffw'
+          // Disable for Outport: '<S75>/ffw'
           controller_B.DataStoreRead = controller_P.ffw_Y0;
           controller_DW.ReadFFW_MODE = false;
         }
       }
 
-      // End of Outputs for SubSystem: '<S18>/Read FFW'
+      // End of Outputs for SubSystem: '<S19>/Read FFW'
 
-      // Sum: '<S119>/SumI1' incorporates:
-      //   Gain: '<S118>/Kt'
-      //   Sum: '<S117>/Sum Fdbk'
-      //   Sum: '<S118>/SumI3'
-      //   Sum: '<S18>/Sum3'
-      //   UnitDelay: '<S18>/Unit Delay'
+      // Sum: '<S120>/SumI1' incorporates:
+      //   Gain: '<S119>/Kt'
+      //   Sum: '<S118>/Sum Fdbk'
+      //   Sum: '<S119>/SumI3'
+      //   Sum: '<S19>/Sum3'
+      //   UnitDelay: '<S19>/Unit Delay'
 
       rtb_SumFdbk_i = ((controller_DW.UnitDelay_DSTATE_n -
                         controller_B.DataStoreRead) -
@@ -1032,7 +1080,7 @@ void controllerModelClass::step()
                         controller_DW.Integrator_DSTATE)) *
         controller_P.PIDController_Kt_j + rtb_IProdOut_d;
 
-      // DiscreteIntegrator: '<S107>/Integrator'
+      // DiscreteIntegrator: '<S108>/Integrator'
       if (((controller_B.Switch_c > 0.0F) &&
            (controller_DW.Integrator_PrevResetState <= 0)) ||
           ((controller_B.Switch_c <= 0.0F) &&
@@ -1044,15 +1092,15 @@ void controllerModelClass::step()
       controller_B.Integrator = controller_P.Integrator_gainval_m *
         rtb_SumFdbk_i + controller_DW.Integrator_DSTATE;
 
-      // End of DiscreteIntegrator: '<S107>/Integrator'
+      // End of DiscreteIntegrator: '<S108>/Integrator'
 
-      // Sum: '<S18>/Sum2' incorporates:
-      //   Sum: '<S116>/Sum'
+      // Sum: '<S19>/Sum2' incorporates:
+      //   Sum: '<S117>/Sum'
 
       tmp = (rtb_TmpSignalConversionAtHSCL_2 + controller_B.Integrator) +
         controller_B.DataStoreRead;
 
-      // Saturate: '<S18>/Saturation'
+      // Saturate: '<S19>/Saturation'
       if (tmp > controller_P.Saturation_UpperSat_b) {
         controller_B.Saturation = controller_P.Saturation_UpperSat_b;
       } else if (tmp < controller_P.Saturation_LowerSat_f) {
@@ -1061,12 +1109,12 @@ void controllerModelClass::step()
         controller_B.Saturation = tmp;
       }
 
-      // End of Saturate: '<S18>/Saturation'
+      // End of Saturate: '<S19>/Saturation'
 
-      // Update for UnitDelay: '<S18>/Unit Delay'
+      // Update for UnitDelay: '<S19>/Unit Delay'
       controller_DW.UnitDelay_DSTATE_n = controller_B.Saturation;
 
-      // Update for DiscreteIntegrator: '<S107>/Integrator'
+      // Update for DiscreteIntegrator: '<S108>/Integrator'
       controller_DW.Integrator_DSTATE = controller_P.Integrator_gainval_m *
         rtb_SumFdbk_i + controller_B.Integrator;
       if (controller_B.Switch_c > 0.0F) {
@@ -1079,7 +1127,7 @@ void controllerModelClass::step()
         controller_DW.Integrator_PrevResetState = 2;
       }
 
-      // End of Update for DiscreteIntegrator: '<S107>/Integrator'
+      // End of Update for DiscreteIntegrator: '<S108>/Integrator'
 
       // Switch: '<S1>/Switch' incorporates:
       //   Outport: '<Root>/IV_dc'
@@ -1087,19 +1135,19 @@ void controllerModelClass::step()
       controller_Y.IV_dc = controller_B.Saturation;
     } else {
       if (controller_DW.VolumeControl_MODE) {
-        // Disable for Enabled SubSystem: '<S18>/Read FFW'
+        // Disable for Enabled SubSystem: '<S19>/Read FFW'
         if (controller_DW.ReadFFW_MODE) {
-          // Disable for Outport: '<S74>/ffw'
+          // Disable for Outport: '<S75>/ffw'
           controller_B.DataStoreRead = controller_P.ffw_Y0;
           controller_DW.ReadFFW_MODE = false;
         }
 
-        // End of Disable for SubSystem: '<S18>/Read FFW'
+        // End of Disable for SubSystem: '<S19>/Read FFW'
 
-        // Disable for Outport: '<S18>/Q_ref'
+        // Disable for Outport: '<S19>/Q_ref'
         controller_B.Switch_c = controller_P.Q_ref_Y0;
 
-        // Disable for Outport: '<S18>/IV_dc'
+        // Disable for Outport: '<S19>/IV_dc'
         controller_B.Saturation = controller_P.IV_dc_Y0_m;
         controller_DW.VolumeControl_MODE = false;
       }
@@ -1184,6 +1232,9 @@ void controllerModelClass::step()
       controller_DW.DiscreteTimeIntegrator_PrevRese = 2;
     }
 
+    // Update for UnitDelay: '<S1>/Unit Delay4'
+    controller_DW.UnitDelay4_DSTATE = controller_B.TV_max;
+
     // Update for Enabled SubSystem: '<S1>/Pressure Control' incorporates:
     //   EnablePort: '<S11>/Enable'
 
@@ -1197,7 +1248,7 @@ void controllerModelClass::step()
       // Update for UnitDelay: '<S11>/Unit Delay'
       controller_DW.UnitDelay_DSTATE_o = rtb_Divide5;
 
-      // Update for DiscreteIntegrator: '<S54>/Integrator'
+      // Update for DiscreteIntegrator: '<S55>/Integrator'
       controller_DW.Integrator_DSTATE_p = controller_P.Integrator_gainval *
         rtb_PIP + controller_B.Integrator_m;
       if (rtb_TmpSignalConversionAtHSCL_1 > 0.0F) {
@@ -1210,7 +1261,7 @@ void controllerModelClass::step()
         controller_DW.Integrator_PrevResetState_f = 2;
       }
 
-      // End of Update for DiscreteIntegrator: '<S54>/Integrator'
+      // End of Update for DiscreteIntegrator: '<S55>/Integrator'
     }
 
     // End of Update for SubSystem: '<S1>/Pressure Control'
@@ -1232,7 +1283,7 @@ void controllerModelClass::step()
       controller_DW.previousTicks_j = controller_DW.presentTicks_j;
       controller_DW.temporalCounter_i1_c += controller_DW.elapsedTicks_i;
 
-      // Disable for Chart: '<S1>/TD Max'
+      // Disable for Chart: '<S1>/TV Max'
       controller_DW.presentTicks = (&controller_M)->Timing.clockTick0;
       controller_DW.elapsedTicks = controller_DW.presentTicks -
         controller_DW.previousTicks;
@@ -1253,19 +1304,19 @@ void controllerModelClass::step()
 
       // Disable for Enabled SubSystem: '<S1>/Volume Control'
       if (controller_DW.VolumeControl_MODE) {
-        // Disable for Enabled SubSystem: '<S18>/Read FFW'
+        // Disable for Enabled SubSystem: '<S19>/Read FFW'
         if (controller_DW.ReadFFW_MODE) {
-          // Disable for Outport: '<S74>/ffw'
+          // Disable for Outport: '<S75>/ffw'
           controller_B.DataStoreRead = controller_P.ffw_Y0;
           controller_DW.ReadFFW_MODE = false;
         }
 
-        // End of Disable for SubSystem: '<S18>/Read FFW'
+        // End of Disable for SubSystem: '<S19>/Read FFW'
 
-        // Disable for Outport: '<S18>/Q_ref'
+        // Disable for Outport: '<S19>/Q_ref'
         controller_B.Switch_c = controller_P.Q_ref_Y0;
 
-        // Disable for Outport: '<S18>/IV_dc'
+        // Disable for Outport: '<S19>/IV_dc'
         controller_B.Saturation = controller_P.IV_dc_Y0_m;
         controller_DW.VolumeControl_MODE = false;
       }
@@ -1359,6 +1410,9 @@ void controllerModelClass::initialize()
       controller_P.DiscreteTimeIntegrator_IC;
     controller_DW.DiscreteTimeIntegrator_PrevRese = 2;
 
+    // InitializeConditions for UnitDelay: '<S1>/Unit Delay4'
+    controller_DW.UnitDelay4_DSTATE = controller_P.UnitDelay4_InitialCondition;
+
     // SystemInitialize for Enabled SubSystem: '<S1>/Compute Trigger'
     // SystemInitialize for Outport: '<S9>/Out'
     controller_B.Compare_m = controller_P.Out_Y0;
@@ -1369,9 +1423,12 @@ void controllerModelClass::initialize()
     controller_DW.is_c3_controller = controller_IN_INSPIRATION;
     controller_B.pulse = 1.0F;
 
-    // Chart: '<S1>/TD Max'
+    // Chart: '<S1>/TV Correction'
+    controller_DW.is_c2_controller = controller_IN_IDLE;
+
+    // Chart: '<S1>/TV Max'
     controller_DW.is_c1_controller = controller_IN_IDLE;
-    controller_B.TD_max = (rtNaNF);
+    controller_B.TV_max = (rtNaNF);
 
     // SystemInitialize for Enabled SubSystem: '<S1>/Pressure Control'
     // InitializeConditions for DiscreteFilter: '<S11>/Input Shaping'
@@ -1380,19 +1437,19 @@ void controllerModelClass::initialize()
     // InitializeConditions for UnitDelay: '<S11>/Unit Delay'
     controller_DW.UnitDelay_DSTATE_o = controller_P.UnitDelay_InitialCondition;
 
-    // InitializeConditions for DiscreteIntegrator: '<S54>/Integrator'
+    // InitializeConditions for DiscreteIntegrator: '<S55>/Integrator'
     controller_DW.Integrator_DSTATE_p =
       controller_P.PIDController_InitialConditionF;
     controller_DW.Integrator_PrevResetState_f = 2;
 
     // SystemInitialize for Enabled SubSystem: '<S11>/Params Selector'
-    // SystemInitialize for Outport: '<S22>/P'
+    // SystemInitialize for Outport: '<S23>/P'
     controller_B.Switch2[0] = controller_P.P_Y0;
 
-    // SystemInitialize for Outport: '<S22>/I'
+    // SystemInitialize for Outport: '<S23>/I'
     controller_B.OutportBufferForI = controller_P.I_Y0;
 
-    // SystemInitialize for Outport: '<S22>/FFW'
+    // SystemInitialize for Outport: '<S23>/FFW'
     controller_B.OutportBufferForFFW = controller_P.FFW_Y0;
 
     // End of SystemInitialize for SubSystem: '<S11>/Params Selector'
@@ -1406,27 +1463,27 @@ void controllerModelClass::initialize()
     // End of SystemInitialize for SubSystem: '<S1>/Pressure Control'
 
     // SystemInitialize for Enabled SubSystem: '<S1>/Volume Control'
-    // Start for DataStoreMemory: '<S18>/Data Store Memory'
+    // Start for DataStoreMemory: '<S19>/Data Store Memory'
     controller_DW.FFW = controller_P.DataStoreMemory_InitialValue;
 
-    // InitializeConditions for UnitDelay: '<S18>/Unit Delay'
+    // InitializeConditions for UnitDelay: '<S19>/Unit Delay'
     controller_DW.UnitDelay_DSTATE_n = controller_P.UnitDelay_InitialCondition_n;
 
-    // InitializeConditions for DiscreteIntegrator: '<S107>/Integrator'
+    // InitializeConditions for DiscreteIntegrator: '<S108>/Integrator'
     controller_DW.Integrator_DSTATE =
       controller_P.PIDController_InitialConditio_c;
     controller_DW.Integrator_PrevResetState = 2;
 
-    // SystemInitialize for Enabled SubSystem: '<S18>/Read FFW'
-    // SystemInitialize for Outport: '<S74>/ffw'
+    // SystemInitialize for Enabled SubSystem: '<S19>/Read FFW'
+    // SystemInitialize for Outport: '<S75>/ffw'
     controller_B.DataStoreRead = controller_P.ffw_Y0;
 
-    // End of SystemInitialize for SubSystem: '<S18>/Read FFW'
+    // End of SystemInitialize for SubSystem: '<S19>/Read FFW'
 
-    // SystemInitialize for Outport: '<S18>/Q_ref'
+    // SystemInitialize for Outport: '<S19>/Q_ref'
     controller_B.Switch_c = controller_P.Q_ref_Y0;
 
-    // SystemInitialize for Outport: '<S18>/IV_dc'
+    // SystemInitialize for Outport: '<S19>/IV_dc'
     controller_B.Saturation = controller_P.IV_dc_Y0_m;
 
     // End of SystemInitialize for SubSystem: '<S1>/Volume Control'

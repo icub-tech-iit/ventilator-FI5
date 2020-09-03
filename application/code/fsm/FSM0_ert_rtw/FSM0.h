@@ -7,9 +7,9 @@
 //
 // Code generated for Simulink model 'FSM0'.
 //
-// Model version                  : 1.910
+// Model version                  : 1.911
 // Simulink Coder version         : 9.3 (R2020a) 18-Nov-2019
-// C/C++ source code generated on : Wed Jul  8 15:26:02 2020
+// C/C++ source code generated on : Sat Aug 22 22:22:08 2020
 //
 // Target selection: ert.tlc
 // Embedded hardware selection: Intel->x86-64 (Windows64)
@@ -209,8 +209,9 @@ class FSM0ModelClass {
     real32_T FlowbyTarget_Value[3];    // Computed Parameter: FlowbyTarget_Value
                                           //  Referenced by: '<S8>/Flow-by Target'
 
-    real32_T NotUsed1_Value[3];        // Computed Parameter: NotUsed1_Value
-                                          //  Referenced by: '<S8>/Not Used 1'
+    real32_T TDCorrectionGain_Value[3];
+                                   // Computed Parameter: TDCorrectionGain_Value
+                                      //  Referenced by: '<S8>/TD Correction Gain'
 
     real32_T Test1Peak_Value[3];       // Computed Parameter: Test1Peak_Value
                                           //  Referenced by: '<S12>/Test1 Peak [%]'
@@ -221,7 +222,7 @@ class FSM0ModelClass {
     real32_T Test2Periods_Value[3];    // Computed Parameter: Test2Periods_Value
                                           //  Referenced by: '<S12>/Test2 Period [s]'
 
-    real32_T NotUsed1_Value_h[3];      // Computed Parameter: NotUsed1_Value_h
+    real32_T NotUsed1_Value[3];        // Computed Parameter: NotUsed1_Value
                                           //  Referenced by: '<S12>/Not Used 1'
 
     real32_T S7MincmH2O_Value[3];      // Computed Parameter: S7MincmH2O_Value

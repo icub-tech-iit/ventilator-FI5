@@ -233,7 +233,7 @@ struct fi5app::theController2::Impl
                 parameters.respiratory_rate_Value = outputs.knobs_out[0];
                 parameters.PIP_Gain = outputs.knobs_out[1];
                 parameters.IE_ratio_Value = outputs.knobs_out[2];
-                parameters.TidalVolume_Gain = outputs.knobs_out[3] / 1000.F;
+                parameters.tidal_volume_Value = outputs.knobs_out[3] / 1000.F;
             } break;
 
             case MAP_Transfer_VCV:
@@ -260,11 +260,12 @@ struct fi5app::theController2::Impl
                 parameters.PIP_rise_perc_Value = outputs.knobs_out[3];
             } break;
 
-            case MAP_Transfer_AutoTrigger:
+            case MAP_Transfer_Advanced:
             {
                 parameters.enable_trigger_Value = (outputs.knobs_out[0] > 0.5);
                 parameters.pressure_thres_const = outputs.knobs_out[1];
                 parameters.flowby_target_Value = outputs.knobs_out[2];
+                parameters.TV_correction_gain_Value = outputs.knobs_out[3];
             } break;
             
             case MAP_Transfer_None:
