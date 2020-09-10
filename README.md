@@ -116,7 +116,7 @@ You can conveniently download the whole material by visiting the [Release Page](
 | [<img src="https://github.com/LucaBrunatto.png" width="40">](https://github.com/LucaBrunatto) | Luca Brunatto | [@LucaBrunatto](https://github.com/LucaBrunatto) | [<img src="https://github.com/mgentili81.png" width="40">](https://github.com/mgentili81) | Marco Gentili | [@mgentili81](https://github.com/mgentili81) |
 | [<img src="https://github.com/SilviaScar.png" width="40">](https://github.com/SilviaScar) | Silvia Scarpetta | [@SilviaScar](https://github.com/SilviaScar) | [<img src="https://github.com/mlaffranchi.png" width="40">](https://github.com/mlaffranchi) | Matteo Laffranchi | [@mlaffranchi](https://github.com/mlaffranchi) |
 | [<img src="https://github.com/falberticc.png" width="40">](https://github.com/falberticc) | Francesco Alberti | [@falberticc](https://github.com/falberticc) | [<img src="https://github.com/LDM73.png" width="40">](https://github.com/LDM73) | Lorenzo De Michieli | [@LDM73](https://github.com/LDM73) |
-| | Roberto Puddu | | | Marco Pinaffo | |
+| [<img src="https://github.com/mpinaffo.png" width="40">](https://github.com/mpinaffo) | Marco Pinaffo | [@mpinaffo](https://github.com/mpinaffo) | | Roberto Puddu |
 | | Laura Taverna | | | Marco Ghidini | |
 | | Simone Codeluppi | | | Alberto Mingotti | |
 | | Federico Palmieri | | | Bruno Petrini| |
