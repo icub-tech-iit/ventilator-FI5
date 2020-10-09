@@ -59,6 +59,7 @@ You can conveniently download the whole material by visiting the [Release Page](
 - [Reuters](https://www.reuters.com/video/watch/ferrari-helps-drive-high-speed-developme-id713018857?chan=2iglyxg3)
 - [Askanews](http://www.askanews.it/video/2020/05/13/maggiali-iit-respiratore-fi5-contro-il-virus-ora-open-source-20200513_video_12551772) (Italian)
 - [Il Sole 24 Ore](https://stream24.ilsole24ore.com/video/economia/maggiali-iit-respiratore-fi5-contro-virus-ora-open-source/ADf1VOQ) (Italian)
+- [Il Sole 24 Ore](https://stream24.ilsole24ore.com/video/italia/ventilatore-polmonare-ferrari-iit-parla-ingegnere-maranello/ADfyJTu) (Italian)
 - [MSN](https://www.msn.com/it-it/money/video/f15-un-ventilatore-polmonare-nato-da-sinergia-tra-iit-e-ferrari/vi-BB142gMe) (Italian)
 - [Federation Internationale De L'Automobile](https://www.fia.com/news/scuderia-ferrari-mission-winnow-and-italian-institute-technology-present-fi5)
 - [Formula1](https://www.formula1.com/en/latest/article.ferrari-unveil-new-ventilator-for-coronavirus-patients-designed-and-built-in.7DrOsmsbQB9piUafeuuXJA.html)
