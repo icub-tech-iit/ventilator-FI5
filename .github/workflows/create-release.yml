@@ -20,6 +20,7 @@ jobs:
   doRelease:
     name: "Release"
     runs-on: ubuntu-latest
+    environment: release_environment
 
     steps:
       - name: Release Inputs
