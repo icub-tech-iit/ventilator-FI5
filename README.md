@@ -11,9 +11,9 @@ List of **IIT facilities and research lines** that contributed to the FI5 projec
 
 | | |
 | :---: | :--- |
-| [<img src="./assets/logo_icub-tech.png" width="80"/>](https://iit.it/research/facilities/icub-tech) | [iCub Tech](https://iit.it/research/facilities/icub-tech) |
-| [<img src="./assets/logo_edl.png" width="80"/>](https://iit.it/research/facilities/electronic-design-laboratory) | [Electronic Design Laboratory](https://iit.it/research/facilities/electronic-design-laboratory) |
-| [<img src="./assets/logo_rehab.png" width="80"/>](https://iit.it/research/lines/rehab-technologies-inail-iit-lab) | [Rehab Technologies - INAIL-IIT lab](https://iit.it/research/lines/rehab-technologies-inail-iit-lab) |
+| [<img src="./assets/logo_icub-tech.png" width="80"/>](https://www.iit.it/web/icub-tech) | [iCub Tech](https://www.iit.it/web/icub-tech) |
+| [<img src="./assets/logo_edl.png" width="80"/>](https://www.iit.it/web/electronic-design-laboratory) | [Electronic Design Laboratory](https://www.iit.it/web/electronic-design-laboratory) |
+| [<img src="./assets/logo_rehab.png" width="80"/>](https://www.iit.it/web/rehab-technologies-inail-iit-lab) | [Rehab Technologies - INAIL-IIT lab](https://www.iit.it/web/rehab-technologies-inail-iit-lab) |
 
 ## DISCLAIMER
 Fondazione Istituto Italiano di Tecnologia (“IIT”), having its headquarters in Genova (Italy), via Morego 30, declares that the designs, technical specifications, documents and other materials (“Material”) contained  on this repository are the result of scientific research activities carried out by IIT’s personnel in the context of the project FI5 (“Rapidly manufactured ventilator system”). 
