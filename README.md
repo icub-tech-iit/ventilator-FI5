@@ -11,6 +11,7 @@ Resources
 - [Comparison of Mathematical and Controlled Mehcanical Lung Simulation in Active Breathing and Ventilated State](./papers/pasteka-2018.pdf).
 - [Respiratory Mechanics Derived From Signals in the Ventilator Circuit](./papers/lucangelo-2005.pdf).
 - [Design and Prototyping of a Low-cost Portable Mechanical Ventilator](./papers/al-husseini-2010.pdf).
+- [Validation of a Simulink Model for Simulating the Two Typical Controlled Ventilation Modes of Intensive Care Units Mechanical Ventilators](./papers/tamburrano-2022.pdf).
 
 ## 👨‍🏫 Presentations
 - [Rapidly manufactured Ventilator System](./presentations/20200328_Ventilator.pdf).
