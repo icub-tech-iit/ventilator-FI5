@@ -26,9 +26,9 @@ jobs:
       - name: Release Inputs
         run: |
           echo "Release Inputs:"
-          echo "- Name: ${{ github.event.inputs.name }}" 
-          echo "- Body: ${{ github.event.inputs.body }}" 
-          echo "- Tag: ${{ github.event.inputs.tag }}" 
+          echo "- Name: ${{ github.inputs.name }}" 
+          echo "- Body: ${{ github.inputs.body }}" 
+          echo "- Tag: ${{ github.inputs.tag }}" 
 
       - name: Clone Branch master
         uses: actions/checkout@main
@@ -77,7 +77,7 @@ jobs:
           for branch in ${branches[@]}; do
             echo "tagging ${branch}..."
             cd ${GITHUB_WORKSPACE}/release/${branch}
-            git tag -a ${branch}-${{ github.event.inputs.tag }} -m "version ${{ github.event.inputs.tag }}"
+            git tag -a ${branch}-${{ github.inputs.tag }} -m "version ${{ github.inputs.tag }}"
             git remote set-url origin https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}.git
             git push origin --tags
             rm -Rf .git
@@ -86,9 +86,9 @@ jobs:
       - name: Create Asset
         run: |
           cd ${GITHUB_WORKSPACE}/release
-          zip -r ventilator-FI5-${{ github.event.inputs.tag }}.zip .
+          zip -r ventilator-FI5-${{ github.inputs.tag }}.zip .
           cd -
-          mv ${GITHUB_WORKSPACE}/release/ventilator-FI5-${{ github.event.inputs.tag }}.zip .
+          mv ${GITHUB_WORKSPACE}/release/ventilator-FI5-${{ github.inputs.tag }}.zip .
           
       - name: Create Release
         id: create_release
@@ -96,9 +96,9 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          tag_name: master-${{ github.event.inputs.tag }}
-          release_name: ${{ github.event.inputs.name}}
-          body: ${{ github.event.inputs.body }}
+          tag_name: master-${{ github.inputs.tag }}
+          release_name: ${{ github.inputs.name}}
+          body: ${{ github.inputs.body }}
 
       - name: Upload Release Asset
         id: upload-release-asset 
@@ -107,6 +107,6 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: ./ventilator-FI5-${{ github.event.inputs.tag }}.zip
-          asset_name: ventilator-FI5-${{ github.event.inputs.tag }}.zip
+          asset_path: ./ventilator-FI5-${{ github.inputs.tag }}.zip
+          asset_name: ventilator-FI5-${{ github.inputs.tag }}.zip
           asset_content_type: application/zip
