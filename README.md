@@ -54,7 +54,7 @@ Be careful that `mech` and `ele` branches are handled via [Git LFS](https://help
 You can conveniently download the whole material by visiting the [Release Page](../../releases).
 
 ## 📰 News
-- [IIT](https://iit.it/iit-vs-covid-19/fi5-ventilator)
+- [IIT](https://www.iit.it/web/guest/fi5-pulmonary-ventilator)
 - [Scuderia Ferrari Mission Winnow](https://www.ferrari.com/en-EN/formula1/articles/scuderia-ferrari-and-italian-institute-of-technology-present-fi5)
 - [Reuters](https://www.reuters.com/video/watch/ferrari-helps-drive-high-speed-developme-id713018857?chan=2iglyxg3)
 - [Askanews](http://www.askanews.it/video/2020/05/13/maggiali-iit-respiratore-fi5-contro-il-virus-ora-open-source-20200513_video_12551772) (Italian)
